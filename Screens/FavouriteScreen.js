@@ -1,11 +1,16 @@
-import React, { useState, useRef, useEffect } from "react";
-import { View, Text, Image, TextInput, TouchableOpacity, FlatList, StyleSheet, ImageBackground, Animated } from "react-native";
+import React from "react";
+import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet } from "react-native";
 import { Iconify } from "react-native-iconify";
 
 const cats = [
   { id: "1", name: "Samantha", breed: "British Short Hair", location: "Bogor, Jawa Barat" },
   { id: "2", name: "Kelly", breed: "Munchkin", location: "Semarang, Jawa Tengah" },
-  { id: "3", name: "Hanson", breed: "Brandal", location: "Semarang, Jawa Tengah" },
+  { id: "3", name: "Hanson", breed: "Brandal", location: "Bandung, Jawa Barat" },
+  { id: "4", name: "Marvel", breed: "Kocak", location: "Surabaya, Jawa Timur" },
+  { id: "5", name: "Aristo", breed: "Cicak", location: "Banten, Banten" },
+  { id: "6", name: "Louis", breed: "Huahahah", location: "TJ Priuk, Jakarta Utara" },
+  { id: "7", name: "Steven", breed: "KEKEKKEKEKE", location: "Blok M, Jakarta Selatan" },
+  { id: "8", name: "Denial", breed: "Dokeaowowko", location: "Ancol, Jakarta Utara" },
 ];
 
 export default function FavouriteScreen() {
@@ -42,6 +47,7 @@ export default function FavouriteScreen() {
           </TouchableOpacity>
         )}
         keyExtractor={(item) => item.id}
+        numColumns={2} // Set number of columns to 2
       />
 
       <View style={styles.footer}>
@@ -58,6 +64,7 @@ export default function FavouriteScreen() {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -78,11 +85,12 @@ const styles = StyleSheet.create({
   },
 
   adoptCard: {
-    width: 200,
-    height: 270,
+    width: 170,
+    height: 250,
     backgroundColor: "#fff",
     borderRadius: 10,
-    marginRight: 20,
+    margin: 5,
+    marginTop: 30,
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 4,
@@ -97,13 +105,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginTop: 10,
-  },
-  locationIcon: {
-    marginRight: 5,
+    paddingHorizontal: 10,
   },
   petDetails: {
     flex: 1,
-    paddingLeft: 10,
   },
   petName: {
     fontSize: 16,
@@ -113,7 +118,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   petLocationContainer: {
-    paddingTop: 5,
     flexDirection: "row",
     alignItems: "center",
   },
@@ -124,7 +128,7 @@ const styles = StyleSheet.create({
   },
 
   likeContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: 10,
     right: 10,
   },
@@ -132,14 +136,14 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   likeButtonBackground: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 10,
     padding: 5,
   },
   heartIconActive: {
-    color: 'red',
+    color: "red",
   },
-  
+
   footer: {
     flexDirection: "row",
     justifyContent: "space-between",
