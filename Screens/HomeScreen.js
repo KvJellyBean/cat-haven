@@ -18,7 +18,7 @@ export default function HomeScreen() {
     const currentPage = Math.round(scrollPosition / 190);
     setCurrentPage(currentPage);
   };
-
+  
   useEffect(() => {
     animatedValues.forEach((animatedValue, index) => {
       Animated.timing(animatedValue, {
@@ -72,20 +72,34 @@ export default function HomeScreen() {
           data={cats}
           renderItem={({ item }) => (
             <TouchableOpacity>
-              <View style={styles.adoptCard}>
-                <Image source={require("../assets/Kucing.jpg")} style={styles.catImage} />
-                <View style={styles.petInfo}>
-                  <View style={styles.petDetails}>
-                    <Text style={styles.petName}>{item.name}</Text>
-                    <Text style={styles.petBreed}>{item.breed}</Text>
-                    <View style={styles.petLocationContainer}>
-                      <Iconify icon="feather:map-pin" size={18} color="#777" />
-                      <Text style={styles.petLocation}>{item.location}</Text>
+            <View style={styles.adoptCard}>
+              <Image source={require("../assets/Kucing.jpg")} style={styles.catImage} />
+              <View style={styles.likeContainer}>
+                  <TouchableOpacity style={styles.likeButton}>
+                    <View style={styles.likeButtonBackground}>
+                      <Iconify
+                        icon="feather:heart"
+                        size={24}
+                        color="#777"
+                        style={[styles.heartIcon, item.liked ? styles.heartIconActive : null]}
+                      />
                     </View>
+                  </TouchableOpacity>
+                </View>
+              <View style={styles.petInfo}>
+                <View style={styles.petDetails}>
+                  <Text style={styles.petName}>{item.name}</Text>
+                  <Text style={styles.petBreed}>{item.breed}</Text>
+                  <View style={styles.petLocationContainer}>
+                    <Iconify icon="feather:map-pin" size={18} color="#777" />
+                    <Text style={styles.petLocation}>{item.location}</Text>
                   </View>
                 </View>
+                
               </View>
-            </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+          
           )}
           keyExtractor={(item) => item.id}
           contentContainerStyle={{ paddingLeft: 3 }}
@@ -96,16 +110,10 @@ export default function HomeScreen() {
           onScroll={handleScroll}
           pagingEnabled
         />
+
         <View style={styles.pageIndicatorContainer}>
           {cats.map((_, index) => (
-            <Animated.View
-              key={index}
-              style={[
-                styles.pageIndicatorDot,
-                currentPage === index && styles.pageIndicatorDotActive,
-                { width: animatedValues[index] }
-              ]}
-            />
+            <Animated.View key={index} style={[styles.pageIndicatorDot, currentPage === index && styles.pageIndicatorDotActive, { width: animatedValues[index] }]} />
           ))}
         </View>
       </View>
@@ -126,6 +134,23 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  likeContainer: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+  },
+  likeButton: {
+    padding: 5,
+  },
+  likeButtonBackground: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 5,
+  },
+  heartIconActive: {
+    color: 'red',
+  },
+  
   container: {
     flex: 1,
     padding: 25,
@@ -154,7 +179,7 @@ const styles = StyleSheet.create({
   },
   bannerBackground: {
     width: "100%",
-    height: 150, 
+    height: 150,
     borderRadius: 10,
     overflow: "hidden",
   },
@@ -285,37 +310,36 @@ const styles = StyleSheet.create({
   },
 
   pageIndicatorContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginTop: 10,
   },
   pageIndicatorDot: {
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#ccc',
+    backgroundColor: "#ccc",
     marginHorizontal: 5,
   },
   pageIndicatorDotActive: {
-    backgroundColor: '#004AAD',
+    backgroundColor: "#004AAD",
   },
 
   footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingVertical: 15,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 10,
     margin: 15,
-   
     marginBottom: 20,
     elevation: 4,
   },
   footerButton: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   footerImage: {
     width: 70,
@@ -325,4 +349,3 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
 });
-
