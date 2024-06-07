@@ -1,10 +1,30 @@
-import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 export default function LoginScreen() {
   const navigation = useNavigation();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async () => {
+    const auth = getAuth();
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigation.navigate('Home'); // Navigasi ke halaman beranda setelah login berhasil
+    } catch (error) {
+      console.error('Error logging in:', error); // Cetak pesan kesalahan ke konsol
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+        Alert.alert('Error', 'Email or password is incorrect'); // Tampilkan pesan kesalahan jika email tidak ditemukan atau kata sandi salah
+      } else {
+        Alert.alert('Error', 'An unexpected error occurred'); // Tampilkan pesan kesalahan umum untuk jenis kesalahan yang tidak terduga
+      }
+    }
+  };
+  
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login here</Text>
@@ -15,6 +35,8 @@ export default function LoginScreen() {
         style={styles.input}
         placeholder="Email"
         placeholderTextColor="#626262"
+        value={email}
+        onChangeText={(text) => setEmail(text)}
       />
       
       <TextInput 
@@ -22,13 +44,11 @@ export default function LoginScreen() {
         placeholder="Password"
         placeholderTextColor="#626262"
         secureTextEntry
+        value={password}
+        onChangeText={(text) => setPassword(text)}
       />
       
-      <TouchableOpacity onPress = {() => navigation.push('ForgotPassword')} style={styles.forgotPasswordContainer}>
-        <Text style={styles.forgotPassword}>Forgot your password?</Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity style={styles.loginButton}>
+      <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
         <Text style={styles.loginButtonText}>Log in</Text>
       </TouchableOpacity>
       
@@ -84,17 +104,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#F1F4FF',
   },
 
-  forgotPasswordContainer: {
-    width: '100%', 
-    alignItems: 'flex-end', // Memposisikan ke kanan
-    marginBottom: 30,
-    marginTop: 10,
-  },
-
-  forgotPassword: {
-    fontWeight: 'bold',
-    color: '#1D4ED8',
-  },
   loginButton: {
     width: '100%',
     height: 50,
