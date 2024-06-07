@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, Image, TextInput, TouchableOpacity, FlatList, StyleSheet, ImageBackground } from "react-native";
+import React, { useState, useRef, useEffect } from "react";
+import { View, Text, Image, TextInput, TouchableOpacity, FlatList, StyleSheet, ImageBackground, Animated } from "react-native";
 import { Iconify } from "react-native-iconify";
 
 const cats = [
@@ -9,6 +9,26 @@ const cats = [
 ];
 
 export default function HomeScreen() {
+  const [currentPage, setCurrentPage] = useState(0);
+  const flatListRef = useRef();
+  const animatedValues = useRef(cats.map(() => new Animated.Value(10))).current;
+
+  const handleScroll = (event) => {
+    const scrollPosition = event.nativeEvent.contentOffset.x;
+    const currentPage = Math.round(scrollPosition / 190);
+    setCurrentPage(currentPage);
+  };
+
+  useEffect(() => {
+    animatedValues.forEach((animatedValue, index) => {
+      Animated.timing(animatedValue, {
+        toValue: currentPage === index ? 20 : 10,
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
+    });
+  }, [currentPage]);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -70,9 +90,24 @@ export default function HomeScreen() {
           keyExtractor={(item) => item.id}
           contentContainerStyle={{ paddingLeft: 3 }}
           showsHorizontalScrollIndicator={false}
-          snapToInterval={300} 
+          snapToInterval={190}
           decelerationRate="fast"
+          ref={flatListRef}
+          onScroll={handleScroll}
+          pagingEnabled
         />
+        <View style={styles.pageIndicatorContainer}>
+          {cats.map((_, index) => (
+            <Animated.View
+              key={index}
+              style={[
+                styles.pageIndicatorDot,
+                currentPage === index && styles.pageIndicatorDotActive,
+                { width: animatedValues[index] }
+              ]}
+            />
+          ))}
+        </View>
       </View>
 
       <View style={styles.footer}>
@@ -183,7 +218,6 @@ const styles = StyleSheet.create({
 
   adoptContainer: {
     flex: 1,
-    // backgroundColor: '#666',
     marginTop: 30,
   },
   adoptHeader: {
@@ -205,7 +239,7 @@ const styles = StyleSheet.create({
   },
 
   adoptCard: {
-    width: 190,
+    width: 200,
     height: 270,
     backgroundColor: "#fff",
     borderRadius: 10,
@@ -250,6 +284,22 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
 
+  pageIndicatorContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 10,
+  },
+  pageIndicatorDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#ccc',
+    marginHorizontal: 5,
+  },
+  pageIndicatorDotActive: {
+    backgroundColor: '#004AAD',
+  },
+
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -258,7 +308,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
     margin: 15,
-    marginBottom: 30,
+   
+    marginBottom: 20,
     elevation: 4,
   },
   footerButton: {
@@ -274,3 +325,4 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
 });
+
