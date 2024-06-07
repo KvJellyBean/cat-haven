@@ -24,7 +24,7 @@ export default function LoginScreen() {
         secureTextEntry
       />
       
-      <TouchableOpacity onPress = {() => navigation.push('ResetPassword')} style={styles.forgotPasswordContainer}>
+      <TouchableOpacity onPress = {() => navigation.push('ForgotPassword')} style={styles.forgotPasswordContainer}>
         <Text style={styles.forgotPassword}>Forgot your password?</Text>
       </TouchableOpacity>
       

@@ -3,32 +3,24 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-nativ
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
-export default function ForgotPassword() {
-  const navigation = useNavigation();
+export default function LoginScreen() {
+    const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
         <Ionicons name="arrow-back" size={24} color="black" />
       </TouchableOpacity>
-      <Text style={styles.title}>Set new password</Text>
-      <Text style={styles.subtitle}>Create a new password. Ensure it differs from previous ones for security</Text>
-      
-      <TextInput 
-        style={styles.input}
-        placeholder="Password"
-        placeholderTextColor="#626262"
-        secureTextEntry
-      />
+      <Text style={styles.title}>Forgot Password</Text>
+      <Text style={styles.subtitle}>Please enter your email to reset the password</Text>
 
       <TextInput 
         style={styles.input}
-        placeholder="Confirm Password"
+        placeholder="Email"
         placeholderTextColor="#626262"
-        secureTextEntry
       />
-      
-      <TouchableOpacity  style={styles.resetpassButton}>
-        <Text style={styles.resetpassButtonText}>Update Password</Text>
+
+      <TouchableOpacity onPress={() => navigation.push('Verification')} style={styles.resetpassButton}>
+        <Text style={styles.resetpassButtonText}>Reset Password</Text>
       </TouchableOpacity>
 
       <Text style={styles.footerHeader}>
@@ -49,7 +41,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 30,
   },
-
   backButton: {
     position: 'absolute',
     top: 70,
@@ -63,6 +54,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 60,
   },
+
   subtitle: {
     fontSize: 18,
     color: '#000000',
@@ -87,7 +79,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 280,
+    marginBottom: 350,
   },
   
   resetpassButtonText: {
@@ -102,7 +94,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
   },
-  
+
   footerTitle: {
     fontSize: 18,
     color: '#494949',
