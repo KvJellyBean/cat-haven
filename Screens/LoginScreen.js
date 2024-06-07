@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet,Text,View,TextInput,TouchableOpacity,Alert } from "react-native";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
@@ -16,10 +16,7 @@ export default function LoginScreen() {
       navigation.navigate("Home"); // Navigasi ke halaman beranda setelah login berhasil
     } catch (error) {
       console.error("Error logging in:", error); // Cetak pesan kesalahan ke konsol
-      if (
-        error.code === "auth/user-not-found" ||
-        error.code === "auth/wrong-password"
-      ) {
+      if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
         Alert.alert("Error", "Email or password is incorrect"); // Tampilkan pesan kesalahan jika email tidak ditemukan atau kata sandi salah
       } else {
         Alert.alert("Error", "An unexpected error occurred"); // Tampilkan pesan kesalahan umum untuk jenis kesalahan yang tidak terduga
@@ -33,23 +30,14 @@ export default function LoginScreen() {
       <Text style={styles.subtitle}>Welcome back you've</Text>
       <Text style={styles.p1}>been missed!</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        placeholderTextColor="#626262"
-        value={email}
-        onChangeText={(text) => setEmail(text)}
-      />
+      <TextInput style={styles.input} placeholder="Email" placeholderTextColor="#626262" value={email} onChangeText={(text) => setEmail(text)} />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        placeholderTextColor="#626262"
-        secureTextEntry
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-      />
+      <TextInput style={styles.input} placeholder="Password" placeholderTextColor="#626262" secureTextEntry value={password} onChangeText={(text) => setPassword(text)} />
 
+      <TouchableOpacity onPress={() => navigation.push("ResetPassword")} style={styles.forgotPasswordContainer}>
+        <Text style={styles.forgotPassword}>Forgot your password?</Text>
+      </TouchableOpacity>
+      
       <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
         <Text style={styles.loginButtonText}>Log in</Text>
       </TouchableOpacity>
@@ -65,7 +53,6 @@ export default function LoginScreen() {
         <FontAwesome name="facebook" size={24} color="black" style={styles.icon} />
         <FontAwesome name="twitter" size={24} color="black" style={styles.icon} />
       </View>
-      
     </View>
   );
 }
