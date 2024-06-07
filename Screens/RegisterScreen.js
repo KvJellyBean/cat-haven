@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet,Text,View,TextInput,TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { app } from "../firebase";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
@@ -111,7 +105,12 @@ export default function RegisterScreen() {
 
       <Text style={styles.continueText}>Or continue with</Text>
 
-      <View style={styles.socialIcons}>{/* Social Icons */}</View>
+      <View style={styles.socialIcons}>
+        <FontAwesome name="google" size={24} color="black" />
+        <FontAwesome name="facebook" size={24} color="black" style={styles.icon} />
+        <FontAwesome name="twitter" size={24} color="black" style={styles.icon} />
+      </View>
+      
     </View>
   );
 }
