@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { View, Text, Image, TextInput, TouchableOpacity, FlatList, StyleSheet, ImageBackground, Animated } from "react-native";
 import { Iconify } from "react-native-iconify";
+import { useNavigation } from '@react-navigation/native';
 
 const cats = [
   { id: "1", name: "Samantha", breed: "British Short Hair", location: "Bogor, Jawa Barat" },
@@ -9,6 +10,9 @@ const cats = [
 ];
 
 export default function HomeScreen() {
+
+  const navigation = useNavigation();
+
   const [currentPage, setCurrentPage] = useState(0);
   const flatListRef = useRef();
   const animatedValues = useRef(cats.map(() => new Animated.Value(10))).current;
@@ -53,7 +57,7 @@ export default function HomeScreen() {
           <Iconify icon="feather:search" size={30} color="#ccc" style={styles.searchIcon} />
         </View>
         <TextInput placeholder="Search your cat..." style={styles.searchInput} />
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.push("Filter")}>
           <View style={styles.filterButton}>
             <Iconify icon="mdi:slider" size={25} color="#fff" style={styles.sliderIcon} />
           </View>
