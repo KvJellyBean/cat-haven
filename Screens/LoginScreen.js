@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from "react-native";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
@@ -8,18 +8,33 @@ export default function LoginScreen() {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(""); 
 
   const handleLogin = async () => {
     const auth = getAuth();
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address");
+      setTimeout(() => setError(""), 6000);
+      return;
+    }
+
+    if (!password) {
+      setError("Please enter a password");
+      setTimeout(() => setError(""), 6000);
+      return;
+    }
+
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigation.navigate("Home"); // Navigasi ke halaman beranda setelah login berhasil
+      navigation.navigate("Home"); 
     } catch (error) {
-      console.error("Error logging in:", error); // Cetak pesan kesalahan ke konsol
-      if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
-        Alert.alert("Error", "Email or password is incorrect"); // Tampilkan pesan kesalahan jika email tidak ditemukan atau kata sandi salah
+      if (error.code === "auth/invalid-credential") {
+        setError("Email or password are incorrect");
       } else {
-        Alert.alert("Error", "An unexpected error occurred"); // Tampilkan pesan kesalahan umum untuk jenis kesalahan yang tidak terduga
+        setError(""); 
       }
     }
   };
@@ -30,13 +45,28 @@ export default function LoginScreen() {
       <Text style={styles.subtitle}>Welcome back you've</Text>
       <Text style={styles.p1}>been missed!</Text>
 
-      <TextInput style={styles.input} placeholder="Email" placeholderTextColor="#626262" value={email} onChangeText={(text) => setEmail(text)} />
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        placeholderTextColor="#626262"
+        value={email}
+        onChangeText={(text) => setEmail(text)}
+      />
 
-      <TextInput style={styles.input} placeholder="Password" placeholderTextColor="#626262" secureTextEntry value={password} onChangeText={(text) => setPassword(text)} />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        placeholderTextColor="#626262"
+        secureTextEntry
+        value={password}
+        onChangeText={(text) => setPassword(text)}
+      />
 
-      <TouchableOpacity onPress={() => navigation.push("ResetPassword")} style={styles.forgotPasswordContainer}>
+      <TouchableOpacity onPress={() => navigation.push("ForgotPassword")} style={styles.forgotPasswordContainer}>
         <Text style={styles.forgotPassword}>Forgot your password?</Text>
       </TouchableOpacity>
+
+      {error ? <Text style={styles.error}>{error}</Text> : null}
 
       <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
         <Text style={styles.loginButtonText}>Log in</Text>
@@ -84,7 +114,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 100,
   },
-
   input: {
     width: "100%",
     height: 50,
@@ -93,14 +122,12 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     backgroundColor: "#F1F4FF",
   },
-
   forgotPasswordContainer: {
     width: "100%",
-    alignItems: "flex-end", // Memposisikan ke kanan
+    alignItems: "flex-end",
     marginBottom: 30,
     marginTop: 10,
   },
-
   forgotPassword: {
     fontWeight: "bold",
     color: "#1D4ED8",
@@ -127,7 +154,6 @@ const styles = StyleSheet.create({
   },
   continueText: {
     color: "#004AAD",
-    marginBottom: 20,
     fontWeight: "bold",
     marginBottom: 30,
   },
@@ -138,5 +164,9 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginLeft: 20,
+  },
+  error: {
+    color: "red",
+    marginBottom: 10,
   },
 });
