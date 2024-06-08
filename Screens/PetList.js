@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet, Dimensions } from "react-native";
+import React, { useState } from "react";
+import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet, Dimensions, TextInput } from "react-native";
 import { Iconify } from "react-native-iconify";
 
 const cats = [
@@ -11,75 +11,87 @@ const cats = [
   { id: "6", name: "Louis", breed: "Huahahah", location: "TJ Priuk, Jakarta Utara" },
   { id: "7", name: "Steven", breed: "KEKEKKEKEKE", location: "Blok M, Jakarta Selatan" },
   { id: "8", name: "Denial", breed: "Dokeaowowko", location: "Ancol, Jakarta Utara" },
+  { id: "9", name: "Gilbert", breed: "American", location: "Serang, Banten" },
+  { id: "10", name: "Cadera", breed: "African", location: "Banjarmasin, Kalimantan Timur" },
+  { id: "11", name: "Kobiy", breed: "Austria", location: "Bangka, Pangkal Pinang" },
 ];
 
-const createPages = (data, itemsPerPage) => {
-  const pages = [];
-  for (let i = 0; i < data.length; i += itemsPerPage) {
-    pages.push(data.slice(i, i + itemsPerPage));
-  }
-  return pages;
-};
-
-const pages = createPages(cats, 6);
-
-const screenWidth = Dimensions.get("window").width;
-const cardMargin = 10;
-const cardWidth = (screenWidth - cardMargin * 3) / 2;
+const numColumns = 2;
+const itemsPerPage = 6;
+const totalPages = Math.ceil(cats.length / itemsPerPage);
 
 export default function PetList() {
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const renderPagination = () => {
+    const pages = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push(
+        <TouchableOpacity key={i} onPress={() => setCurrentPage(i)}>
+          <View style={styles.pageNumberContainer}>
+            <Text style={styles.pageNumberText}>{i}</Text>
+          </View>
+        </TouchableOpacity>
+      );
+    }
+    return pages;
+  };
+
+  const renderCardsForPage = () => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return cats.slice(startIndex, endIndex);
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.welcomeText}>Favourites</Text>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <Iconify icon="material-symbols-light:arrow-back-ios" size={30} color="#1e1e1e" />
+      </TouchableOpacity>
+
+      <View style={styles.searchContainer}>
+        <View style={styles.searchIconContainer}>
+          <Iconify icon="feather:search" size={25} color="#ccc" style={styles.searchIcon} />
+        </View>
+        <TextInput placeholder="Search your cat..." style={styles.searchInput} />
+        <TouchableOpacity>
+          <View style={styles.filterButton}>
+            <Iconify icon="mdi:slider" size={25} color="#fff" style={styles.sliderIcon} />
+          </View>
+        </TouchableOpacity>
       </View>
 
       <FlatList
-        horizontal
-        pagingEnabled
-        data={pages}
-        renderItem={({ item: page }) => (
-          <View style={styles.page}>
-            {page.map(cat => (
-              <TouchableOpacity key={cat.id}>
-                <View style={[styles.adoptCard, { width: cardWidth }]}>
-                  <Image source={require("../assets/Kucing.jpg")} style={styles.catImage} />
-                  <View style={styles.likeContainer}>
-                    <TouchableOpacity style={styles.likeButton}>
-                      <View style={styles.likeButtonBackground}>
-                        <Iconify icon="feather:heart" size={24} color="#777" style={[styles.heartIcon, cat.liked ? styles.heartIconActive : null]} />
-                      </View>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={styles.petInfo}>
-                    <View style={styles.petDetails}>
-                      <Text style={styles.petName}>{cat.name}</Text>
-                      <Text style={styles.petBreed}>{cat.breed}</Text>
-                      <View style={styles.petLocationContainer}>
-                        <Iconify icon="feather:map-pin" size={18} color="#777" />
-                        <Text style={styles.petLocation}>{cat.location}</Text>
-                      </View>
-                    </View>
+        data={renderCardsForPage()}
+        renderItem={({ item }) => (
+          <TouchableOpacity>
+            <View style={styles.adoptCard}>
+              <Image source={require("../assets/Kucing.jpg")} style={styles.catImage} />
+              <View style={styles.likeContainer}>
+                <View style={styles.likeButtonBackground}>
+                  <TouchableOpacity style={styles.likeButton}>
+                    <Iconify icon="feather:heart" size={24} color="#777" style={[styles.heartIcon, item.liked ? styles.heartIconActive : null]} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View style={styles.petInfo}>
+                <View style={styles.petDetails}>
+                  <Text style={styles.petName}>{item.name}</Text>
+                  <Text style={styles.petBreed}>{item.breed}</Text>
+                  <View style={styles.petLocationContainer}>
+                    <Iconify icon="feather:map-pin" size={12} color="#777" />
+                    <Text style={styles.petLocation}>{item.location}</Text>
                   </View>
                 </View>
-              </TouchableOpacity>
-            ))}
-          </View>
+              </View>
+            </View>
+          </TouchableOpacity>
         )}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.id}
+        numColumns={numColumns}
       />
 
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.footerButton}>
-          <Iconify icon="feather:home" size={30} color="#777" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.footerButton}>
-          <Image source={require("../assets/splash.png")} style={styles.footerImage} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.footerButton}>
-          <Iconify icon="feather:heart" size={30} color="#777" />
-        </TouchableOpacity>
-      </View>
+      <View style={styles.paginationContainer}>{renderPagination()}</View>
     </View>
   );
 }
@@ -88,28 +100,52 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 25,
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: "#f7f7f7",
     position: "relative",
   },
-  header: {
+  backButton: {
+    position: "absolute",
+    top: 60,
+    left: 35,
+  },
+  searchContainer: {
     flexDirection: "row",
+    alignItems: "center",
+    position: "relative",
+    marginTop: 30,
+    marginHorizontal: 60,
+  },
+  searchIconContainer: {
+    position: "absolute",
+    left: 10,
+    zIndex: 1,
+  },
+  searchInput: {
+    flex: 1,
+    padding: 8,
+    paddingLeft: 50,
+    borderRadius: 10,
+    backgroundColor: "#fff",
+    elevation: 5,
+  },
+  filterButton: {
+    padding: 9,
+    marginLeft: 10,
+    backgroundColor: "#fff",
+    borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 35,
+    elevation: 5,
   },
-  welcomeText: {
-    fontSize: 25,
-    fontWeight: "bold",
-    color: "#004AAD",
-  },
-  page: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-around",
-    width: screenWidth,
+  sliderIcon: {
+    transform: [{ rotate: "90deg" }, { scaleX: -1 }],
+    color: "#777777",
   },
   adoptCard: {
-    height: 250,
+    height: 200,
+    width: 170,
     backgroundColor: "#fff",
     borderRadius: 10,
     margin: 5,
@@ -134,18 +170,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   petName: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: "bold",
   },
   petBreed: {
-    fontSize: 14,
+    fontSize: 11,
+    marginBottom: 2,
   },
   petLocationContainer: {
     flexDirection: "row",
     alignItems: "center",
   },
   petLocation: {
-    fontSize: 12,
+    fontSize: 9,
     color: "#777",
     marginLeft: 5,
   },
@@ -155,7 +192,7 @@ const styles = StyleSheet.create({
     right: 10,
   },
   likeButton: {
-    padding: 5,
+    padding: 2,
   },
   likeButtonBackground: {
     backgroundColor: "white",
@@ -163,32 +200,26 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   heartIconActive: {
-    color: "red",
+    color: "#666",
   },
-  footer: {
+  paginationContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 15,
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    margin: 15,
-    marginBottom: 50,
-    elevation: 4,
-    position: "absolute",
-    bottom: 0,
-    alignSelf: "center",
+    justifyContent: "center",
+    marginTop: 20,
+    // backgroundColor: "red",
   },
-  footerButton: {
-    flex: 1,
+  pageNumberContainer: {
+    width: 24,
+    height: 24,
+    margin: 2,
+    borderRadius: 12,
+    backgroundColor: "#004AAD",
     justifyContent: "center",
     alignItems: "center",
   },
-  footerImage: {
-    width: 70,
-    height: 40,
-  },
-  footerIcon: {
-    fontSize: 24,
+
+  pageNumberText: {
+    fontSize: 13,
+    color: "#fff",
   },
 });
