@@ -9,6 +9,7 @@ import ForgotPassword from "./Screens/ForgotPassword";
 import VerificationScreen from "./Screens/VerificationScreen";
 import ResetPassword from "./Screens/ResetPassword";
 import HomeScreen from "./Screens/HomeScreen";
+import FavouriteScreen from "./Screens/FavouriteScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -30,7 +31,7 @@ function App() {
           initialRouteName="Onboarding"
           screenOptions={{ headerShown: false }}
         >
-          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Favourite" component={FavouriteScreen} />
           <Stack.Screen name="Onboarding" component={OnboardingScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
