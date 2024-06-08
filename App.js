@@ -9,6 +9,7 @@ import ForgotPassword from "./Screens/ForgotPassword";
 import VerificationScreen from "./Screens/VerificationScreen";
 import ResetPassword from "./Screens/ResetPassword";
 import HomeScreen from "./Screens/HomeScreen";
+import FilterScreen from "./Screens/FilterScreen";
 import PetList from "./Screens/PetList";
 import FavouriteScreen from "./Screens/FavouriteScreen";
 
@@ -38,8 +39,8 @@ function App() {
           <Stack.Screen name="Register" component={RegisterScreen} />
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
           <Stack.Screen name="Verification" component={VerificationScreen} />
-          <Stack.Screen name="ResetPassword" component={ResetPassword} /> */}
-          <Stack.Screen name="ResetPassword" component={PetList} />
+          <Stack.Screen name="ResetPassword" component={ResetPassword} />
+          <Stack.Screen name="Filter" component={FilterScreen} />
         </Stack.Navigator>
       )}
     </NavigationContainer>

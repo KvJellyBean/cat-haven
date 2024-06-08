@@ -98,17 +98,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 20,
+    
   },
 
   codeInput: {
     width: 50,
     height: 50,
-    borderWidth: 1,
     borderColor: '#ccc',
     textAlign: 'center',
     fontSize: 24,
     borderRadius: 10,
     marginHorizontal: 5,
+    backgroundColor: '#F1F4FF',
   },
 
   button: {

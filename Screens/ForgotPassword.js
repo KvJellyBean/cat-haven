@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 export default function LoginScreen() {
     const navigation = useNavigation();
-  return (
+    return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
         <Ionicons name="arrow-back" size={24} color="black" />

@@ -9,7 +9,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 import { app } from "../firebase";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 export default function RegisterScreen() {
   const navigation = useNavigation();
@@ -22,14 +22,15 @@ export default function RegisterScreen() {
   const [error, setError] = useState("");
   const [registered, setRegistered] = useState(false);
 
-  const registerUser = async (email, password, retryCount = 0) => {
+  const registerUser = async (email, password, name, retryCount = 0) => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(userCredential.user, {
+        displayName: name,
+      });
+      console.log("Username updated:", name);
       console.log("User registered:", userCredential.user);
+
       setRegistered(true);
       setTimeout(() => {
         navigation.navigate("Login");
@@ -37,8 +38,10 @@ export default function RegisterScreen() {
     } catch (error) {
       if (error.code === "auth/network-request-failed" && retryCount < 3) {
         console.warn("Network request failed, retrying...", retryCount);
-        setTimeout(() => registerUser(email, password, retryCount + 1), 1000);
+        setTimeout(() => registerUser(email, password, name, retryCount + 1), 1000);
       } else {
+        setError("Error registering user: " + error.message);
+        setTimeout(() => setError(""), 6000); // Clear error after 6 seconds
         console.error("Error registering user:", error);
       }
     }
@@ -47,11 +50,40 @@ export default function RegisterScreen() {
   const handleSignUp = () => {
     if (password !== confirmPassword) {
       setError("Password and confirm password do not match");
+      setTimeout(() => setError(""), 6000);
       return;
     }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address");
+      setTimeout(() => setError(""), 6000);
+      return;
+    }
+
+    if (!password) {
+      setError("Please enter a password");
+      setTimeout(() => setError(""), 6000);
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      setTimeout(() => setError(""), 6000);
+      return;
+    }
+
+    if (!name) {
+      setError("Please enter a username");
+      setTimeout(() => setError(""), 6000);
+      return;
+    }
+
     setError("");
-    registerUser(email, password);
-  };
+    registerUser(email, password, name);
+};
+
 
   return (
     <View style={styles.container}>
