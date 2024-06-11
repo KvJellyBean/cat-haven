@@ -1,15 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import {
-  View,
-  Text,
-  Image,
-  TextInput,
-  TouchableOpacity,
-  FlatList,
-  StyleSheet,
-  ImageBackground,
-  Animated,
-} from "react-native";
+import { View, Text, Image, TextInput, TouchableOpacity, FlatList, StyleSheet, ImageBackground, Animated } from "react-native";
 import { Iconify } from "react-native-iconify";
 import { useNavigation } from "@react-navigation/native";
 
@@ -19,18 +9,33 @@ const cats = [
     name: "Samantha",
     breed: "British Short Hair",
     location: "Bogor, Jawa Barat",
+    image: require("../assets/Kucing.jpg"),
+    gender: "Female",
+    age: "2 years",
+    weight: "3.5 kg",
+    description: "Samantha is a lovely British Short Hair cat looking for a home. Samantha is a friendly British Short Hair cat with a friendly face. ",
   },
   {
     id: "2",
     name: "Kelly",
     breed: "Munchkin",
     location: "Semarang, Jawa Tengah",
+    image: require("../assets/Kucing3.jpg"),
+    gender: "Female",
+    age: "1 year",
+    weight: "2.8 kg",
+    description: "Kelly is an adorable Munchkin cat looking for a family. Kelly is a friendly Munchkin cat with a friendly face. ",
   },
   {
     id: "3",
     name: "Hanson",
-    breed: "Brandal",
+    breed: "Bengal",
     location: "Semarang, Jawa Tengah",
+    image: require("../assets/Kucing2.jpg"),
+    gender: "Male",
+    age: "3 years",
+    weight: "4.2 kg",
+    description: "Hanson, the playful Brandal cat, is eagerly seeking a forever home. Hanson is a playful Brandal cat ready for adoption. Ready for adoption, Hanson is a spirited Brandal cat with a playful demeanor. ",
   },
 ];
 
@@ -57,22 +62,19 @@ export default function HomeScreen() {
     });
   }, [currentPage]);
 
+  const navigateToPetDetail = (pet) => {
+    navigation.navigate("Detail", { pet });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.welcomeText}>Welcome, Emily</Text>
-        <Image
-          source={require("../assets/splash.png")}
-          style={styles.profileImage}
-        />
+        <Image source={require("../assets/splash.png")} style={styles.profileImage} />
       </View>
 
       <View style={styles.adoptBanner}>
-        <ImageBackground
-          source={require("../assets/banner.png")}
-          style={styles.bannerBackground}
-          resizeMode="cover"
-        >
+        <ImageBackground source={require("../assets/banner.png")} style={styles.bannerBackground} resizeMode="cover">
           <View style={styles.adoptButtonContainer}>
             <Text style={styles.adoptNowText}>Adopt Now!</Text>
             <Text style={styles.adoptNowText}>Free Cat Supply!</Text>
@@ -85,25 +87,12 @@ export default function HomeScreen() {
 
       <View style={styles.searchContainer}>
         <View style={styles.searchIconContainer}>
-          <Iconify
-            icon="feather:search"
-            size={30}
-            color="#ccc"
-            style={styles.searchIcon}
-          />
+          <Iconify icon="feather:search" size={30} color="#ccc" style={styles.searchIcon} />
         </View>
-        <TextInput
-          placeholder="Search your cat..."
-          style={styles.searchInput}
-        />
+        <TextInput placeholder="Search your cat..." style={styles.searchInput} />
         <TouchableOpacity onPress={() => navigation.push("Filter")}>
           <View style={styles.filterButton}>
-            <Iconify
-              icon="mdi:slider"
-              size={25}
-              color="#fff"
-              style={styles.sliderIcon}
-            />
+            <Iconify icon="mdi:slider" size={25} color="#fff" style={styles.sliderIcon} />
           </View>
         </TouchableOpacity>
       </View>
@@ -119,24 +108,13 @@ export default function HomeScreen() {
           horizontal
           data={cats}
           renderItem={({ item }) => (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigateToPetDetail(item)}>
               <View style={styles.adoptCard}>
-                <Image
-                  source={require("../assets/Kucing.jpg")}
-                  style={styles.catImage}
-                />
+                <Image source={item.image} style={styles.catImage} />
                 <View style={styles.likeContainer}>
                   <TouchableOpacity style={styles.likeButton}>
                     <View style={styles.likeButtonBackground}>
-                      <Iconify
-                        icon="feather:heart"
-                        size={24}
-                        color="#777"
-                        style={[
-                          styles.heartIcon,
-                          item.liked ? styles.heartIconActive : null,
-                        ]}
-                      />
+                      <Iconify icon="feather:heart" size={24} color="#777" style={[styles.heartIcon, item.liked ? styles.heartIconActive : null]} />
                     </View>
                   </TouchableOpacity>
                 </View>
@@ -165,14 +143,7 @@ export default function HomeScreen() {
 
         <View style={styles.pageIndicatorContainer}>
           {cats.map((_, index) => (
-            <Animated.View
-              key={index}
-              style={[
-                styles.pageIndicatorDot,
-                currentPage === index && styles.pageIndicatorDotActive,
-                { width: animatedValues[index] },
-              ]}
-            />
+            <Animated.View key={index} style={[styles.pageIndicatorDot, currentPage === index && styles.pageIndicatorDotActive, { width: animatedValues[index] }]} />
           ))}
         </View>
       </View>
@@ -181,14 +152,8 @@ export default function HomeScreen() {
         <TouchableOpacity style={styles.footerButton}>
           <Iconify icon="feather:home" size={30} color="#777" />
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.footerButton}
-          onPress={() => navigation.push("PetList")}
-        >
-          <Image
-            source={require("../assets/splash.png")}
-            style={styles.footerImage}
-          />
+        <TouchableOpacity style={styles.footerButton} onPress={() => navigation.push("PetList")}>
+          <Image source={require("../assets/splash.png")} style={styles.footerImage} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.footerButton}>
           <Iconify icon="feather:heart" size={30} color="#777" />
