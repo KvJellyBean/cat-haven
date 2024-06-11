@@ -1,7 +1,9 @@
 import React from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal, Pressable } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const AdoptForm = ({ modalVisible, setModalVisible }) => {
+  const navigation = useNavigation();
   return (
     <Modal
       animationType="slide"
@@ -25,7 +27,7 @@ const AdoptForm = ({ modalVisible, setModalVisible }) => {
           <TextInput style={styles.input} placeholder="Address" />
           <TextInput style={styles.input} placeholder="Phone Number" keyboardType="phone-pad" />
           <TextInput style={styles.input} placeholder="Do You Have Children?" />
-          <TouchableOpacity style={styles.submitButton} onPress={() => alert('Form Submitted')}>
+          <TouchableOpacity style={styles.submitButton} onPress={() => navigation.push('PaymentMethod')}>
             <Text style={styles.buttonText}>Submit</Text>
           </TouchableOpacity>
         </ScrollView>
