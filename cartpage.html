@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persegi Panjang Android</title>
+    <link rel="stylesheet" href="cartpage.css">
+</head>
+<body>
+    <div class="rectangle">
+        <h1>My Cart</h1>
+        <div class="item">
+            <img src="catto.jpeg" alt="Gambar Hewan" class="animal-image">
+            <div class="details">
+                <h2 class="animal-name">Snowflake</h2>
+                <p class="animal-type">Domestic Cat</p>
+                <p class="price">Rp. 1.500.000</p>
+            </div>
+        </div>
+        <div class="item2">
+            <img src="catto.jpeg" alt="Gambar Hewan" class="animal-image2">
+            <div class="details2">
+                <h2 class="animal-name2">Snowflake</h2>
+                <p class="animal-type2">Domestic Cat</p>
+                <p class="price2">Rp. 1.500.000</p>
+            </div>
+        </div>
+        <div class="adoption-fees">
+            <div class="adoption-fees-header">
+                <p>Adoption Fees:</p>
+                <p class="adoption-fee-price">Rp. 1.500.000</p>
+            </div>
+            <hr>
+            <div class="total-price-section">
+                <p>Total:</p>
+                <p class="total-price-amount">Rp. 1.500.000</p>
+            </div>
+            <button class="adopt-button" onclick="showOverlay()">Adopt</button>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay">
+        <div class="overlay-content">
+            <h2 class="overlay-title">Payment Method</h2>
+            <div class="payment-method">
+                <div class="method">
+                    <img src="appler.png" alt="Payment Method 1" class="method-image">
+                    <div class="method-details">
+                        <p class="method-name">Apple ID</p>
+                        <p class="method-info">****4567</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="method">
+                    <img src="mstrcard.png" alt="Payment Method 2" class="method-image">
+                    <div class="method-details">
+                        <p class="method-name">MasterCard</p>
+                        <p class="method-info">****3289</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="method">
+                    <img src="visar.png" alt="Payment Method 3" class="method-image">
+                    <div class="method-details">
+                        <p class="method-name">Visa</p>
+                        <p class="method-info">****3092</p>
+                    </div>
+                </div>
+            </div>
+            <div class="overlay-buttons">
+                <button class="btn-continue">Continue</button>
+                <button class="btn-cancel" onclick="hideOverlay()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showOverlay() {
+            document.getElementById('overlay').style.display = 'flex';
+        }
+
+        function hideOverlay() {
+            document.getElementById('overlay').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

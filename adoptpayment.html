@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persegi Panjang Android</title>
+    <link rel="stylesheet" href="adoptpayment.css">
+</head>
+<body>
+    <div class="rectangle">
+        <h1>My Cart</h1>
+        <div class="item">
+            <img src="catto.jpeg" alt="Gambar Hewan" class="animal-image">
+            <div class="details">
+                <h2 class="animal-name">Snowflake</h2>
+                <p class="animal-type">Domestic Cat</p>
+                <p class="price">Rp. 1.500.000</p>
+            </div>
+        </div>
+        <div class="item2">
+            <img src="catto.jpeg" alt="Gambar Hewan" class="animal-image2">
+            <div class="details2">
+                <h2 class="animal-name2">Snowflake</h2>
+                <p class="animal-type2">Domestic Cat</p>
+                <p class="price2">Rp. 1.500.000</p>
+            </div>
+        </div>
+        <div class="adoption-fees">
+            <div class="adoption-fees-header">
+                <p>Adoption Fees:</p>
+                <p class="adoption-fee-price">Rp. 1.500.000</p>
+            </div>
+            <hr>
+            <div class="total-price-section">
+                <p>Total:</p>
+                <p class="total-price-amount">Rp. 1.500.000</p>
+            </div>
+            <button class="adopt-button" onclick="showOverlay()">Adopt</button>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay">
+        <div class="overlay-content">
+            <h2 class="overlay-title">Payment Form</h2>
+            <form id="paymentForm">
+                <label for="name-on-card">Name on Card</label>
+                <input id="name-on-card" type="text" placeholder="Enter Name on Card" required>
+                
+                <label for="card-number">Card Number</label>
+                <input id="card-number" type="text" placeholder="Enter Card Number" required>
+                
+                <div class="expiry-cvv">
+                    <div>
+                        <label for="expiry-date">Expiry Date</label>
+                        <input id="expiry-date" type="text" placeholder="MM/YY" required>
+                    </div>
+                    <div>
+                        <label for="cvv">CVV</label>
+                        <input id="cvv" type="text" placeholder="Enter CVV" required>
+                    </div>
+                </div>
+                
+                <label for="postal-code">Postal Code</label>
+                <input id="postal-code" type="text" placeholder="Enter Postal Code" required>
+                
+                <div class="button-group">
+                    <button type="button" class="continue-button" onclick="submitForm()">Continue</button>
+                    <button type="button" class="cancel-button" onclick="hideOverlay()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        function showOverlay() {
+            document.getElementById('overlay').style.display = 'flex';
+        }
+
+        function hideOverlay() {
+            document.getElementById('overlay').style.display = 'none';
+        }
+        
+        window.addEventListener('click', function(event) {
+            var overlay = document.getElementById('overlay');
+            if (event.target == overlay) {
+                overlay.style.display = 'none';
+            }
+        });
+
+        function submitForm() {
+            // Tambahkan logika untuk menangani pengiriman formulir di sini
+            alert("Form submitted!");
+        }
+    </script>
+</body>
+</html>

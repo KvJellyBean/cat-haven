@@ -1,0 +1,255 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: grey;
+}
+
+.rectangle {
+    width: 370px;
+    height: 700px;
+    background-color: white;
+    border: 2px solid white;
+    border-radius: 20px;
+    position: relative;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.rectangle h1 {
+    color: #004AAD;
+    text-align: center;
+    margin: 0;
+    padding: 20px 0;
+    font-size: 24px;
+    font-weight: bold;
+    position: relative;
+    width: 100%;
+    background-color: white;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    font-family: 'Arial', sans-serif; 
+}
+
+.item, .item2 {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.animal-image, .animal-image2 {
+    width: 40%;
+    height: 95px;
+    border-radius: 10px;
+    margin-right: 20px;
+}
+
+.details, .details2 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.details .animal-name, .details2 .animal-name2 {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    font-size: 17px;
+    color: #333;
+}
+
+.details .animal-type, .details2 .animal-type2 {
+    font-family: 'Arial', sans-serif;
+    margin: 5px 0;
+    font-size: 11px;
+    color: #666;
+}
+
+.details .price, .details2 .price2 {
+    font-family: 'Arial', sans-serif;
+    color: black;
+    font-size: 15px;
+    margin-top: 5px;
+}
+
+.adoption-fees-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: flex-end;
+}
+
+.adoption-fees {
+    text-align: center;
+}
+
+.adoption-fees-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    margin-top: 250px;
+}
+
+.adoption-fees-header p {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+}
+
+.adoption-fee-price {
+    font-family: 'Arial', sans-serif;
+    font-size: 14px;
+    color: black;
+}
+
+.adoption-fees hr {
+    margin: 10px 0;
+    border: none;
+    border-top: 1px solid #ccc;
+}
+
+.total-price-section {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.total-price-section p {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+}
+
+.total-price-amount {
+    font-family: 'Arial', sans-serif;
+    font-size: 14px;
+    color: black;
+}
+
+.adopt-button {
+    background-color: #004AAD;
+    color: white;
+    border: none;
+    padding: 12px 120px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    align-self: flex-end;
+    margin-top: 10px;
+}
+
+.adopt-button:hover {
+    background-color: #003080;
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    height: 500px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay-content {
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.overlay-title {
+    color: #004AAD;
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+}
+
+form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+form label {
+    margin-top: 10px;
+    font-family: 'Arial', sans-serif;
+    font-size: 14px;
+    color: #333;
+}
+
+form input {
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: 'Arial', sans-serif;
+    width: calc(100% - 22px);
+}
+
+.expiry-cvv {
+    display: flex;
+    justify-content: space-between;
+    width: calc(100% - 20px);
+}
+
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.continue-button {
+    background-color: #004AAD;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    margin-right: 10px;
+    margin-top: 60px;
+}
+
+.continue-button:hover {
+    background-color: #003080;
+}
+
+.cancel-button {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    margin-right: 10px;
+    margin-top: 60px;
+}
+
+.continue-button:hover {
+    background-color: #003080;
+}
