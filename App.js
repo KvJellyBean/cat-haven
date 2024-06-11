@@ -12,6 +12,7 @@ import HomeScreen from "./Screens/HomeScreen";
 import FilterScreen from "./Screens/FilterScreen";
 import PetList from "./Screens/PetList";
 import FavouriteScreen from "./Screens/FavouriteScreen";
+import LandingScreen from "./Screens/LandingScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -43,6 +44,7 @@ function App() {
           <Stack.Screen name="ResetPassword" component={ResetPassword} />
           <Stack.Screen name="PetList" component={PetList} />
           <Stack.Screen name="Filter" component={FilterScreen} />
+          <Stack.Screen name="Landing" component={LandingScreen} />
         </Stack.Navigator>
       )}
     </NavigationContainer>
