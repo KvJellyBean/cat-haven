@@ -33,6 +33,7 @@ function App() {
           initialRouteName="Onboarding"
           screenOptions={{ headerShown: false }}
         >
+          <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Favourite" component={FavouriteScreen} />
           <Stack.Screen name="Onboarding" component={OnboardingScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
@@ -40,6 +41,7 @@ function App() {
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
           <Stack.Screen name="Verification" component={VerificationScreen} />
           <Stack.Screen name="ResetPassword" component={ResetPassword} />
+          <Stack.Screen name="PetList" component={PetList} />
           <Stack.Screen name="Filter" component={FilterScreen} />
         </Stack.Navigator>
       )}

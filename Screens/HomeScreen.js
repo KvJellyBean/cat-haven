@@ -1,16 +1,40 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Text, Image, TextInput, TouchableOpacity, FlatList, StyleSheet, ImageBackground, Animated } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+  StyleSheet,
+  ImageBackground,
+  Animated,
+} from "react-native";
 import { Iconify } from "react-native-iconify";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 
 const cats = [
-  { id: "1", name: "Samantha", breed: "British Short Hair", location: "Bogor, Jawa Barat" },
-  { id: "2", name: "Kelly", breed: "Munchkin", location: "Semarang, Jawa Tengah" },
-  { id: "3", name: "Hanson", breed: "Brandal", location: "Semarang, Jawa Tengah" },
+  {
+    id: "1",
+    name: "Samantha",
+    breed: "British Short Hair",
+    location: "Bogor, Jawa Barat",
+  },
+  {
+    id: "2",
+    name: "Kelly",
+    breed: "Munchkin",
+    location: "Semarang, Jawa Tengah",
+  },
+  {
+    id: "3",
+    name: "Hanson",
+    breed: "Brandal",
+    location: "Semarang, Jawa Tengah",
+  },
 ];
 
 export default function HomeScreen() {
-
   const navigation = useNavigation();
 
   const [currentPage, setCurrentPage] = useState(0);
@@ -22,7 +46,7 @@ export default function HomeScreen() {
     const currentPage = Math.round(scrollPosition / 190);
     setCurrentPage(currentPage);
   };
-  
+
   useEffect(() => {
     animatedValues.forEach((animatedValue, index) => {
       Animated.timing(animatedValue, {
@@ -37,11 +61,18 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.welcomeText}>Welcome, Emily</Text>
-        <Image source={require("../assets/splash.png")} style={styles.profileImage} />
+        <Image
+          source={require("../assets/splash.png")}
+          style={styles.profileImage}
+        />
       </View>
 
       <View style={styles.adoptBanner}>
-        <ImageBackground source={require("../assets/banner.png")} style={styles.bannerBackground} resizeMode="cover">
+        <ImageBackground
+          source={require("../assets/banner.png")}
+          style={styles.bannerBackground}
+          resizeMode="cover"
+        >
           <View style={styles.adoptButtonContainer}>
             <Text style={styles.adoptNowText}>Adopt Now!</Text>
             <Text style={styles.adoptNowText}>Free Cat Supply!</Text>
@@ -54,12 +85,25 @@ export default function HomeScreen() {
 
       <View style={styles.searchContainer}>
         <View style={styles.searchIconContainer}>
-          <Iconify icon="feather:search" size={30} color="#ccc" style={styles.searchIcon} />
+          <Iconify
+            icon="feather:search"
+            size={30}
+            color="#ccc"
+            style={styles.searchIcon}
+          />
         </View>
-        <TextInput placeholder="Search your cat..." style={styles.searchInput} />
+        <TextInput
+          placeholder="Search your cat..."
+          style={styles.searchInput}
+        />
         <TouchableOpacity onPress={() => navigation.push("Filter")}>
           <View style={styles.filterButton}>
-            <Iconify icon="mdi:slider" size={25} color="#fff" style={styles.sliderIcon} />
+            <Iconify
+              icon="mdi:slider"
+              size={25}
+              color="#fff"
+              style={styles.sliderIcon}
+            />
           </View>
         </TouchableOpacity>
       </View>
@@ -76,34 +120,38 @@ export default function HomeScreen() {
           data={cats}
           renderItem={({ item }) => (
             <TouchableOpacity>
-            <View style={styles.adoptCard}>
-              <Image source={require("../assets/Kucing.jpg")} style={styles.catImage} />
-              <View style={styles.likeContainer}>
+              <View style={styles.adoptCard}>
+                <Image
+                  source={require("../assets/Kucing.jpg")}
+                  style={styles.catImage}
+                />
+                <View style={styles.likeContainer}>
                   <TouchableOpacity style={styles.likeButton}>
                     <View style={styles.likeButtonBackground}>
                       <Iconify
                         icon="feather:heart"
                         size={24}
                         color="#777"
-                        style={[styles.heartIcon, item.liked ? styles.heartIconActive : null]}
+                        style={[
+                          styles.heartIcon,
+                          item.liked ? styles.heartIconActive : null,
+                        ]}
                       />
                     </View>
                   </TouchableOpacity>
                 </View>
-              <View style={styles.petInfo}>
-                <View style={styles.petDetails}>
-                  <Text style={styles.petName}>{item.name}</Text>
-                  <Text style={styles.petBreed}>{item.breed}</Text>
-                  <View style={styles.petLocationContainer}>
-                    <Iconify icon="feather:map-pin" size={18} color="#777" />
-                    <Text style={styles.petLocation}>{item.location}</Text>
+                <View style={styles.petInfo}>
+                  <View style={styles.petDetails}>
+                    <Text style={styles.petName}>{item.name}</Text>
+                    <Text style={styles.petBreed}>{item.breed}</Text>
+                    <View style={styles.petLocationContainer}>
+                      <Iconify icon="feather:map-pin" size={18} color="#777" />
+                      <Text style={styles.petLocation}>{item.location}</Text>
+                    </View>
                   </View>
                 </View>
-                
               </View>
-            </View>
-          </TouchableOpacity>
-          
+            </TouchableOpacity>
           )}
           keyExtractor={(item) => item.id}
           contentContainerStyle={{ paddingLeft: 3 }}
@@ -117,7 +165,14 @@ export default function HomeScreen() {
 
         <View style={styles.pageIndicatorContainer}>
           {cats.map((_, index) => (
-            <Animated.View key={index} style={[styles.pageIndicatorDot, currentPage === index && styles.pageIndicatorDotActive, { width: animatedValues[index] }]} />
+            <Animated.View
+              key={index}
+              style={[
+                styles.pageIndicatorDot,
+                currentPage === index && styles.pageIndicatorDotActive,
+                { width: animatedValues[index] },
+              ]}
+            />
           ))}
         </View>
       </View>
@@ -126,8 +181,14 @@ export default function HomeScreen() {
         <TouchableOpacity style={styles.footerButton}>
           <Iconify icon="feather:home" size={30} color="#777" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.footerButton}>
-          <Image source={require("../assets/splash.png")} style={styles.footerImage} />
+        <TouchableOpacity
+          style={styles.footerButton}
+          onPress={() => navigation.push("PetList")}
+        >
+          <Image
+            source={require("../assets/splash.png")}
+            style={styles.footerImage}
+          />
         </TouchableOpacity>
         <TouchableOpacity style={styles.footerButton}>
           <Iconify icon="feather:heart" size={30} color="#777" />
@@ -139,7 +200,7 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   likeContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: 10,
     right: 10,
   },
@@ -147,14 +208,14 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   likeButtonBackground: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 10,
     padding: 5,
   },
   heartIconActive: {
-    color: 'red',
+    color: "red",
   },
-  
+
   container: {
     flex: 1,
     padding: 25,
