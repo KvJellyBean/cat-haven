@@ -1,79 +1,122 @@
-import React from 'react';
+import React, { useState } from "react";
 import { View, Text, Image, StyleSheet, Button, ScrollView } from 'react-native';
+import PaymentMethod from "./PaymentMethod"
 
-export default function CartPageScreen(){
-  return (
-    <View style={styles.container}>
-      <View style={styles.rectangle}>
-        <Text style={styles.header}>My Cart</Text>
-        <ScrollView>
-          <View style={styles.item}>
-            <Image source={require('../assets/Kucing2.jpg')} style={styles.animalImage} />
-            <View style={styles.details}>
-              <Text style={styles.animalName}>Snowflake</Text>
-              <Text style={styles.animalType}>Domestic Cat</Text>
-              <Text style={styles.price}>Rp. 1.500.000</Text>
+const CartPageScreen = ({ navigation }) => {
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const toggleModal = () => {
+        setIsModalVisible(!isModalVisible);
+    };
+
+    return (
+        <View style={styles.container}>
+            <Text style={styles.header}>My Cart</Text>
+            <ScrollView style={styles.scrollView}>
+                <View style={styles.item}>
+                    <Image source={require('../assets/Kucing.jpg')} style={styles.animalImage} />
+                    <View style={styles.details}>
+                        <Text style={styles.animalName}>Snowflake</Text>
+                        <Text style={styles.animalType}>Domestic Cat</Text>
+                        <Text style={styles.price}>Rp. 1.500.000</Text>
+                    </View>
+                </View>
+                <View style={styles.item}>
+                    <Image source={require('../assets/food.png')} style={styles.animalImage} />
+                    <View style={styles.details}>
+                        <Text style={styles.animalName}>Cat Supply</Text>
+                        <Text style={styles.animalType}>Free Cat Supply</Text>
+                        <Text style={styles.price}>Free</Text>
+                    </View>
+                </View>
+            </ScrollView>
+
+            <View style={styles.adoptionFeesHeader}>
+                <Text style={styles.adoptionFeePrice}>Adoption Fees:</Text>
+                <Text style={styles.adoptionFeePrice}>Rp. 1.500.000</Text>
             </View>
-          </View>
-          <View style={styles.item}>
-            <Image source={require('../assets/Kucing2.jpg')} style={styles.animalImage} />
-            <View style={styles.details}>
-              <Text style={styles.animalName}>Snowflake</Text>
-              <Text style={styles.animalType}>Domestic Cat</Text>
-              <Text style={styles.price}>Rp. 1.500.000</Text>
+            <View style={styles.adoptionFees}>
+                <View style={styles.totalPriceSection}>
+                    <Text style={styles.totalPriceAmount}>Total:</Text>
+                    <Text style={styles.totalPriceAmount}>Rp. 1.500.000</Text>
+                </View>
+                <Button title="Adopt" onPress={toggleModal} color="#004AAD" style={styles.adoptButton} />
             </View>
-          </View>
-        </ScrollView>
-        <View style={styles.adoptionFees}>
-          <View style={styles.adoptionFeesHeader}>
-            <Text>Adoption Fees:</Text>
-            <Text style={styles.adoptionFeePrice}>Rp. 1.500.000</Text>
-          </View>
-          <View style={styles.totalPriceSection}>
-            <Text>Total:</Text>
-            <Text style={styles.totalPriceAmount}>Rp. 1.500.000</Text>
-          </View>
-          <Button title="Adopt" onPress={showOverlay} color="#004AAD" />
+
+            <PaymentMethod isVisible={isModalVisible} onHide={toggleModal} />
         </View>
-      </View>
-      
-      <View style={styles.overlay}>
-        <View style={styles.overlayContent}>
-          <Text style={styles.overlayTitle}>Payment Method</Text>
-          <View style={styles.paymentMethod}>
-            <View style={styles.method}>
-              <Image source={require('../assets/apple.jpg')} style={styles.methodImage} />
-              <View style={styles.methodDetails}>
-                <Text style={styles.methodName}>Apple ID</Text>
-                <Text style={styles.methodInfo}>****4567</Text>
-              </View>
-            </View>
-            <View style={styles.method}>
-              <Image source={require('../assets/mastercard.png')} style={styles.methodImage} />
-              <View style={styles.methodDetails}>
-                <Text style={styles.methodName}>MasterCard</Text>
-                <Text style={styles.methodInfo}>****3289</Text>
-              </View>
-            </View>
-            <View style={styles.method}>
-              <Image source={require('../assets/visa.png')} style={styles.methodImage} />
-              <View style={styles.methodDetails}>
-                <Text style={styles.methodName}>Visa</Text>
-                <Text style={styles.methodInfo}>****3092</Text>
-              </View>
-            </View>
-          </View>
-          <View style={styles.overlayButtons}>
-            <Button title="Continue" onPress={hideOverlay} color="#004AAD" />
-            <Button title="Cancel" onPress={hideOverlay} color="#e23c3c" />
-          </View>
-        </View>
-      </View>
-    </View>
-  );
+    );
 }
 
-
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#ffffff',
+        padding: 20,
+    },
+    header: {
+        paddingTop: 40,
+        color: '#004AAD',
+        textAlign: 'center',
+        fontSize: 34,
+        fontWeight: 'bold',
+        marginBottom: 20,
+    },
+    scrollView: {
+        marginBottom: 20,
+    },
+    item: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    animalImage: {
+        width: 180,
+        height: 120,
+        borderRadius: 10,
+        marginRight: 10,
+    },
+    details: {
+        flex: 1,
+    },
+    animalName: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    animalType: {
+        fontSize: 16,
+        color: '#666',
+    },
+    price: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginTop: 40,
+    },
+    adoptionFees: {
+        borderTopWidth: 1,
+        borderColor: '#ccc',
+        paddingTop: 20,
+    },
+    adoptionFeesHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 20,
+    },
+    adoptionFeePrice: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    totalPriceSection: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    totalPriceAmount: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        paddingBottom: 30,
+    },
+    adoptButton: {
+        borderRadius: 20,
+    },
+});
 
-})
+export default CartPageScreen;
