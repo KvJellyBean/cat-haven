@@ -89,7 +89,7 @@ const OnboardingScreen = () => {
       renderPrevButton={() => buttonLabel("Back")}
       renderDoneButton={() => buttonLabel("Start")}
       onDone={() => {
-        navigation.navigate("Login");
+        navigation.navigate("Landing");
       }}
     />
   );
