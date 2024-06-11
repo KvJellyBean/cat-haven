@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Image, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { Iconify } from "react-native-iconify";
+import Form from "./Form"
 
 const PetDetailScreen = ({ route, navigation }) => {
   const { pet } = route.params;
@@ -11,9 +12,14 @@ const PetDetailScreen = ({ route, navigation }) => {
   const HeartFilledIcon = () => <Iconify icon="fe:heart" size={25} color="red" />;
 
   const [isLiked, setIsLiked] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const toggleLike = () => {
     setIsLiked(!isLiked);
+  };
+
+  const toggleModal = () => {
+    setIsModalVisible(!isModalVisible);
   };
 
   return (
@@ -28,8 +34,6 @@ const PetDetailScreen = ({ route, navigation }) => {
           <Text style={styles.petName}>{pet.name}</Text>
           <TouchableOpacity style={styles.likeButton} onPress={toggleLike}>
             {isLiked ? <HeartFilledIcon /> : <HeartOutlineIcon />}
-
-            {/* <Iconify icon="feather:heart" size={24} color="#777" /> */}
           </TouchableOpacity>
         </View>
         <Text style={styles.petBreed}>{pet.breed}</Text>
@@ -53,9 +57,12 @@ const PetDetailScreen = ({ route, navigation }) => {
         <Text style={styles.aboutTitle}>About</Text>
         <Text style={styles.description}>{pet.description}</Text>
 
-        <TouchableOpacity style={styles.adoptButton} onPress={() => navigation.navigate("Adopt", { pet })}>
+        <TouchableOpacity style={styles.adoptButton} onPress={toggleModal}>
           <Text style={styles.adoptButtonText}>Adopt Pet</Text>
         </TouchableOpacity>
+
+
+        <Form modalVisible={isModalVisible} setModalVisible={setIsModalVisible} />
       </View>
     </ScrollView>
   );

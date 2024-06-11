@@ -14,6 +14,9 @@ import PetList from "./Screens/PetList";
 import FavouriteScreen from "./Screens/FavouriteScreen";
 import LandingScreen from "./Screens/LandingScreen";
 import PetDetailScreen from "./Screens/PetDetailScreen";
+import PaymentMethod from "./Screens/PaymentMethod";
+import AddPayment from "./Screens/AddPayment";
+import Form from "./Screens/Form";
 
 const Stack = createNativeStackNavigator();
 
@@ -31,10 +34,9 @@ function App() {
       {isSplashScreen ? (
         <SplashScreen />
       ) : (
-        <Stack.Navigator
-          initialRouteName="Onboarding"
-          screenOptions={{ headerShown: false }}
-        >
+        <Stack.Navigator initialRouteName="Onboarding" screenOptions={{ headerShown: false }}>
+
+          <Stack.Screen name="Form" component={Form} />
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Favourite" component={FavouriteScreen} />
           <Stack.Screen name="Onboarding" component={OnboardingScreen} />
@@ -47,6 +49,8 @@ function App() {
           <Stack.Screen name="Filter" component={FilterScreen} />
           <Stack.Screen name="Landing" component={LandingScreen} />
           <Stack.Screen name="Detail" component={PetDetailScreen} />
+          <Stack.Screen name="AddPayment" component={AddPayment} />
+          <Stack.Screen name="PaymentMethod" component={PaymentMethod} />
         </Stack.Navigator>
       )}
     </NavigationContainer>
