@@ -40,6 +40,22 @@ const cats = [
 ];
 
 export default function HomeScreen() {
+  
+  const HeartOutlineIcon = () => <Iconify icon="fe:heart-o" size={25} color="#777" style={styles.heartIcon} />;
+
+  // Komponen untuk ikon hati diisi
+  const HeartFilledIcon = () => <Iconify icon="fe:heart" size={25} color="red" />;
+
+  const [likeStatus, setLikeStatus] = useState({});
+
+  const toggleLike = (id) => {
+    setLikeStatus((prevStatus) => ({
+      ...prevStatus,
+      [id]: !prevStatus[id],
+    }));
+  };
+
+
   const navigation = useNavigation();
 
   const [currentPage, setCurrentPage] = useState(0);
@@ -105,19 +121,19 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
         <FlatList
-          horizontal
-          data={cats}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigateToPetDetail(item)}>
-              <View style={styles.adoptCard}>
-                <Image source={item.image} style={styles.catImage} />
-                <View style={styles.likeContainer}>
-                  <TouchableOpacity style={styles.likeButton}>
-                    <View style={styles.likeButtonBackground}>
-                      <Iconify icon="feather:heart" size={24} color="#777" style={[styles.heartIcon, item.liked ? styles.heartIconActive : null]} />
-                    </View>
-                  </TouchableOpacity>
-                </View>
+         horizontal
+         data={cats}
+         renderItem={({ item }) => (
+           <TouchableOpacity onPress={() => navigateToPetDetail(item)}>
+             <View style={styles.adoptCard}>
+               <Image source={item.image} style={styles.catImage} />
+               <View style={styles.likeContainer}>
+                 <View style={styles.likeButtonBackground}>
+                   <TouchableOpacity style={styles.likeButton} onPress={() => toggleLike(item.id)}>
+                     {likeStatus[item.id] ? <HeartFilledIcon /> : <HeartOutlineIcon />}
+                   </TouchableOpacity>
+                 </View>
+               </View>
                 <View style={styles.petInfo}>
                   <View style={styles.petDetails}>
                     <Text style={styles.petName}>{item.name}</Text>
@@ -175,7 +191,7 @@ const styles = StyleSheet.create({
   likeButtonBackground: {
     backgroundColor: "white",
     borderRadius: 10,
-    padding: 5,
+    padding: 3,
   },
   heartIconActive: {
     color: "red",
