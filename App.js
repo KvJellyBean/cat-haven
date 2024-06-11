@@ -13,6 +13,7 @@ import FilterScreen from "./Screens/FilterScreen";
 import PetList from "./Screens/PetList";
 import FavouriteScreen from "./Screens/FavouriteScreen";
 import LandingScreen from "./Screens/LandingScreen";
+import PetDetailScreen from "./Screens/PetDetailScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -45,6 +46,7 @@ function App() {
           <Stack.Screen name="PetList" component={PetList} />
           <Stack.Screen name="Filter" component={FilterScreen} />
           <Stack.Screen name="Landing" component={LandingScreen} />
+          <Stack.Screen name="Detail" component={PetDetailScreen} />
         </Stack.Navigator>
       )}
     </NavigationContainer>
