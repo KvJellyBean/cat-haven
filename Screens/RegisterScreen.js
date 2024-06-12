@@ -24,7 +24,7 @@ export default function RegisterScreen() {
   const [error, setError] = useState("");
   const [registered, setRegistered] = useState(false);
 
-  const registerUser = async (email, password, name, retryCount = 0) => {
+  const registerUser = async (email, password, name) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(userCredential.user, {
