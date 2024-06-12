@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Modal } from 'react-native';
-
+import { useNavigation } from "@react-navigation/native";
 const AddPayment = ({ isVisible, onSubmit, onHide }) => {
   const [nameOnCard, setNameOnCard] = useState('');
   const [cardNumber, setCardNumber] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [cvv, setCvv] = useState('');
   const [postalCode, setPostalCode] = useState('');
+
+  const navigation = useNavigation();
 
   const submitForm = () => {
    
@@ -58,7 +60,7 @@ const AddPayment = ({ isVisible, onSubmit, onHide }) => {
             keyboardType="numeric"
           />
           <View style={styles.buttonGroup}>
-            <TouchableOpacity style={styles.continueButton} onPress={submitForm}>
+            <TouchableOpacity style={styles.continueButton} onPress={() => navigation.navigate("PaymentSuccess")}>
               <Text style={styles.buttonText}>Continue</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.cancelButton} onPress={onHide}>
