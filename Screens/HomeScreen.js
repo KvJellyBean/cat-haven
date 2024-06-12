@@ -86,7 +86,12 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.welcomeText}>Welcome, Emily</Text>
-        <Image source={require("../assets/splash.png")} style={styles.profileImage} />
+        <TouchableOpacity onPress={() => navigation.push("Profile")}>
+          <Image
+            source={require("../assets/splash.png")}
+            style={styles.profileImage}
+          />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.adoptBanner}>

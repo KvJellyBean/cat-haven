@@ -13,6 +13,7 @@ import FilterScreen from "./Screens/FilterScreen";
 import PetList from "./Screens/PetList";
 import FavouriteScreen from "./Screens/FavouriteScreen";
 import LandingScreen from "./Screens/LandingScreen";
+import ProfileScreen from "./Screens/ProfileScreen";
 import PetDetailScreen from "./Screens/PetDetailScreen";
 import PaymentMethod from "./Screens/PaymentMethod";
 import AddPayment from "./Screens/AddPayment";
@@ -49,6 +50,7 @@ function App() {
           <Stack.Screen name="PetList" component={PetList} />
           <Stack.Screen name="Filter" component={FilterScreen} />
           <Stack.Screen name="Landing" component={LandingScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
           <Stack.Screen name="Detail" component={PetDetailScreen} />
           <Stack.Screen name="AddPayment" component={AddPayment} />
           <Stack.Screen name="PaymentMethod" component={PaymentMethod} />
