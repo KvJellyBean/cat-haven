@@ -19,6 +19,7 @@ import PaymentMethod from "./Screens/PaymentMethod";
 import AddPayment from "./Screens/AddPayment";
 import Form from "./Screens/Form";
 import CartPageScreen from "./Screens/CartPage";
+import emailVerification from "./Screens/emailVerif";
 
 const Stack = createNativeStackNavigator();
 
@@ -55,6 +56,7 @@ function App() {
           <Stack.Screen name="AddPayment" component={AddPayment} />
           <Stack.Screen name="PaymentMethod" component={PaymentMethod} />
           <Stack.Screen name="CartPageScreen" component={CartPageScreen} />
+          <Stack.Screen name="emailVerification" component={emailVerification} />
         </Stack.Navigator>
       )}
     </NavigationContainer>

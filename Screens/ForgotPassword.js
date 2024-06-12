@@ -1,10 +1,32 @@
-import React from 'react';
+
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView} from 'react-native';
+
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 
 export default function LoginScreen() {
     const navigation = useNavigation();
+    const [email, setEmail] = useState('');
+
+    const handleResetPassword = async () => {
+        if (!email.trim()) {
+            Alert.alert('Error', 'Please enter your email.');
+            return;
+        }
+
+        const auth = getAuth();
+        try {
+            await sendPasswordResetEmail(auth, email);
+            navigation.navigate('emailVerification', { email }); 
+        } catch (error) {
+            console.error('Error sending password reset email:', error);
+            Alert.alert('Error', 'Failed to send password reset email. Please try again later.');
+        }
+    };
+
     return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -17,14 +39,19 @@ export default function LoginScreen() {
           <Text style={styles.title}>Forgot Password</Text>
           <Text style={styles.subtitle}>Please enter your email to reset the password</Text>
 
-          <TextInput 
-            style={styles.input}
-            placeholder="Email"
-            placeholderTextColor="#626262"
-          />
-          <TouchableOpacity onPress={() => navigation.push('Verification')} style={styles.resetpassButton}>
-            <Text style={styles.resetpassButtonText}>Reset Password</Text>
-          </TouchableOpacity>
+          
+            <TextInput
+                style={styles.input}
+                placeholder="Email"
+                placeholderTextColor="#626262"
+                onChangeText={text => setEmail(text)}
+                value={email}
+                keyboardType="email-address"
+                autoCapitalize="none"
+            />
+          <TouchableOpacity onPress={handleResetPassword} style={styles.resetpassButton}>
+                <Text style={styles.resetpassButtonText}>Reset Password</Text>
+            </TouchableOpacity>
 
           <Text style={styles.footerHeader}>
             Developed by
@@ -36,7 +63,7 @@ export default function LoginScreen() {
       </ScrollView>
     </KeyboardAvoidingView>
   );
-}
+
 
 const styles = StyleSheet.create({
   container: {
@@ -106,3 +133,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
