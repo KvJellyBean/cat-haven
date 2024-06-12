@@ -1,6 +1,7 @@
 import * as React from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { Iconify } from "react-native-iconify";
 
 const ProfilePage = () => {
   const navigation = useNavigation();
@@ -15,10 +16,7 @@ const ProfilePage = () => {
 
       <View style={styles.userProfile}>
         <View style={styles.userProfileBackground} />
-        <Image
-          style={styles.profileImage}
-          source={require("../assets/banner.png")}
-        />
+        <Image style={styles.profileImage} source={require("../assets/banner.png")} />
         <View style={styles.userDetails}>
           <Text style={styles.userName}>Your Full Name</Text>
           <Text style={styles.userBio}>I love all animal</Text>
@@ -29,90 +27,46 @@ const ProfilePage = () => {
 
       <View style={styles.profileMenu}>
         <View style={styles.menuCard}>
-          <TouchableOpacity
-            style={styles.menuItem}
-            onPress={() => navigation.navigate("PersonalInformationPage")}
-          >
-            <Image
-              style={styles.menuIcon}
-              source={require("../assets/splash.png")}
-            />
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("PersonalInformationPage")}>
+            <Iconify icon="iconamoon:profile" size={25} color="#004AAD" style={styles.menuIcon} />
+
             <Text style={styles.menuText}>Personal Information</Text>
-            <Image
-              style={[styles.icon, styles.reverseIcon]}
-              source={require("../assets/back.png")}
-            />
+            <Image style={[styles.icon, styles.reverseIcon]} source={require("../assets/back.png")} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem}>
-            <Image
-              style={styles.menuIcon}
-              source={require("../assets/splash.png")}
-            />
+            <Iconify icon="iconamoon:lock" size={25} color="#004AAD" style={styles.menuIcon} />
             <Text style={styles.menuText}>Change Password</Text>
-            <Image
-              style={[styles.icon, styles.reverseIcon]}
-              source={require("../assets/back.png")}
-            />
+            <Image style={[styles.icon, styles.reverseIcon]} source={require("../assets/back.png")} />
           </TouchableOpacity>
         </View>
         <View style={styles.menuCard}>
           <TouchableOpacity style={styles.menuItem}>
-            <Image
-              style={styles.menuIcon}
-              source={require("../assets/splash.png")}
-            />
+            <Iconify icon="lucide:shopping-cart" size={25} color="#004AAD" style={styles.menuIcon} />
             <Text style={styles.menuText}>My Cart</Text>
-            <Image
-              style={[styles.icon, styles.reverseIcon]}
-              source={require("../assets/back.png")}
-            />
+            <Image style={[styles.icon, styles.reverseIcon]} source={require("../assets/back.png")} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem}>
-            <Image
-              style={styles.menuIcon}
-              source={require("../assets/splash.png")}
-            />
+            <Iconify icon="iconamoon:heart" size={25} color="#004AAD" style={styles.menuIcon} />
             <Text style={styles.menuText}>Favourite</Text>
-            <Image
-              style={[styles.icon, styles.reverseIcon]}
-              source={require("../assets/back.png")}
-            />
+            <Image style={[styles.icon, styles.reverseIcon]} source={require("../assets/back.png")} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem}>
-            <Image
-              style={styles.menuIcon}
-              source={require("../assets/splash.png")}
-            />
+            <Iconify icon="ri:question-line" size={25} color="#004AAD" style={styles.menuIcon} />
             <Text style={styles.menuText}>FAQ</Text>
-            <Image
-              style={[styles.icon, styles.reverseIcon]}
-              source={require("../assets/back.png")}
-            />
+            <Image style={[styles.icon, styles.reverseIcon]} source={require("../assets/back.png")} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem}>
-            <Image
-              style={styles.menuIcon}
-              source={require("../assets/splash.png")}
-            />
+            <Iconify icon="fluent:payment-24-regular" size={25} color="#004AAD" style={styles.menuIcon} />
             <Text style={styles.menuText}>Payment Method</Text>
-            <Image
-              style={[styles.icon, styles.reverseIcon]}
-              source={require("../assets/back.png")}
-            />
+            <Image style={[styles.icon, styles.reverseIcon]} source={require("../assets/back.png")} />
           </TouchableOpacity>
         </View>
 
         <View style={styles.menuCard}>
           <TouchableOpacity style={styles.menuItem}>
-            <Image
-              style={styles.menuIcon}
-              source={require("../assets/splash.png")}
-            />
-            <Text style={styles.menuText}>Log Out</Text>
-            <Image
-              style={[styles.icon, styles.reverseIcon]}
-              source={require("../assets/back.png")}
-            />
+            <Iconify icon="tabler-logout" size={25} color="#004AAD" style={styles.logoutIcon} />
+            <Text style={styles.logoutText}>Log Out</Text>
+            <Image style={[styles.icon, styles.reverseIcon]} source={require("../assets/back.png")} />
           </TouchableOpacity>
         </View>
       </View>
@@ -223,11 +177,21 @@ const styles = StyleSheet.create({
     width: 25,
     height: 25,
   },
+  logoutIcon:{
+    color: "#BC0000",
+  },
   menuText: {
     flex: 1,
     marginLeft: 20,
     fontSize: 16,
     color: "#2A2A2A",
+    textAlign: "left",
+  },
+  logoutText: {
+    flex: 1,
+    marginLeft: 20,
+    fontSize: 16,
+    color: "#BC0000",
     textAlign: "left",
   },
 });
