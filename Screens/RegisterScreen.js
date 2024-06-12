@@ -38,14 +38,7 @@ export default function RegisterScreen() {
         navigation.navigate("Login");
       }, 2000);
     } catch (error) {
-      if (error.code === "auth/network-request-failed" && retryCount < 3) {
-        console.warn("Network request failed, retrying...", retryCount);
-        setTimeout(() => registerUser(email, password, name, retryCount + 1), 1000);
-      } else {
-        setError("Error registering user: " + error.message);
-        setTimeout(() => setError(""), 6000); // Clear error after 6 seconds
-        console.error("Error registering user:", error);
-      }
+      Alert.alert('Error', error.message);
     }
   };
 
