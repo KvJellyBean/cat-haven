@@ -1,45 +1,75 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, Image, StyleSheet, Button, Modal, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import AddPaymentModal from "./AddPayment"; 
 
 const PaymentModal = ({ isVisible, onHide }) => {
+  const [isAddPaymentModalVisible, setIsAddPaymentModalVisible] = useState(false); 
+  const [selectedMethod, setSelectedMethod] = useState(null); // Menyimpan metode pembayaran yang dipilih
+  const navigation = useNavigation();
+
+  const toggleModal = () => {
+    onHide();
+    setIsAddPaymentModalVisible(false); 
+  };
+
+  const showAddPaymentModal = () => {
+    setIsAddPaymentModalVisible(true); 
+  };
+
+  const handleSelectMethod = (method) => {
+    setSelectedMethod(method); // Menandai metode pembayaran yang dipilih
+  };
+
   return (
-    <Modal animationType="slide" transparent={true} visible={isVisible} onRequestClose={onHide}>
-      <View style={styles.overlay}>
-        <View style={styles.overlayContent}>
-          <Text style={styles.overlayTitle}>Payment Method</Text>
-          <View style={styles.paymentMethod}>
-            <TouchableOpacity style={styles.method}>
-              <Image source={require("../assets/apple.png")} style={styles.methodImage} />
-              <View style={styles.methodDetails}>
-                <Text style={styles.methodName}>Apple ID</Text>
-                <Text style={styles.methodInfo}>****4567</Text>
+    <View>
+      <Modal animationType="slide" transparent={true} visible={isVisible} onRequestClose={toggleModal}>
+        {!isAddPaymentModalVisible && (
+          <View style={styles.overlay}>
+            <View style={styles.overlayContent}>
+              <Text style={styles.overlayTitle}>Payment Method</Text>
+              <View style={styles.paymentMethod}>
+                <TouchableOpacity
+                  style={[styles.method, selectedMethod === 'Apple' && styles.activeMethod]} // Menambahkan gaya aktif jika metode dipilih
+                  onPress={() => handleSelectMethod('Apple')}>
+                  <Image source={require("../assets/applepay.png")} style={styles.methodImage} />
+                  <View style={styles.methodDetails}>
+                    <Text style={styles.methodName}>Apple ID</Text>
+                    <Text style={styles.methodInfo}>****4567</Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.method, selectedMethod === 'MasterCard' && styles.activeMethod]}
+                  onPress={() => handleSelectMethod('MasterCard')}>
+                  <Image source={require("../assets/mastercard.png")} style={styles.methodImage1} />
+                  <View style={styles.methodDetails}>
+                    <Text style={styles.methodName}>Master Card</Text>
+                    <Text style={styles.methodInfo}>****6356</Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.method, selectedMethod === 'Visa' && styles.activeMethod]}
+                  onPress={() => handleSelectMethod('Visa')}>
+                  <Image source={require("../assets/visa.png")} style={styles.methodImage2} />
+                  <View style={styles.methodDetails}>
+                    <Text style={styles.methodName}>Visa</Text>
+                    <Text style={styles.methodInfo}>****5645</Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.addMethodButton} onPress={showAddPaymentModal}>
+                  <Text style={styles.addMethodButtonText}>+ Add Payment Method</Text>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.method}>
-              <Image source={require("../assets/mastercard.png")} style={styles.methodImage1} />
-              <View style={styles.methodDetails}>
-                <Text style={styles.methodName}>Master Card</Text>
-                <Text style={styles.methodInfo}>****6356</Text>
+              <View style={styles.overlayButtons}>
+                <Button title="Continue" onPress={onHide} color="#004AAD" />
+                <Button title="Cancel" onPress={onHide} color="#e23c3c" />
               </View>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.method}>
-              <Image source={require("../assets/visa.png")} style={styles.methodImage} />
-              <View style={styles.methodDetails}>
-                <Text style={styles.methodName}>Visa</Text>
-                <Text style={styles.methodInfo}>****5645</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.addMethodButton}>
-              <Text style={styles.addMethodButtonText}>+ Add Payment Method</Text>
-            </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.overlayButtons}>
-            <Button title="Continue" onPress={onHide} color="#004AAD" />
-            <Button title="Cancel" onPress={onHide} color="#e23c3c" />
-          </View>
-        </View>
-      </View>
-    </Modal>
+        )}
+      </Modal>
+      <AddPaymentModal isVisible={isAddPaymentModalVisible} onHide={() => setIsAddPaymentModalVisible(false)} />
+    </View>
   );
 };
 
@@ -71,12 +101,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
   },
+  activeMethod: {
+    backgroundColor: '#F0F0F0', // Warna latar belakang untuk metode yang dipilih
+  },
   methodImage: {
     width: 80,
-    height: 80,
+    height: 56,
     marginRight: 25,
   },
   methodImage1: {
+    width: 80,
+    height: 56,
+    marginRight: 25,
+  },
+  methodImage2: {
     width: 80,
     height: 56,
     marginRight: 25,
@@ -96,7 +134,7 @@ const styles = StyleSheet.create({
   addMethodButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center', // Menengahkan konten secara horizontal
+    justifyContent: 'center',
     marginBottom: 10,
   },
   addMethodButtonText: {
