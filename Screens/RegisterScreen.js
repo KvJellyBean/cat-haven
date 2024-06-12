@@ -5,6 +5,8 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  ScrollView,
+  KeyboardAvoidingView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
@@ -82,90 +84,94 @@ export default function RegisterScreen() {
 
     setError("");
     registerUser(email, password, name);
-};
+  };
 
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Create Account</Text>
-      <Text style={styles.subtitle}>
-        Create an account so you can explore and find your pawmates
-      </Text>
-
-      <TextInput
-        style={styles.input}
-        placeholder="Name"
-        value={name}
-        onChangeText={(text) => setName(text)}
-        placeholderTextColor="#626262"
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={(text) => setEmail(text)}
-        placeholderTextColor="#626262"
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-        placeholderTextColor="#626262"
-        secureTextEntry
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Confirm Password"
-        value={confirmPassword}
-        onChangeText={(text) => setConfirmPassword(text)}
-        placeholderTextColor="#626262"
-        secureTextEntry
-      />
-
-      {error ? <Text style={styles.error}>{error}</Text> : null}
-
-      <TouchableOpacity onPress={handleSignUp} style={styles.signupButton}>
-        <Text style={styles.signupButtonText}>Sign up</Text>
-      </TouchableOpacity>
-
-      {registered && (
-        <Text style={styles.successMessage}>
-          Registration successful! You can now login.
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+    >
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>Create Account</Text>
+        <Text style={styles.subtitle}>
+          Create an account so you can explore and find your pawmates
         </Text>
-      )}
 
-      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-        <Text style={styles.haveAccount}>Already have an account</Text>
-      </TouchableOpacity>
-
-      <Text style={styles.continueText}>Or continue with</Text>
-
-      <View style={styles.socialIcons}>
-        <FontAwesome name="google" size={24} color="black" />
-        <FontAwesome
-          name="facebook"
-          size={24}
-          color="black"
-          style={styles.icon}
+        <TextInput
+          style={styles.input}
+          placeholder="Name"
+          value={name}
+          onChangeText={(text) => setName(text)}
+          placeholderTextColor="#626262"
         />
-        <FontAwesome
-          name="twitter"
-          size={24}
-          color="black"
-          style={styles.icon}
+
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+          placeholderTextColor="#626262"
         />
-      </View>
-    </View>
+
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+          placeholderTextColor="#626262"
+          secureTextEntry
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChangeText={(text) => setConfirmPassword(text)}
+          placeholderTextColor="#626262"
+          secureTextEntry
+        />
+
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+
+        <TouchableOpacity onPress={handleSignUp} style={styles.signupButton}>
+          <Text style={styles.signupButtonText}>Sign up</Text>
+        </TouchableOpacity>
+
+        {registered && (
+          <Text style={styles.successMessage}>
+            Registration successful! You can now login.
+          </Text>
+        )}
+
+        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+          <Text style={styles.haveAccount}>Already have an account</Text>
+        </TouchableOpacity>
+
+        <Text style={styles.continueText}>Or continue with</Text>
+
+        <View style={styles.socialIcons}>
+          <FontAwesome name="google" size={24} color="black" />
+          <FontAwesome
+            name="facebook"
+            size={24}
+            color="black"
+            style={styles.icon}
+          />
+          <FontAwesome
+            name="twitter"
+            size={24}
+            color="black"
+            style={styles.icon}
+          />
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
