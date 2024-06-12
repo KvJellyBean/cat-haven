@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView} from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Alert} from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -10,22 +9,25 @@ import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 export default function LoginScreen() {
     const navigation = useNavigation();
     const [email, setEmail] = useState('');
-
     const handleResetPassword = async () => {
-        if (!email.trim()) {
-            Alert.alert('Error', 'Please enter your email.');
-            return;
-        }
-
-        const auth = getAuth();
-        try {
-            await sendPasswordResetEmail(auth, email);
-            navigation.navigate('emailVerification', { email }); 
-        } catch (error) {
-            console.error('Error sending password reset email:', error);
-            Alert.alert('Error', 'Failed to send password reset email. Please try again later.');
-        }
-    };
+      if (!email.trim()) {
+          Alert.alert('Error', 'Please enter your email.');
+          return;
+      }
+  
+      const auth = getAuth();
+      try {
+          await sendPasswordResetEmail(auth, email);
+          navigation.navigate('emailVerification', { email }); 
+      } catch (error) {
+          if (error.code === 'auth/invalid-email') {
+              Alert.alert('Error', 'Invalid email format. Please enter a valid email.');
+          } else {
+              console.error('Error sending password reset email:', error);
+              Alert.alert('Error', 'Failed to send password reset email. Please try again later.');
+          }
+      }
+  };
 
     return (
     <KeyboardAvoidingView
@@ -63,7 +65,7 @@ export default function LoginScreen() {
       </ScrollView>
     </KeyboardAvoidingView>
   );
-
+}
 
 const styles = StyleSheet.create({
   container: {
