@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { View, Text, Image, TextInput, TouchableOpacity, FlatList, StyleSheet, ImageBackground, Animated } from "react-native";
 import { Iconify } from "react-native-iconify";
 import { useNavigation } from "@react-navigation/native";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const cats = [
   {
@@ -40,12 +41,30 @@ const cats = [
 ];
 
 export default function HomeScreen() {
+  
   const HeartOutlineIcon = () => <Iconify icon="fe:heart-o" size={25} color="#777" style={styles.heartIcon} />;
 
   // Komponen untuk ikon hati diisi
   const HeartFilledIcon = () => <Iconify icon="fe:heart" size={25} color="red" />;
 
   const [likeStatus, setLikeStatus] = useState({});
+
+  const [username, setUsername] = useState("");
+  const auth = getAuth();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUsername(user.displayName || "User");
+      } else {
+        // User is signed out
+        setUsername("");
+      }
+    });
+
+    // Cleanup subscription on unmount
+    return unsubscribe;
+  }, []);
 
   const toggleLike = (id) => {
     setLikeStatus((prevStatus) => ({
@@ -80,10 +99,12 @@ export default function HomeScreen() {
     navigation.navigate("Detail", { pet });
   };
 
+  
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.welcomeText}>Welcome, Emily</Text>
+        <Text style={styles.welcomeText}>Welcome, {username} </Text>
         <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
           <Image source={require("../assets/splash.png")} style={styles.profileImage} />
         </TouchableOpacity>
