@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
 import { SelectList } from "react-native-dropdown-select-list";
 import { species, age, weight, location } from "../data";
 import { useNavigation } from "@react-navigation/native";
@@ -18,215 +18,218 @@ export default function FilterScreen() {
     const [selected, setSelected] = React.useState("");
 
     return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Ionicons name="arrow-back" size={30} color="black" />
-      </TouchableOpacity>
-      <Text style={styles.title}>Filter</Text>
-      <Text style={styles.Breed}>Breed</Text>
-
-      <SelectList 
-        style = {styles.dropdown} 
-        data = {species}  
-        setSelected = {setSelected} 
-        boxStyles={{width: 325}}
-        placeholder="Select a breed"
-      />
-      
-      <Text style={styles.Sex}>Sex</Text>
-
-      <View style={styles.optionsContainer}>
-        <TouchableOpacity
-          style={[
-            styles.optionButton,
-            selectedOption === "Male" && styles.selectedOption,
-          ]}
-          onPress={() => handleSelectOption("Male")}
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-          <Text
-            style={[
-              styles.optionText,
-              selectedOption === "Male" && styles.selectedOptionText,
-            ]}
-          >
-            Male
-          </Text>
-        </TouchableOpacity>
+            <ScrollView contentContainerStyle={styles.container}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                    <Ionicons name="arrow-back" size={30} color="black" />
+                </TouchableOpacity>
+                <Text style={styles.title}>Filter</Text>
+                <Text style={styles.Breed}>Breed</Text>
 
-        <TouchableOpacity
-          style={[
-            styles.optionButton,
-            selectedOption === "Female" && styles.selectedOption,
-          ]}
-          onPress={() => handleSelectOption("Female")}
-        >
-          <Text
-            style={[
-              styles.optionText,
-              selectedOption === "Female" && styles.selectedOptionText,
-            ]}
-          >
-            Female
-          </Text>
-        </TouchableOpacity>
-      </View>
+                <SelectList
+                    style={styles.dropdown}
+                    data={species}
+                    setSelected={setSelected}
+                    boxStyles={{ width: 325 }}
+                    placeholder="Select a breed"
+                />
 
-      <Text style={styles.location}>Location</Text>
+                <Text style={styles.Sex}>Sex</Text>
 
-      <SelectList 
-        style = {styles.dropdown} 
-        data = {location}  
-        setSelected = {setSelected} 
-        boxStyles={{width: 325}}
-        placeholder="Select a location"
-      />
+                <View style={styles.optionsContainer}>
+                    <TouchableOpacity
+                        style={[
+                            styles.optionButton,
+                            selectedOption === "Male" && styles.selectedOption,
+                        ]}
+                        onPress={() => handleSelectOption("Male")}
+                    >
+                        <Text
+                            style={[
+                                styles.optionText,
+                                selectedOption === "Male" && styles.selectedOptionText,
+                            ]}
+                        >
+                            Male
+                        </Text>
+                    </TouchableOpacity>
 
-      <Text style={styles.age}>Age</Text>
+                    <TouchableOpacity
+                        style={[
+                            styles.optionButton,
+                            selectedOption === "Female" && styles.selectedOption,
+                        ]}
+                        onPress={() => handleSelectOption("Female")}
+                    >
+                        <Text
+                            style={[
+                                styles.optionText,
+                                selectedOption === "Female" && styles.selectedOptionText,
+                            ]}
+                        >
+                            Female
+                        </Text>
+                    </TouchableOpacity>
+                </View>
 
-      <SelectList 
-        style = {styles.dropdown} 
-        data = {age}  
-        setSelected = {setSelected} 
-        boxStyles={{width: 325}}
-        placeholder="Select the age"
-      />
+                <Text style={styles.location}>Location</Text>
 
-      <Text style={styles.weight}>Weight (size)</Text>
+                <SelectList
+                    style={styles.dropdown}
+                    data={location}
+                    setSelected={setSelected}
+                    boxStyles={{ width: 325 }}
+                    placeholder="Select a location"
+                />
 
-      <SelectList 
-        style = {styles.dropdown} 
-        data = {weight}  
-        setSelected = {setSelected} 
-        boxStyles={{width: 325}}
-        placeholder="Select the weight"
-      />
+                <Text style={styles.age}>Age</Text>
 
-      <TouchableOpacity onPress={() => navigation.navigate('PetList')} style={styles.applyButton}>
-        <Text style={styles.applyButtonText}>Apply Filter</Text>
-      </TouchableOpacity>
-    </View>
+                <SelectList
+                    style={styles.dropdown}
+                    data={age}
+                    setSelected={setSelected}
+                    boxStyles={{ width: 325 }}
+                    placeholder="Select the age"
+                />
+
+                <Text style={styles.weight}>Weight (size)</Text>
+
+                <SelectList
+                    style={styles.dropdown}
+                    data={weight}
+                    setSelected={setSelected}
+                    boxStyles={{ width: 325 }}
+                    placeholder="Select the weight"
+                />
+
+                <TouchableOpacity onPress={() => navigation.navigate('PetList')} style={styles.applyButton}>
+                    <Text style={styles.applyButtonText}>Apply Filter</Text>
+                </TouchableOpacity>
+            </ScrollView>
+        </KeyboardAvoidingView>
     );
 };
 
 const styles = StyleSheet.create({
 
     container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'flex-start',
-      justifyContent: 'center',
-      padding: 30,
+        flexGrow: 1,
+        backgroundColor: '#fff',
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        padding: 30,
     },
 
     backButton: {
-      alignSelf: 'left',
-      top: 70,
-      right: 310,
+        alignSelf: 'left',
+        top: 70,
+        right: 310,
     },
 
     backButton: {
-      position: 'absolute',
-      top: 73,
-      left: 30,
+        top: 38,
     },
-  
+
     title: {
-      fontSize: 32,
-      fontWeight: 'bold',
-      color: '#004AAD',
-      textAlign: 'center',
-      alignSelf: 'center',
-      marginBottom: 50,
+        fontSize: 32,
+        fontWeight: 'bold',
+        color: '#004AAD',
+        textAlign: 'center',
+        alignSelf: 'center',
+        marginBottom: 50,
     },
 
     Breed: {
-      fontSize: 18,
-      color: '#000000',
-      fontWeight: 'bold',
-      textAlign: 'left',
-      marginBottom: 10,
+        fontSize: 18,
+        color: '#000000',
+        fontWeight: 'bold',
+        textAlign: 'left',
+        marginBottom: 10,
     },
 
     Sex: {
-      fontSize: 18,
-      color: '#000000',
-      fontWeight: 'bold',
-      textAlign: 'left',
-      marginTop: 20,
-      marginBottom: 10,
+        fontSize: 18,
+        color: '#000000',
+        fontWeight: 'bold',
+        textAlign: 'left',
+        marginTop: 20,
+        marginBottom: 10,
     },
 
     optionsContainer: {
-      flexDirection: "row", // Mengatur pilihan menjadi sejajar horizontal
+        flexDirection: "row", // Mengatur pilihan menjadi sejajar horizontal
     },
 
     optionButton: {
-      width: 100,
-      height: 40,
-      backgroundColor: "#fff",
-      borderRadius: 10,
-      alignItems: "center",
-      justifyContent: "center",
-      marginBottom: 20,
-      borderWidth: 1,
-      borderColor: "#004AAD",
-      marginRight: 10, // Menambahkan jarak antara pilihan
+        width: 100,
+        height: 40,
+        backgroundColor: "#fff",
+        borderRadius: 10,
+        alignItems: "center",
+        justifyContent: "center",
+        marginBottom: 20,
+        borderWidth: 1,
+        borderColor: "#004AAD",
+        marginRight: 10, // Menambahkan jarak antara pilihan
     },
 
     optionText: {
-      color: "#004AAD",
-      fontSize: 18,
-      fontWeight: "bold",
+        color: "#004AAD",
+        fontSize: 18,
+        fontWeight: "bold",
     },
 
     selectedOption: {
-      backgroundColor: "#004AAD",
+        backgroundColor: "#004AAD",
     },
 
     selectedOptionText: {
-      color: "#fff",
+        color: "#fff",
     },
 
     location: {
-      fontSize: 18,
-      color: '#000000',
-      fontWeight: 'bold',
-      textAlign: 'left',
-      marginBottom: 10,
+        fontSize: 18,
+        color: '#000000',
+        fontWeight: 'bold',
+        textAlign: 'left',
+        marginBottom: 10,
     },
 
     age: {
-      fontSize: 18,
-      color: '#000000',
-      fontWeight: 'bold',
-      textAlign: 'left',
-      marginTop: 20,
-      marginBottom: 10,
+        fontSize: 18,
+        color: '#000000',
+        fontWeight: 'bold',
+        textAlign: 'left',
+        marginTop: 20,
+        marginBottom: 10,
     },
 
     weight: {
-      fontSize: 18,
-      color: '#000000',
-      fontWeight: 'bold',
-      textAlign: 'left',
-      marginTop: 20,
-      marginBottom: 10,
+        fontSize: 18,
+        color: '#000000',
+        fontWeight: 'bold',
+        textAlign: 'left',
+        marginTop: 20,
+        marginBottom: 10,
     },
-  
+
     applyButton: {
-      width: '50%',
-      height: 50,
-      backgroundColor: '#004AAD',
-      borderRadius: 10,
-      alignItems: 'center',
-      alignSelf: 'center',
-      justifyContent: 'center',
-      marginTop: 70,
+        width: '50%',
+        height: 50,
+        backgroundColor: '#004AAD',
+        borderRadius: 10,
+        alignItems: 'center',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        marginTop: 70,
     },
 
     applyButtonText: {
-      color: '#fff',
-      fontSize: 18,
-      fontWeight: 'bold',
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold',
     },
-  });
+});
