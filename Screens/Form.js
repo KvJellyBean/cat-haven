@@ -27,7 +27,7 @@ const AdoptForm = ({ modalVisible, setModalVisible }) => {
           <TextInput style={styles.input} placeholder="Address" />
           <TextInput style={styles.input} placeholder="Phone Number" keyboardType="phone-pad" />
           <TextInput style={styles.input} placeholder="Do You Have Children?" />
-          <TouchableOpacity style={styles.submitButton} onPress={() => navigation.push('CartPageScreen')}>
+          <TouchableOpacity style={styles.submitButton} onPress={() => navigation.navigate('CartPageScreen')}>
             <Text style={styles.buttonText}>Submit</Text>
           </TouchableOpacity>
         </ScrollView>

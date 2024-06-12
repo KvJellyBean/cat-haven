@@ -6,10 +6,10 @@ const LandingScreen = ({ navigation }) => {
     <ImageBackground source={require("../assets/landing-bg.png")} style={styles.background}>
       <View style={styles.container}>
         <Image source={require("../assets/splash.png")} style={styles.logo} alt="Cat Haven Logo" />
-        <TouchableOpacity onPress={() => navigation.push("Login")} style={styles.landingButton}>
+        <TouchableOpacity onPress={() => navigation.navigate("Login")} style={styles.landingButton}>
           <Text style={styles.landingButtonText}>Log In</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.push("Register")} style={styles.landingButton1}>
+        <TouchableOpacity onPress={() => navigation.navigate("Register")} style={styles.landingButton1}>
           <Text style={styles.landingButtonText1}>Sign Up</Text>
         </TouchableOpacity>
       </View>

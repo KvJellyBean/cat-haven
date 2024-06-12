@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet, Dimensions, TextInput } from "react-native";
 import { Iconify } from "react-native-iconify";
 
+import { useNavigation } from "@react-navigation/native";
+
 const cats = [
   { id: "1", name: "Samantha", breed: "British Short Hair", location: "Bogor, Jawa Barat" },
   { id: "2", name: "Kelly", breed: "Munchkin", location: "Semarang, Jawa Tengah" },
@@ -21,6 +23,8 @@ const itemsPerPage = 6;
 const totalPages = Math.ceil(cats.length / itemsPerPage);
 
 export default function PetList() {
+const navigation = useNavigation();
+
   const [currentPage, setCurrentPage] = useState(1);
 
   const renderPagination = () => {

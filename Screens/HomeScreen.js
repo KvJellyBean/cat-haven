@@ -40,7 +40,6 @@ const cats = [
 ];
 
 export default function HomeScreen() {
-  
   const HeartOutlineIcon = () => <Iconify icon="fe:heart-o" size={25} color="#777" style={styles.heartIcon} />;
 
   // Komponen untuk ikon hati diisi
@@ -54,7 +53,6 @@ export default function HomeScreen() {
       [id]: !prevStatus[id],
     }));
   };
-
 
   const navigation = useNavigation();
 
@@ -86,11 +84,8 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.welcomeText}>Welcome, Emily</Text>
-        <TouchableOpacity onPress={() => navigation.push("Profile")}>
-          <Image
-            source={require("../assets/splash.png")}
-            style={styles.profileImage}
-          />
+        <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+          <Image source={require("../assets/splash.png")} style={styles.profileImage} />
         </TouchableOpacity>
       </View>
 
@@ -99,7 +94,7 @@ export default function HomeScreen() {
           <View style={styles.adoptButtonContainer}>
             <Text style={styles.adoptNowText}>Adopt Now!</Text>
             <Text style={styles.adoptNowText}>Free Cat Supply!</Text>
-            <TouchableOpacity style={styles.adoptNowButton}>
+            <TouchableOpacity style={styles.adoptNowButton} onPress={() => navigation.navigate("PetList")}>
               <Text style={styles.adoptNowButtonText}>Adopt Now!</Text>
             </TouchableOpacity>
           </View>
@@ -110,8 +105,8 @@ export default function HomeScreen() {
         <View style={styles.searchIconContainer}>
           <Iconify icon="feather:search" size={30} color="#ccc" style={styles.searchIcon} />
         </View>
-        <TextInput placeholder="Search your cat..." style={styles.searchInput} />
-        <TouchableOpacity onPress={() => navigation.push("Filter")}>
+          <TextInput placeholder="Search your cat..." style={styles.searchInput} onPress={() => navigation.navigate("PetList")}/>
+        <TouchableOpacity onPress={() => navigation.navigate("Filter")}>
           <View style={styles.filterButton}>
             <Iconify icon="mdi:slider" size={25} color="#fff" style={styles.sliderIcon} />
           </View>
@@ -121,24 +116,24 @@ export default function HomeScreen() {
       <View style={styles.adoptContainer}>
         <View style={styles.adoptHeader}>
           <Text style={styles.adoptTitle}>Adopt a Cat</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("PetList")}>
             <Text style={styles.adoptSeeAll}>See All</Text>
           </TouchableOpacity>
         </View>
         <FlatList
-         horizontal
-         data={cats}
-         renderItem={({ item }) => (
-           <TouchableOpacity onPress={() => navigateToPetDetail(item)}>
-             <View style={styles.adoptCard}>
-               <Image source={item.image} style={styles.catImage} />
-               <View style={styles.likeContainer}>
-                 <View style={styles.likeButtonBackground}>
-                   <TouchableOpacity style={styles.likeButton} onPress={() => toggleLike(item.id)}>
-                     {likeStatus[item.id] ? <HeartFilledIcon /> : <HeartOutlineIcon />}
-                   </TouchableOpacity>
-                 </View>
-               </View>
+          horizontal
+          data={cats}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => navigateToPetDetail(item)}>
+              <View style={styles.adoptCard}>
+                <Image source={item.image} style={styles.catImage} />
+                <View style={styles.likeContainer}>
+                  <View style={styles.likeButtonBackground}>
+                    <TouchableOpacity style={styles.likeButton} onPress={() => toggleLike(item.id)}>
+                      {likeStatus[item.id] ? <HeartFilledIcon /> : <HeartOutlineIcon />}
+                    </TouchableOpacity>
+                  </View>
+                </View>
                 <View style={styles.petInfo}>
                   <View style={styles.petDetails}>
                     <Text style={styles.petName}>{item.name}</Text>
@@ -173,10 +168,10 @@ export default function HomeScreen() {
         <TouchableOpacity style={styles.footerButton}>
           <Iconify icon="feather:home" size={30} color="#777" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.footerButton} onPress={() => navigation.push("PetList")}>
+        <TouchableOpacity style={styles.footerButton} onPress={() => navigation.navigate("PetList")}>
           <Image source={require("../assets/splash.png")} style={styles.footerImage} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.footerButton}>
+        <TouchableOpacity style={styles.footerButton} onPress={() => navigation.navigate("Favourite")}>
           <Iconify icon="feather:heart" size={30} color="#777" />
         </TouchableOpacity>
       </View>

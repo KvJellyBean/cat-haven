@@ -62,7 +62,7 @@ export default function LoginScreen() {
         onChangeText={(text) => setPassword(text)}
       />
 
-      <TouchableOpacity onPress={() => navigation.push("ForgotPassword")} style={styles.forgotPasswordContainer}>
+      <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")} style={styles.forgotPasswordContainer}>
         <Text style={styles.forgotPassword}>Forgot your password?</Text>
       </TouchableOpacity>
 
@@ -72,7 +72,7 @@ export default function LoginScreen() {
         <Text style={styles.loginButtonText}>Log in</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.push("Register")}>
+      <TouchableOpacity onPress={() => navigation.navigate("Register")}>
         <Text style={styles.createAccount}>Create new account</Text>
       </TouchableOpacity>
 

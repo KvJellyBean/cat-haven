@@ -2,6 +2,8 @@ import React from "react";
 import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet } from "react-native";
 import { Iconify } from "react-native-iconify";
 
+import { useNavigation } from "@react-navigation/native";
+
 const cats = [
   { id: "1", name: "Samantha", breed: "British Short Hair", location: "Bogor, Jawa Barat" },
   { id: "2", name: "Kelly", breed: "Munchkin", location: "Semarang, Jawa Tengah" },
@@ -14,6 +16,7 @@ const cats = [
 ];
 
 export default function FavouriteScreen() {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -51,13 +54,13 @@ export default function FavouriteScreen() {
       />
 
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.footerButton}>
+        <TouchableOpacity style={styles.footerButton} onPress={() => navigation.push("Home")}>
           <Iconify icon="feather:home" size={30} color="#777" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.footerButton}>
+        <TouchableOpacity style={styles.footerButton} onPress={() => navigation.navigate("PetList")}>
           <Image source={require("../assets/splash.png")} style={styles.footerImage} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.footerButton}>
+        <TouchableOpacity style={styles.footerButton} >
           <Iconify icon="feather:heart" size={30} color="#777" />
         </TouchableOpacity>
       </View>

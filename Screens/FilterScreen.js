@@ -101,7 +101,7 @@ export default function FilterScreen() {
         placeholder="Select the weight"
       />
 
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.applyButton}>
+      <TouchableOpacity onPress={() => navigation.navigate('PetList')} style={styles.applyButton}>
         <Text style={styles.applyButtonText}>Apply Filter</Text>
       </TouchableOpacity>
     </View>

@@ -19,7 +19,7 @@ export default function LoginScreen() {
         placeholderTextColor="#626262"
       />
 
-      <TouchableOpacity onPress={() => navigation.push('Verification')} style={styles.resetpassButton}>
+      <TouchableOpacity onPress={() => navigation.navigate('Verification')} style={styles.resetpassButton}>
         <Text style={styles.resetpassButtonText}>Reset Password</Text>
       </TouchableOpacity>
 
