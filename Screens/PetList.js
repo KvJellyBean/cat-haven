@@ -1,39 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet, Dimensions, TextInput } from "react-native";
 import { Iconify } from "react-native-iconify";
-
-import { useNavigation } from "@react-navigation/native";
-
-const cats = [
-  { id: "1", name: "Samantha", breed: "British Short Hair", location: "Bogor, Jawa Barat" },
-  { id: "2", name: "Kelly", breed: "Munchkin", location: "Semarang, Jawa Tengah" },
-  { id: "3", name: "Hanson", breed: "Brandal", location: "Bandung, Jawa Barat" },
-  { id: "4", name: "Marvel", breed: "Kocak", location: "Surabaya, Jawa Timur" },
-  { id: "5", name: "Aristo", breed: "Cicak", location: "Banten, Banten" },
-  { id: "6", name: "Louis", breed: "Huahahah", location: "TJ Priuk, Jakarta Utara" },
-  { id: "7", name: "Steven", breed: "KEKEKKEKEKE", location: "Blok M, Jakarta Selatan" },
-  { id: "8", name: "Denial", breed: "Dokeaowowko", location: "Ancol, Jakarta Utara" },
-  { id: "9", name: "Gilbert", breed: "American", location: "Serang, Banten" },
-  { id: "10", name: "Cadera", breed: "African", location: "Banjarmasin, Kalimantan Timur" },
-  { id: "11", name: "Kobiy", breed: "Austria", location: "Bangka, Pangkal Pinang" },
-];
+import { useNavigation, useRoute } from "@react-navigation/native";
+import catsData from '../assets/data/cats.js';
 
 const numColumns = 2;
 const itemsPerPage = 6;
-const totalPages = Math.ceil(cats.length / itemsPerPage);
 
 export default function PetList() {
-const navigation = useNavigation();
-
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { pet } = route.params;
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredCats, setFilteredCats] = useState(catsData);
+
+  useEffect(() => {
+    setFilteredCats(
+      catsData.filter(
+        (cat) =>
+          cat.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          cat.breed.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          cat.location.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  }, [searchQuery]);
+
+  const totalPages = Math.ceil(filteredCats.length / itemsPerPage);
 
   const renderPagination = () => {
     const pages = [];
     for (let i = 1; i <= totalPages; i++) {
       pages.push(
         <TouchableOpacity key={i} onPress={() => setCurrentPage(i)}>
-          <View style={styles.pageNumberContainer}>
-            <Text style={styles.pageNumberText}>{i}</Text>
+          <View style={[styles.pageNumberContainer, currentPage === i && styles.pageNumberContainerActive]}>
+            <Text style={[styles.pageNumberText, currentPage === i && styles.pageNumberTextActive]}>{i}</Text>
           </View>
         </TouchableOpacity>
       );
@@ -44,7 +45,7 @@ const navigation = useNavigation();
   const renderCardsForPage = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    return cats.slice(startIndex, endIndex);
+    return filteredCats.slice(startIndex, endIndex);
   };
 
   return (
@@ -57,7 +58,12 @@ const navigation = useNavigation();
         <View style={styles.searchIconContainer}>
           <Iconify icon="feather:search" size={25} color="#ccc" style={styles.searchIcon} />
         </View>
-        <TextInput placeholder="Search your cat..." style={styles.searchInput} />
+        <TextInput
+          placeholder="Search your cat..."
+          style={styles.searchInput}
+          value={searchQuery}
+          onChangeText={(text) => setSearchQuery(text)}
+        />
         <TouchableOpacity>
           <View style={styles.filterButton}>
             <Iconify icon="mdi:slider" size={25} color="#fff" style={styles.sliderIcon} />
@@ -70,7 +76,7 @@ const navigation = useNavigation();
         renderItem={({ item }) => (
           <TouchableOpacity>
             <View style={styles.adoptCard}>
-              <Image source={require("../assets/Kucing.jpg")} style={styles.catImage} />
+              <Image source={item.image} style={styles.catImage} />
               <View style={styles.likeContainer}>
                 <View style={styles.likeButtonBackground}>
                   <TouchableOpacity style={styles.likeButton}>
