@@ -19,6 +19,7 @@ import PaymentMethod from "./Screens/PaymentMethod";
 import AddPayment from "./Screens/AddPayment";
 import Form from "./Screens/Form";
 import CartPageScreen from "./Screens/CartPage";
+import PersonalInformationPage from "./Screens/PersonalInformationPage";
 
 const Stack = createNativeStackNavigator();
 
@@ -55,6 +56,7 @@ function App() {
           <Stack.Screen name="AddPayment" component={AddPayment} />
           <Stack.Screen name="PaymentMethod" component={PaymentMethod} />
           <Stack.Screen name="CartPageScreen" component={CartPageScreen} />
+          <Stack.Screen name="PersonalInformationPage" component={PersonalInformationPage} />
         </Stack.Navigator>
       )}
     </NavigationContainer>

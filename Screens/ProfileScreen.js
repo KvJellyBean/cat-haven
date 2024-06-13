@@ -27,9 +27,11 @@ const ProfilePage = () => {
 
       <View style={styles.profileMenu}>
         <View style={styles.menuCard}>
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("PersonalInformationPage")}>
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => navigation.navigate("PersonalInformationPage")}
+          >
             <Iconify icon="iconamoon:profile" size={25} color="#004AAD" style={styles.menuIcon} />
-
             <Text style={styles.menuText}>Personal Information</Text>
             <Image style={[styles.icon, styles.reverseIcon]} source={require("../assets/back.png")} />
           </TouchableOpacity>
@@ -177,7 +179,7 @@ const styles = StyleSheet.create({
     width: 25,
     height: 25,
   },
-  logoutIcon:{
+  logoutIcon: {
     color: "#BC0000",
   },
   menuText: {
