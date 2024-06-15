@@ -3,7 +3,7 @@ import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet } from "react
 import { Iconify } from "react-native-iconify";
 import { collection, query, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
 import { useNavigation } from "@react-navigation/native";
-import { auth, db } from "../firebase"; // Adjust this import based on your Firebase setup
+import { auth, db } from "../firebase"; 
 import Footer from "../components/footer";
 
 const HeartFilledIcon = () => <Iconify icon="fe:heart" size={25} color="red" />;
@@ -62,7 +62,7 @@ export default function FavouriteScreen({route}) {
   
 
   const renderPetItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate("Detail", { pet: item })}>
+    <TouchableOpacity onPress={() => navigation.navigate("Detail", { pet: item, updateLikedStatus})}>
       <View style={styles.adoptCard}>
         <Image source={item.image} style={styles.catImage} />
         <View style={styles.likeContainer}>

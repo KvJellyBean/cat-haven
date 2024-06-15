@@ -5,7 +5,6 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { collection, doc, setDoc, getDocs, deleteDoc } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 import catsData from '../assets/data/cats';
-import { update } from "firebase/database";
 
 const numColumns = 2;
 const itemsPerPage = 6;
@@ -16,12 +15,13 @@ const HeartFilledIcon = () => <Iconify icon="fe:heart" size={25} color="red" />;
 export default function PetList() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { pet, updateLikedStatus } = route.params;
+  const { updateLikedStatus } = route.params || {};
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredCats, setFilteredCats] = useState(catsData);
   const [favoritePets, setFavoritePets] = useState([]);
   const [loading, setLoading] = useState(true);
+  
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
@@ -79,15 +79,12 @@ export default function PetList() {
       const isAlreadyFavorite = favoritePets.some((pet) => pet.id === petId);
   
       if (!isAlreadyFavorite) {
-        // Find the pet object by petId in filteredCats array
         const pet = filteredCats.find((item) => item.id === petId);
-  
         if (!pet) {
           console.error('Pet not found in filteredCats array');
           return;
         }
   
-        // Ensure all fields have valid values
         const data = {
           name: pet.name || '',
           breed: pet.breed || '',
@@ -96,25 +93,21 @@ export default function PetList() {
           age: pet.age || '',
           weight: pet.weight || '',
           description: pet.description || '',
-          adoptionFee: pet.adoptionFee || 0,  // Ensure adoptionFee has a default value (e.g., 0)
+          adoptionFee: pet.adoptionFee || 0,
           image: pet.image || '',
         };
   
-        // Add pet to favorites
         await setDoc(userFavoritesRef, data);
-  
         setFavoritePets([...favoritePets, { id: petId, ...pet }]);
       } else {
-        // Remove pet from favorites
         await deleteDoc(userFavoritesRef);
         const updatedFavorites = favoritePets.filter((pet) => pet.id !== petId);
         setFavoritePets(updatedFavorites);
       }
   
-      // Update liked status in parent component (HomeScreen or similar)
-      updateLikedStatus(petId, !isAlreadyFavorite); // Invert isAlreadyFavorite to reflect the updated status
+      updateLikedStatus(petId, !isAlreadyFavorite);
     } catch (error) {
-      console.error('Error toggling like:', error);
+      
     }
   };
   
@@ -151,6 +144,7 @@ export default function PetList() {
             <View style={styles.adoptCard}>
               <Image source={item.image} style={styles.catImage} />
               <View style={styles.likeContainer}>
+              <View style={styles.likeButtonBackground}>
                 <TouchableOpacity style={styles.likeButton} onPress={() => toggleLike(item.id)}>
                   {favoritePets.some((pet) => pet.id === item.id) ? (
                     <HeartFilledIcon />
@@ -158,6 +152,7 @@ export default function PetList() {
                     <HeartOutlineIcon />
                   )}
                 </TouchableOpacity>
+                </View>
               </View>
               <View style={styles.petInfo}>
                 <View style={styles.petDetails}>
@@ -265,6 +260,11 @@ const styles = StyleSheet.create({
   },
   likeButton: {
     padding: 2,
+  },
+  likeButtonBackground: {
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 3,
   },
   paginationContainer: {
     flexDirection: "row",

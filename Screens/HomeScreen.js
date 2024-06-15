@@ -126,7 +126,7 @@ export default function HomeScreen() {
     
   };
   const navigateToPetList = (pet) => {
-    navigation.navigate("PetList", { pet });
+    navigation.navigate("PetList", { pet,updateLikedStatus: updateLikedStatus });
     
   };
 
