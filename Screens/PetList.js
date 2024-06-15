@@ -47,6 +47,24 @@ export default function PetList() {
     fetchFavorites();
   }, []);
 
+  useEffect(() => {
+    const filterCats = () => {
+      if (searchQuery === "") {
+        setFilteredCats(catsData);
+      } else {
+        const filtered = catsData.filter(cat =>
+          cat.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          cat.breed.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          cat.location.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setFilteredCats(filtered);
+        setCurrentPage(1);
+      }
+    };
+
+    filterCats();
+  }, [searchQuery]);
+
   const totalPages = Math.ceil(filteredCats.length / itemsPerPage);
 
   const renderPagination = () => {
@@ -106,7 +124,9 @@ export default function PetList() {
       }
 
       updateLikedStatus(petId, !isAlreadyFavorite);
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error toggling like:", error);
+    }
   };
 
   if (loading) {
@@ -127,7 +147,12 @@ export default function PetList() {
         <View style={styles.searchIconContainer}>
           <Iconify icon="feather:search" size={25} color="#ccc" style={styles.searchIcon} />
         </View>
-        <TextInput placeholder="Search your cat..." style={styles.searchInput} value={searchQuery} onChangeText={(text) => setSearchQuery(text)} />
+        <TextInput
+          placeholder="Search your cat..."
+          style={styles.searchInput}
+          value={searchQuery}
+          onChangeText={(text) => setSearchQuery(text)}
+        />
         <TouchableOpacity onPress={() => navigation.navigate("Filter")}>
           <View style={styles.filterButton}>
             <Iconify icon="mdi:slider" size={25} color="#fff" style={styles.sliderIcon} />
@@ -195,6 +220,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 10,
     zIndex: 1,
+  },
+  searchIcon: {
+    color: "#777",
   },
   searchInput: {
     flex: 1,
