@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  KeyboardAvoidingView,
+} from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
@@ -8,7 +16,7 @@ export default function LoginScreen() {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(""); 
+  const [error, setError] = useState("");
 
   const handleLogin = async () => {
     const auth = getAuth();
@@ -29,20 +37,18 @@ export default function LoginScreen() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigation.navigate("Home"); 
+      navigation.navigate("Home");
     } catch (error) {
       if (error.code === "auth/invalid-credential") {
         setError("Email or password are incorrect");
       } else {
-        setError(""); 
+        setError("");
       }
     }
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-    >
+    <KeyboardAvoidingView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Login here</Text>
         <Text style={styles.subtitle}>Welcome back you've</Text>
@@ -65,7 +71,14 @@ export default function LoginScreen() {
           onChangeText={(text) => setPassword(text)}
         />
 
-        <TouchableOpacity onPress={() => navigation.push("ForgotPassword")} style={styles.forgotPasswordContainer}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.push("ForgotPassword", {
+              TitleText: "Forgot Password",
+            })
+          }
+          style={styles.forgotPasswordContainer}
+        >
           <Text style={styles.forgotPassword}>Forgot your password?</Text>
         </TouchableOpacity>
 
@@ -78,14 +91,6 @@ export default function LoginScreen() {
         <TouchableOpacity onPress={() => navigation.push("Register")}>
           <Text style={styles.createAccount}>Create new account</Text>
         </TouchableOpacity>
-
-        <Text style={styles.continueText}>Or continue with</Text>
-
-        <View style={styles.socialIcons}>
-          <FontAwesome name="google" size={24} color="black" />
-          <FontAwesome name="facebook" size={24} color="black" style={styles.icon} />
-          <FontAwesome name="twitter" size={24} color="black" style={styles.icon} />
-        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );

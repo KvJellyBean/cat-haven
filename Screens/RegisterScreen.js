@@ -11,7 +11,11 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 import { app } from "../firebase";
-import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 
 export default function RegisterScreen() {
   const navigation = useNavigation();
@@ -26,7 +30,11 @@ export default function RegisterScreen() {
 
   const registerUser = async (email, password, name) => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       await updateProfile(userCredential.user, {
         displayName: name,
       });
@@ -38,7 +46,7 @@ export default function RegisterScreen() {
         navigation.navigate("Login");
       }, 2000);
     } catch (error) {
-      Alert.alert('Error', error.message);
+      Alert.alert("Error", error.message);
     }
   };
 
@@ -79,11 +87,8 @@ export default function RegisterScreen() {
     registerUser(email, password, name);
   };
 
-
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-    >
+    <KeyboardAvoidingView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Create Account</Text>
         <Text style={styles.subtitle}>
@@ -139,24 +144,6 @@ export default function RegisterScreen() {
         <TouchableOpacity onPress={() => navigation.navigate("Login")}>
           <Text style={styles.haveAccount}>Already have an account</Text>
         </TouchableOpacity>
-
-        <Text style={styles.continueText}>Or continue with</Text>
-
-        <View style={styles.socialIcons}>
-          <FontAwesome name="google" size={24} color="black" />
-          <FontAwesome
-            name="facebook"
-            size={24}
-            color="black"
-            style={styles.icon}
-          />
-          <FontAwesome
-            name="twitter"
-            size={24}
-            color="black"
-            style={styles.icon}
-          />
-        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
