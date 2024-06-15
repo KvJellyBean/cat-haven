@@ -1,8 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet, Dimensions, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  FlatList,
+  StyleSheet,
+  Dimensions,
+  TextInput,
+} from "react-native";
 import { Iconify } from "react-native-iconify";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import catsData from '../assets/data/cats.js';
+import catsData from "../assets/data/cats.js";
 
 const numColumns = 2;
 const itemsPerPage = 6;
@@ -33,8 +42,24 @@ export default function PetList() {
     for (let i = 1; i <= totalPages; i++) {
       pages.push(
         <TouchableOpacity key={i} onPress={() => setCurrentPage(i)}>
-          <View style={[styles.pageNumberContainer, currentPage === i && styles.pageNumberContainerActive]}>
-            <Text style={[styles.pageNumberText, currentPage === i && styles.pageNumberTextActive]}>{i}</Text>
+          <View
+            style={[
+              styles.pageNumberContainer,
+              currentPage === i
+                ? styles.pageNumberContainerActive
+                : styles.pageNumberContainerInactive,
+            ]}
+          >
+            <Text
+              style={[
+                styles.pageNumberText,
+                currentPage === i
+                  ? styles.pageNumberTextActive
+                  : styles.pageNumberTextInactive,
+              ]}
+            >
+              {i}
+            </Text>
           </View>
         </TouchableOpacity>
       );
@@ -50,13 +75,25 @@ export default function PetList() {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Iconify icon="material-symbols-light:arrow-back-ios" size={30} color="#1e1e1e" />
-      </TouchableOpacity>
-
       <View style={styles.searchContainer}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
+          <Iconify
+            icon="material-symbols-light:arrow-back-ios"
+            size={30}
+            color="#1e1e1e"
+          />
+        </TouchableOpacity>
+
         <View style={styles.searchIconContainer}>
-          <Iconify icon="feather:search" size={25} color="#ccc" style={styles.searchIcon} />
+          <Iconify
+            icon="feather:search"
+            size={25}
+            color="#ccc"
+            style={styles.searchIcon}
+          />
         </View>
         <TextInput
           placeholder="Search your cat..."
@@ -66,7 +103,12 @@ export default function PetList() {
         />
         <TouchableOpacity>
           <View style={styles.filterButton}>
-            <Iconify icon="mdi:slider" size={25} color="#fff" style={styles.sliderIcon} />
+            <Iconify
+              icon="mdi:slider"
+              size={25}
+              color="#fff"
+              style={styles.sliderIcon}
+            />
           </View>
         </TouchableOpacity>
       </View>
@@ -80,7 +122,15 @@ export default function PetList() {
               <View style={styles.likeContainer}>
                 <View style={styles.likeButtonBackground}>
                   <TouchableOpacity style={styles.likeButton}>
-                    <Iconify icon="feather:heart" size={24} color="#777" style={[styles.heartIcon, item.liked ? styles.heartIconActive : null]} />
+                    <Iconify
+                      icon="feather:heart"
+                      size={24}
+                      color="#777"
+                      style={[
+                        styles.heartIcon,
+                        item.liked ? styles.heartIconActive : null,
+                      ]}
+                    />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -109,27 +159,23 @@ export default function PetList() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 25,
+    padding: "5%",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#f7f7f7",
     position: "relative",
   },
-  backButton: {
-    position: "absolute",
-    top: 60,
-    left: 35,
-  },
   searchContainer: {
+    width: "100%",
     flexDirection: "row",
     alignItems: "center",
-    position: "relative",
+    justifyContent: "center",
     marginTop: 30,
-    marginHorizontal: 60,
+    paddingHorizontal: 10,
   },
   searchIconContainer: {
     position: "absolute",
-    left: 10,
+    left: 55,
     zIndex: 1,
   },
   searchInput: {
@@ -155,7 +201,7 @@ const styles = StyleSheet.create({
   },
   adoptCard: {
     height: 200,
-    width: 170,
+    width: 160,
     backgroundColor: "#fff",
     borderRadius: 10,
     margin: 5,
@@ -173,7 +219,7 @@ const styles = StyleSheet.create({
   petInfo: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 5,
     paddingHorizontal: 10,
   },
   petDetails: {
@@ -216,20 +262,29 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     marginTop: 20,
-    // backgroundColor: "red",
   },
   pageNumberContainer: {
     width: 24,
     height: 24,
     margin: 2,
     borderRadius: 12,
-    backgroundColor: "#004AAD",
     justifyContent: "center",
     alignItems: "center",
   },
-
+  pageNumberContainerActive: {
+    backgroundColor: "#004AAD",
+  },
+  pageNumberContainerInactive: {
+    backgroundColor: "#fff",
+  },
   pageNumberText: {
     fontSize: 13,
     color: "#fff",
+  },
+  pageNumberTextActive: {
+    color: "#fff",
+  },
+  pageNumberTextInactive: {
+    color: "#000",
   },
 });
