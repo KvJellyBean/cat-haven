@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { Ionicons } from "@expo/vector-icons";
 import { SelectList } from 'react-native-dropdown-select-list';
 
@@ -9,8 +8,6 @@ export default function LoginScreen() {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState("");
   const locations = [
     { key: '1', value: 'Indonesia' },
@@ -29,42 +26,9 @@ export default function LoginScreen() {
     { key: '14', value: 'Singapura' },
   ];
 
-  const handleLogin = async () => {
-    const auth = getAuth();
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!emailRegex.test(email)) {
-      setError("Please enter a valid email address");
-      setTimeout(() => setError(""), 6000);
-      return;
-    }
-
-    if (!password) {
-      setError("Please enter a password");
-      setTimeout(() => setError(""), 6000);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigation.navigate("Home");
-    } catch (error) {
-      if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
-        setError("Email or password are incorrect");
-      } else {
-        setError("An unexpected error occurred. Please try again.");
-      }
-      setTimeout(() => setError(""), 6000);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <TouchableOpacity onPress={() => navigation.navigate("ProfileScreen")} style={styles.backButton}>
+      <TouchableOpacity onPress={() => navigation.pop()} style={styles.backButton}>
         <Ionicons name="arrow-back" size={24} color="black" />
       </TouchableOpacity>
       <Text style={styles.title}>Edit Profile</Text>

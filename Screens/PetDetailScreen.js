@@ -1,23 +1,75 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Image, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { Iconify } from "react-native-iconify";
-import Form from "./Form"
+import Form from "./Form";
+import { collection, doc, setDoc, deleteDoc, getDoc } from 'firebase/firestore';
+import { db, auth } from '../firebase';
 
 const PetDetailScreen = ({ route, navigation }) => {
-  const { pet } = route.params;
+  const { pet, updateLikedStatus } = route.params;
 
   const HeartOutlineIcon = () => <Iconify icon="fe:heart-o" size={25} color="#777" style={styles.heartIcon} />;
-
-  // Komponen untuk ikon hati diisi
   const HeartFilledIcon = () => <Iconify icon="fe:heart" size={25} color="red" />;
 
   const [isLiked, setIsLiked] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const toggleLike = () => {
-    setIsLiked(!isLiked);
-  };
+  useEffect(() => {
+    const fetchLikedStatus = async () => {
+      try {
+        const user = auth.currentUser;
+        if (!user) return;
 
+        const userFavoritesRef = doc(db, 'users', user.uid, 'favorites', pet.id);
+        const petDoc = await getDoc(userFavoritesRef);
+
+        if (petDoc.exists()) {
+          setIsLiked(true);
+        } else {
+          setIsLiked(false);
+        }
+      } catch (error) {
+        console.error('Error fetching liked status:', error);
+      }
+    };
+
+    fetchLikedStatus();
+  }, []);
+
+  const toggleLike = async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) return;
+  
+      const userFavoritesRef = doc(db, 'users', user.uid, 'favorites', pet.id);
+  
+      if (!isLiked) {
+        // Add pet to favorites
+        await setDoc(userFavoritesRef, {
+          name: pet.name,
+          breed: pet.breed,
+          location: pet.location,
+          gender: pet.gender,
+          age: pet.age,
+          weight: pet.weight,
+          description: pet.description,
+          adoptionFee: pet.adoptionFee,
+          image: pet.image,
+        });
+        setIsLiked(true);
+      } else {
+        // Remove pet from favorites
+        await deleteDoc(userFavoritesRef);
+        setIsLiked(false);
+      }
+  
+      // Update liked status in parent component (HomeScreen or similar)
+      updateLikedStatus(pet.id, !isLiked); // Invert isLiked to reflect the updated status
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    }
+  };
+  
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   };
@@ -57,10 +109,13 @@ const PetDetailScreen = ({ route, navigation }) => {
         <Text style={styles.aboutTitle}>About</Text>
         <Text style={styles.description}>{pet.description}</Text>
 
+        <View style={styles.adoptionFeeContainer}>
+          <Text style={styles.adoptionFeeText}>Adoption Fee: Rp {pet.adoptionFee}</Text>
+        </View>
+
         <TouchableOpacity style={styles.adoptButton} onPress={toggleModal}>
           <Text style={styles.adoptButtonText}>Adopt Pet</Text>
         </TouchableOpacity>
-
 
         <Form modalVisible={isModalVisible} setModalVisible={setIsModalVisible} />
       </View>
@@ -155,11 +210,21 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     alignItems: "center",
+    marginTop: 20,
   },
   adoptButtonText: {
     color: "#ffffff",
     fontSize: 18,
     fontWeight: "bold",
+  },
+
+  adoptionFeeContainer: {
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  adoptionFeeText: {
+    fontSize: 18,
+    color: "#666",
   },
 });
 
