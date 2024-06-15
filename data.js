@@ -66,3 +66,4 @@ export const weight = [
   { key: "3", value: "> 3 kg (small)" },
   { key: "4", value: "> 1 kg (extra small)" },
 ];
+
