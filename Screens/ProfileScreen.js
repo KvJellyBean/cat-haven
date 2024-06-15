@@ -46,7 +46,14 @@ const ProfilePage = () => {
               source={require("../assets/back.png")}
             />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() =>
+              navigation.navigate("ForgotPassword", {
+                TitleText: "Change Password",
+              })
+            }
+          >
             <Iconify
               icon="iconamoon:lock"
               size={25}
