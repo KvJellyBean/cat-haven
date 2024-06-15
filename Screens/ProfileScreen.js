@@ -16,7 +16,10 @@ const ProfilePage = () => {
 
       <View style={styles.userProfile}>
         <View style={styles.userProfileBackground} />
-        <Image style={styles.profileImage} source={require("../assets/banner.png")} />
+        <Image
+          style={styles.profileImage}
+          source={require("../assets/banner.png")}
+        />
         <View style={styles.userDetails}>
           <Text style={styles.userName}>Your Full Name</Text>
           <Text style={styles.userBio}>I love all animal</Text>
@@ -31,44 +34,109 @@ const ProfilePage = () => {
             style={styles.menuItem}
             onPress={() => navigation.navigate("PersonalInformationPage")}
           >
-            <Iconify icon="iconamoon:profile" size={25} color="#004AAD" style={styles.menuIcon} />
+            <Iconify
+              icon="iconamoon:profile"
+              size={25}
+              color="#004AAD"
+              style={styles.menuIcon}
+            />
             <Text style={styles.menuText}>Personal Information</Text>
-            <Image style={[styles.icon, styles.reverseIcon]} source={require("../assets/back.png")} />
+            <Image
+              style={[styles.icon, styles.reverseIcon]}
+              source={require("../assets/back.png")}
+            />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem}>
-            <Iconify icon="iconamoon:lock" size={25} color="#004AAD" style={styles.menuIcon} />
+            <Iconify
+              icon="iconamoon:lock"
+              size={25}
+              color="#004AAD"
+              style={styles.menuIcon}
+            />
             <Text style={styles.menuText}>Change Password</Text>
-            <Image style={[styles.icon, styles.reverseIcon]} source={require("../assets/back.png")} />
+            <Image
+              style={[styles.icon, styles.reverseIcon]}
+              source={require("../assets/back.png")}
+            />
           </TouchableOpacity>
         </View>
         <View style={styles.menuCard}>
-          <TouchableOpacity style={styles.menuItem}>
-            <Iconify icon="lucide:shopping-cart" size={25} color="#004AAD" style={styles.menuIcon} />
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => navigation.navigate("CartPageScreen")}
+          >
+            <Iconify
+              icon="lucide:shopping-cart"
+              size={25}
+              color="#004AAD"
+              style={styles.menuIcon}
+            />
             <Text style={styles.menuText}>My Cart</Text>
-            <Image style={[styles.icon, styles.reverseIcon]} source={require("../assets/back.png")} />
+            <Image
+              style={[styles.icon, styles.reverseIcon]}
+              source={require("../assets/back.png")}
+            />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem}>
-            <Iconify icon="iconamoon:heart" size={25} color="#004AAD" style={styles.menuIcon} />
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => navigation.navigate("Favourite")}
+          >
+            <Iconify
+              icon="iconamoon:heart"
+              size={25}
+              color="#004AAD"
+              style={styles.menuIcon}
+            />
             <Text style={styles.menuText}>Favourite</Text>
-            <Image style={[styles.icon, styles.reverseIcon]} source={require("../assets/back.png")} />
+            <Image
+              style={[styles.icon, styles.reverseIcon]}
+              source={require("../assets/back.png")}
+            />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem}>
-            <Iconify icon="ri:question-line" size={25} color="#004AAD" style={styles.menuIcon} />
+            <Iconify
+              icon="ri:question-line"
+              size={25}
+              color="#004AAD"
+              style={styles.menuIcon}
+            />
             <Text style={styles.menuText}>FAQ</Text>
-            <Image style={[styles.icon, styles.reverseIcon]} source={require("../assets/back.png")} />
+            <Image
+              style={[styles.icon, styles.reverseIcon]}
+              source={require("../assets/back.png")}
+            />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem}>
-            <Iconify icon="fluent:payment-24-regular" size={25} color="#004AAD" style={styles.menuIcon} />
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => navigation.navigate("PaymentMethod")}
+          >
+            <Iconify
+              icon="fluent:payment-24-regular"
+              size={25}
+              color="#004AAD"
+              style={styles.menuIcon}
+            />
             <Text style={styles.menuText}>Payment Method</Text>
-            <Image style={[styles.icon, styles.reverseIcon]} source={require("../assets/back.png")} />
+            <Image
+              style={[styles.icon, styles.reverseIcon]}
+              source={require("../assets/back.png")}
+            />
           </TouchableOpacity>
         </View>
 
         <View style={styles.menuCard}>
           <TouchableOpacity style={styles.menuItem}>
-            <Iconify icon="tabler-logout" size={25} color="#004AAD" style={styles.logoutIcon} />
+            <Iconify
+              icon="tabler-logout"
+              size={25}
+              color="#004AAD"
+              style={styles.logoutIcon}
+            />
             <Text style={styles.logoutText}>Log Out</Text>
-            <Image style={[styles.icon, styles.reverseIcon]} source={require("../assets/back.png")} />
+            <Image
+              style={[styles.icon, styles.reverseIcon]}
+              source={require("../assets/back.png")}
+            />
           </TouchableOpacity>
         </View>
       </View>

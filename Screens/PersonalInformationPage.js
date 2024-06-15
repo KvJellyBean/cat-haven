@@ -1,9 +1,17 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { Ionicons } from "@expo/vector-icons";
-import { SelectList } from 'react-native-dropdown-select-list';
+import { SelectList } from "react-native-dropdown-select-list";
 
 export default function LoginScreen() {
   const navigation = useNavigation();
@@ -13,20 +21,20 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState("");
   const locations = [
-    { key: '1', value: 'Indonesia' },
-    { key: '2', value: 'USA' },
-    { key: '3', value: 'UK' },
-    { key: '4', value: 'Turkei' },
-    { key: '5', value: 'China' },
-    { key: '6', value: 'Taiwan' },
-    { key: '7', value: 'Japan' },
-    { key: '8', value: 'Korea' },
-    { key: '9', value: 'Philipnes' },
-    { key: '10', value: 'Albania' },
-    { key: '11', value: 'Papua Newgiune' },
-    { key: '12', value: 'Australia' },
-    { key: '13', value: 'Malaysia' },
-    { key: '14', value: 'Singapura' },
+    { key: "1", value: "Indonesia" },
+    { key: "2", value: "USA" },
+    { key: "3", value: "UK" },
+    { key: "4", value: "Turkei" },
+    { key: "5", value: "China" },
+    { key: "6", value: "Taiwan" },
+    { key: "7", value: "Japan" },
+    { key: "8", value: "Korea" },
+    { key: "9", value: "Philipnes" },
+    { key: "10", value: "Albania" },
+    { key: "11", value: "Papua Newgiune" },
+    { key: "12", value: "Australia" },
+    { key: "13", value: "Malaysia" },
+    { key: "14", value: "Singapura" },
   ];
 
   const handleLogin = async () => {
@@ -51,7 +59,10 @@ export default function LoginScreen() {
       await signInWithEmailAndPassword(auth, email, password);
       navigation.navigate("Home");
     } catch (error) {
-      if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
+      if (
+        error.code === "auth/user-not-found" ||
+        error.code === "auth/wrong-password"
+      ) {
         setError("Email or password are incorrect");
       } else {
         setError("An unexpected error occurred. Please try again.");
@@ -64,7 +75,10 @@ export default function LoginScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <TouchableOpacity onPress={() => navigation.navigate("ProfileScreen")} style={styles.backButton}>
+      <TouchableOpacity
+        onPress={() => navigation.pop()}
+        style={styles.backButton}
+      >
         <Ionicons name="arrow-back" size={24} color="black" />
       </TouchableOpacity>
       <Text style={styles.title}>Edit Profile</Text>
@@ -101,7 +115,7 @@ export default function LoginScreen() {
       />
 
       <Text style={styles.location}>Location</Text>
-      <SelectList 
+      <SelectList
         setSelected={setLocation}
         data={locations}
         boxStyles={styles.dropdown}
@@ -124,7 +138,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 30,
-    position: "relative"
+    position: "relative",
   },
   backButton: {
     position: "absolute",
