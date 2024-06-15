@@ -75,13 +75,20 @@ export default function LoginScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <TouchableOpacity
-        onPress={() => navigation.pop()}
-        style={styles.backButton}
+      <View
+        style={
+          // Place on top of the header screen
+          styles.header
+        }
       >
-        <Ionicons name="arrow-back" size={24} color="black" />
-      </TouchableOpacity>
-      <Text style={styles.title}>Edit Profile</Text>
+        <TouchableOpacity
+          onPress={() => navigation.pop()}
+          style={styles.backButton}
+        >
+          <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
+        <Text style={styles.title}>Edit Profile</Text>
+      </View>
       <Image
         source={{ uri: "https://via.placeholder.com/100" }} // Replace with actual image URL
         style={styles.profileImage}
@@ -140,13 +147,22 @@ const styles = StyleSheet.create({
     padding: 30,
     position: "relative",
   },
+  header: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+    top: -20,
+    marginBottom: 20,
+  },
   backButton: {
     position: "absolute",
-    top: 50,
-    left: 20,
+    top: 5,
+    left: 0,
   },
   title: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: "bold",
     color: "#004AAD",
     marginBottom: 10,
