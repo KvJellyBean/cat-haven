@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet, TextInput } from "react-native";
 import { Iconify } from "react-native-iconify";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { collection, doc, setDoc, getDocs, deleteDoc } from 'firebase/firestore';
-import { db, auth } from '../firebase';
-import catsData from '../assets/data/cats';
+import { collection, doc, setDoc, getDocs, deleteDoc } from "firebase/firestore";
+import { db, auth } from "../firebase";
+import catsData from "../assets/data/cats";
 
 const numColumns = 2;
 const itemsPerPage = 6;
@@ -21,32 +21,32 @@ export default function PetList() {
   const [filteredCats, setFilteredCats] = useState(catsData);
   const [favoritePets, setFavoritePets] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
         const user = auth.currentUser;
         if (!user) return;
-  
-        const userFavoritesRef = collection(db, 'users', user.uid, 'favorites');
+
+        const userFavoritesRef = collection(db, "users", user.uid, "favorites");
         const snapshot = await getDocs(userFavoritesRef);
-  
+
         if (!snapshot.empty) {
-          const favorites = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          const favorites = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
           setFavoritePets(favorites);
         } else {
           setFavoritePets([]);
         }
-  
+
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching favorites:', error);
+        console.error("Error fetching favorites:", error);
       }
     };
-  
+
     fetchFavorites();
   }, []);
-  
+
   const totalPages = Math.ceil(filteredCats.length / itemsPerPage);
 
   const renderPagination = () => {
@@ -73,30 +73,30 @@ export default function PetList() {
     try {
       const user = auth.currentUser;
       if (!user) return;
-  
-      const userFavoritesRef = doc(db, 'users', user.uid, 'favorites', petId);
-  
+
+      const userFavoritesRef = doc(db, "users", user.uid, "favorites", petId);
+
       const isAlreadyFavorite = favoritePets.some((pet) => pet.id === petId);
-  
+
       if (!isAlreadyFavorite) {
         const pet = filteredCats.find((item) => item.id === petId);
         if (!pet) {
-          console.error('Pet not found in filteredCats array');
+          console.error("Pet not found in filteredCats array");
           return;
         }
-  
+
         const data = {
-          name: pet.name || '',
-          breed: pet.breed || '',
-          location: pet.location || '',
-          gender: pet.gender || '',
-          age: pet.age || '',
-          weight: pet.weight || '',
-          description: pet.description || '',
+          name: pet.name || "",
+          breed: pet.breed || "",
+          location: pet.location || "",
+          gender: pet.gender || "",
+          age: pet.age || "",
+          weight: pet.weight || "",
+          description: pet.description || "",
           adoptionFee: pet.adoptionFee || 0,
-          image: pet.image || '',
+          image: pet.image || "",
         };
-  
+
         await setDoc(userFavoritesRef, data);
         setFavoritePets([...favoritePets, { id: petId, ...pet }]);
       } else {
@@ -104,13 +104,11 @@ export default function PetList() {
         const updatedFavorites = favoritePets.filter((pet) => pet.id !== petId);
         setFavoritePets(updatedFavorites);
       }
-  
+
       updateLikedStatus(petId, !isAlreadyFavorite);
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   };
-  
+
   if (loading) {
     return (
       <View style={styles.container}>
@@ -129,29 +127,25 @@ export default function PetList() {
         <View style={styles.searchIconContainer}>
           <Iconify icon="feather:search" size={25} color="#ccc" style={styles.searchIcon} />
         </View>
-        <TextInput
-          placeholder="Search your cat..."
-          style={styles.searchInput}
-          value={searchQuery}
-          onChangeText={(text) => setSearchQuery(text)}
-        />
+        <TextInput placeholder="Search your cat..." style={styles.searchInput} value={searchQuery} onChangeText={(text) => setSearchQuery(text)} />
+        <TouchableOpacity onPress={() => navigation.navigate("Filter")}>
+          <View style={styles.filterButton}>
+            <Iconify icon="mdi:slider" size={25} color="#fff" style={styles.sliderIcon} />
+          </View>
+        </TouchableOpacity>
       </View>
 
       <FlatList
         data={renderCardsForPage()}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate('Detail', { pet: item, updateLikedStatus: toggleLike })}>
+          <TouchableOpacity onPress={() => navigation.navigate("Detail", { pet: item, updateLikedStatus: toggleLike })}>
             <View style={styles.adoptCard}>
               <Image source={item.image} style={styles.catImage} />
               <View style={styles.likeContainer}>
-              <View style={styles.likeButtonBackground}>
-                <TouchableOpacity style={styles.likeButton} onPress={() => toggleLike(item.id)}>
-                  {favoritePets.some((pet) => pet.id === item.id) ? (
-                    <HeartFilledIcon />
-                  ) : (
-                    <HeartOutlineIcon />
-                  )}
-                </TouchableOpacity>
+                <View style={styles.likeButtonBackground}>
+                  <TouchableOpacity style={styles.likeButton} onPress={() => toggleLike(item.id)}>
+                    {favoritePets.some((pet) => pet.id === item.id) ? <HeartFilledIcon /> : <HeartOutlineIcon />}
+                  </TouchableOpacity>
                 </View>
               </View>
               <View style={styles.petInfo}>
@@ -209,6 +203,19 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "#fff",
     elevation: 5,
+  },
+  filterButton: {
+    padding: 9,
+    marginLeft: 10,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5,
+  },
+  sliderIcon: {
+    transform: [{ rotate: "90deg" }, { scaleX: -1 }],
+    color: "#777777",
   },
   adoptCard: {
     height: 200,
@@ -276,16 +283,16 @@ const styles = StyleSheet.create({
     height: 24,
     margin: 2,
     borderRadius: 12,
-    backgroundColor: "#004AAD",
+    backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
   },
   pageNumberText: {
     fontSize: 13,
-    color: "#fff",
+    color: "#004AAD",
   },
   pageNumberContainerActive: {
-    backgroundColor: "#1e1e1e",
+    backgroundColor: "#004AAD",
   },
   pageNumberTextActive: {
     color: "#fff",
