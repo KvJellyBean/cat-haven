@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
@@ -40,56 +40,60 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Login here</Text>
-      <Text style={styles.subtitle}>Welcome back you've</Text>
-      <Text style={styles.p1}>been missed!</Text>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+    >
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>Login here</Text>
+        <Text style={styles.subtitle}>Welcome back you've</Text>
+        <Text style={styles.p1}>been missed!</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        placeholderTextColor="#626262"
-        value={email}
-        onChangeText={(text) => setEmail(text)}
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          placeholderTextColor="#626262"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        placeholderTextColor="#626262"
-        secureTextEntry
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          placeholderTextColor="#626262"
+          secureTextEntry
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+        />
 
-      <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")} style={styles.forgotPasswordContainer}>
-        <Text style={styles.forgotPassword}>Forgot your password?</Text>
-      </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.push("ForgotPassword")} style={styles.forgotPasswordContainer}>
+          <Text style={styles.forgotPassword}>Forgot your password?</Text>
+        </TouchableOpacity>
 
-      {error ? <Text style={styles.error}>{error}</Text> : null}
+        {error ? <Text style={styles.error}>{error}</Text> : null}
 
-      <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
-        <Text style={styles.loginButtonText}>Log in</Text>
-      </TouchableOpacity>
+        <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
+          <Text style={styles.loginButtonText}>Log in</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-        <Text style={styles.createAccount}>Create new account</Text>
-      </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.push("Register")}>
+          <Text style={styles.createAccount}>Create new account</Text>
+        </TouchableOpacity>
 
-      <Text style={styles.continueText}>Or continue with</Text>
+        <Text style={styles.continueText}>Or continue with</Text>
 
-      <View style={styles.socialIcons}>
-        <FontAwesome name="google" size={24} color="black" />
-        <FontAwesome name="facebook" size={24} color="black" style={styles.icon} />
-        <FontAwesome name="twitter" size={24} color="black" style={styles.icon} />
-      </View>
-    </View>
+        <View style={styles.socialIcons}>
+          <FontAwesome name="google" size={24} color="black" />
+          <FontAwesome name="facebook" size={24} color="black" style={styles.icon} />
+          <FontAwesome name="twitter" size={24} color="black" style={styles.icon} />
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
