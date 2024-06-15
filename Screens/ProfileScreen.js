@@ -1,10 +1,19 @@
 import * as React from "react";
-import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  Modal,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Iconify } from "react-native-iconify";
+import Faq from "./Faq";
 
 const ProfilePage = () => {
   const navigation = useNavigation();
+  const [isFaqVisible, setIsFaqVisible] = React.useState(false);
 
   return (
     <View style={styles.profilePage}>
@@ -100,7 +109,10 @@ const ProfilePage = () => {
               source={require("../assets/back.png")}
             />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => setIsFaqVisible(true)}
+          >
             <Iconify
               icon="ri:question-line"
               size={25}
@@ -113,6 +125,12 @@ const ProfilePage = () => {
               source={require("../assets/back.png")}
             />
           </TouchableOpacity>
+
+          <Faq
+            isVisible={isFaqVisible}
+            onClose={() => setIsFaqVisible(false)}
+          />
+
           <TouchableOpacity
             style={styles.menuItem}
             onPress={() => navigation.navigate("PaymentMethod")}

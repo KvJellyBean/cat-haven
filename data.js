@@ -1,4 +1,4 @@
-const onBoardingContent = [
+export const onBoardingContent = [
   {
     id: 1,
     image: require("./assets/onboarding1.png"),
@@ -19,8 +19,6 @@ const onBoardingContent = [
     description: "Adopt a cat in just a few simple steps!",
   },
 ];
-
-export { onBoardingContent };
 
 export const species = [
   { key: "1", value: "Anggora" },
@@ -67,3 +65,40 @@ export const weight = [
   { key: "4", value: "> 1 kg (extra small)" },
 ];
 
+export const faqList = [
+  {
+    question: "What is Cat Haven?",
+    answer:
+      "Cat Haven is an application dedicated to cat adoption. We provide a platform to connect cats in need of homes with potential owners.",
+  },
+  {
+    question: "How can I adopt a cat through Cat Haven?",
+    answer:
+      "You can browse available cats for adoption through our app. Once you find a suitable cat, you can fill out an adoption form and do the further process.",
+  },
+  {
+    question: "Are all cats in Cat Haven vaccinated?",
+    answer:
+      "We vaccinate cats entering Cat Haven according to applicable health standards. Information about each cat's vaccination status will be available on their profile.",
+  },
+  {
+    question: "How does Cat Haven ensure the well-being of its cats?",
+    answer:
+      "At Cat Haven, we prioritize the well-being of our cats through regular veterinary care, nutritious diets, comfortable living environments, and socialization. Each cat receives personalized attention to ensure they thrive until they find their forever homes.",
+  },
+  {
+    question: "Are there adoption fees in Cat Haven?",
+    answer:
+      "Yes, there is an adoption fee to help cover the cost of care and vaccinations for the cats. Fees already included in the price.",
+  },
+  {
+    question: "Does Cat Haven accept cats for adoption?",
+    answer:
+      "Yes, Cat Haven accepts cats in need of adoption. If you have a cat that you'd like to surrender, please contact us for more information on the intake process.",
+  },
+  {
+    question: "How can I contact Cat Haven for further inquiries?",
+    answer:
+      "You can reach us through the email cathaven@gmail.com. We're ready to assist with any questions regarding cat adoption and our services.",
+  },
+];
