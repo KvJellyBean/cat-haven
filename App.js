@@ -22,6 +22,7 @@ import CartPageScreen from "./Screens/CartPage";
 import PersonalInformationPage from "./Screens/PersonalInformationPage";
 import emailVerification from "./Screens/emailVerif";
 import PaymentSuccess from "./Screens/SuccessModal";
+import ProfilePaymentMethod from "./Screens/ProfilePaymentMethod";
 
 const Stack = createNativeStackNavigator();
 
@@ -39,8 +40,10 @@ function App() {
       {isSplashScreen ? (
         <SplashScreen />
       ) : (
-        <Stack.Navigator initialRouteName="Onboarding" screenOptions={{ headerShown: false }}>
-
+        <Stack.Navigator
+          initialRouteName="Onboarding"
+          screenOptions={{ headerShown: false }}
+        >
           <Stack.Screen name="Form" component={Form} />
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Favourite" component={FavouriteScreen} />
@@ -58,10 +61,19 @@ function App() {
           <Stack.Screen name="AddPayment" component={AddPayment} />
           <Stack.Screen name="PaymentMethod" component={PaymentMethod} />
           <Stack.Screen name="CartPageScreen" component={CartPageScreen} />
-          <Stack.Screen name="PersonalInformationPage" component={PersonalInformationPage} />
-          <Stack.Screen name="emailVerification" component={emailVerification} />
+          <Stack.Screen
+            name="PersonalInformationPage"
+            component={PersonalInformationPage}
+          />
+          <Stack.Screen
+            name="emailVerification"
+            component={emailVerification}
+          />
           <Stack.Screen name="PaymentSuccess" component={PaymentSuccess} />
-
+          <Stack.Screen
+            name="ProfilePaymentMethod"
+            component={ProfilePaymentMethod}
+          />
         </Stack.Navigator>
       )}
     </NavigationContainer>

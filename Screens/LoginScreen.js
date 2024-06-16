@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#004AAD",
     marginBottom: 10,
+    marginTop: 50,
   },
   subtitle: {
     fontSize: 18,
@@ -121,7 +122,7 @@ const styles = StyleSheet.create({
     color: "#000000",
     textAlign: "center",
     fontWeight: "bold",
-    marginBottom: 100,
+    marginBottom: 80,
   },
   input: {
     width: "100%",
