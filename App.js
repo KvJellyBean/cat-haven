@@ -23,6 +23,7 @@ import PersonalInformationPage from "./Screens/PersonalInformationPage";
 import emailVerification from "./Screens/emailVerif";
 import PaymentSuccess from "./Screens/SuccessModal";
 import ProfilePaymentMethod from "./Screens/ProfilePaymentMethod";
+import ProfileAddPaymentMethod from "./Screens/ProfileAddPayment";
 
 const Stack = createNativeStackNavigator();
 
@@ -73,6 +74,10 @@ function App() {
           <Stack.Screen
             name="ProfilePaymentMethod"
             component={ProfilePaymentMethod}
+          />
+          <Stack.Screen
+            name="ProfileAddPaymentMethod"
+            component={ProfileAddPaymentMethod}
           />
         </Stack.Navigator>
       )}
