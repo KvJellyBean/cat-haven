@@ -1,22 +1,91 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet } from "react-native";
 import { Iconify } from "react-native-iconify";
-
+import { collection, query, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
 import { useNavigation } from "@react-navigation/native";
+import { auth, db } from "../firebase"; 
+import Footer from "../components/footer";
 
-const cats = [
-  { id: "1", name: "Samantha", breed: "British Short Hair", location: "Bogor, Jawa Barat" },
-  { id: "2", name: "Kelly", breed: "Munchkin", location: "Semarang, Jawa Tengah" },
-  { id: "3", name: "Hanson", breed: "Brandal", location: "Bandung, Jawa Barat" },
-  { id: "4", name: "Marvel", breed: "Kocak", location: "Surabaya, Jawa Timur" },
-  { id: "5", name: "Aristo", breed: "Cicak", location: "Banten, Banten" },
-  { id: "6", name: "Louis", breed: "Huahahah", location: "TJ Priuk, Jakarta Utara" },
-  { id: "7", name: "Steven", breed: "KEKEKKEKEKE", location: "Blok M, Jakarta Selatan" },
-  { id: "8", name: "Denial", breed: "Dokeaowowko", location: "Ancol, Jakarta Utara" },
-];
+const HeartFilledIcon = () => <Iconify icon="fe:heart" size={25} color="red" />;
 
-export default function FavouriteScreen() {
+export default function FavouriteScreen({route}) {
+  const { updateLikedStatus } = route.params;
   const navigation = useNavigation();
+  const [favoritePets, setFavoritePets] = useState([]);
+
+  useEffect(() => {
+    const fetchFavoritePets = async () => {
+      try {
+        const user = auth.currentUser;
+        if (!user) return;
+
+        const userFavoritesRef = collection(db, 'users', user.uid, 'favorites');
+        const unsubscribe = onSnapshot(userFavoritesRef, (snapshot) => {
+          const pets = [];
+          snapshot.forEach((doc) => {
+            pets.push({ id: doc.id, ...doc.data(), liked: true }); // Set 'liked' to true for each favorite pet
+          });
+          setFavoritePets(pets);
+        });
+
+        return () => unsubscribe();
+      } catch (error) {
+        console.error('Error fetching favorite pets:', error);
+      }
+    };
+
+    fetchFavoritePets();
+  }, []);
+
+  const toggleLike = async (id) => {
+    try {
+      const user = auth.currentUser;
+      if (!user) return;
+  
+      const userFavoritesRef = collection(db, 'users', user.uid, 'favorites');
+      const petRef = doc(userFavoritesRef, id);
+      
+      await deleteDoc(petRef); // Remove the pet from favorites in Firestore
+  
+      // Update local state to reflect the removal from favorites
+      setFavoritePets(prevPets => prevPets.map(pet => ({
+        ...pet,
+        liked: pet.id === id ? false : pet.liked // Set 'liked' to false for the removed pet
+      })));
+  
+      // Update liked status in HomeScreen
+      updateLikedStatus(id, false); // Call the function passed as prop
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    }
+  };
+  
+
+  const renderPetItem = ({ item }) => (
+    <TouchableOpacity onPress={() => navigation.navigate("Detail", { pet: item, updateLikedStatus})}>
+      <View style={styles.adoptCard}>
+        <Image source={item.image} style={styles.catImage} />
+        <View style={styles.likeContainer}>
+          <TouchableOpacity style={styles.likeButton} onPress={() => toggleLike(item.id)}>
+            <View style={styles.likeButtonBackground}>
+              {item.liked ? <HeartFilledIcon /> : <Iconify icon="feather:heart" size={24} color="#777" style={styles.heartIcon} />}
+            </View>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.petInfo}>
+          <View style={styles.petDetails}>
+            <Text style={styles.petName}>{item.name}</Text>
+            <Text style={styles.petBreed}>{item.breed}</Text>
+            <View style={styles.petLocationContainer}>
+              <Iconify icon="feather:map-pin" size={18} color="#777" />
+              <Text style={styles.petLocation}>{item.location}</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -24,46 +93,14 @@ export default function FavouriteScreen() {
       </View>
 
       <FlatList
-        data={cats}
-        renderItem={({ item }) => (
-          <TouchableOpacity>
-            <View style={styles.adoptCard}>
-              <Image source={require("../assets/Kucing.jpg")} style={styles.catImage} />
-              <View style={styles.likeContainer}>
-                <TouchableOpacity style={styles.likeButton}>
-                  <View style={styles.likeButtonBackground}>
-                    <Iconify icon="feather:heart" size={24} color="#777" style={[styles.heartIcon, item.liked ? styles.heartIconActive : null]} />
-                  </View>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.petInfo}>
-                <View style={styles.petDetails}>
-                  <Text style={styles.petName}>{item.name}</Text>
-                  <Text style={styles.petBreed}>{item.breed}</Text>
-                  <View style={styles.petLocationContainer}>
-                    <Iconify icon="feather:map-pin" size={18} color="#777" />
-                    <Text style={styles.petLocation}>{item.location}</Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-          </TouchableOpacity>
-        )}
+        data={favoritePets}
+        renderItem={renderPetItem}
         keyExtractor={(item) => item.id}
-        numColumns={2} // Set number of columns to 2
+        numColumns={2}
+        contentContainerStyle={styles.flatListContent}
       />
 
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.footerButton} onPress={() => navigation.push("Home")}>
-          <Iconify icon="feather:home" size={30} color="#777" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.footerButton} onPress={() => navigation.navigate("PetList")}>
-          <Image source={require("../assets/splash.png")} style={styles.footerImage} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.footerButton} >
-          <Iconify icon="feather:heart" size={30} color="#777" />
-        </TouchableOpacity>
-      </View>
+      <Footer />
     </View>
   );
 }
@@ -143,34 +180,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 5,
   },
-  heartIconActive: {
-    color: "red",
+  heartIcon: {
+    color: "#777",
   },
 
-  footer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 15,
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    margin: 15,
-    marginBottom: 50,
-    elevation: 4,
-    position: "absolute",
-    bottom: 0,
-    alignSelf: "center",
-  },
-  footerButton: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  footerImage: {
-    width: 70,
-    height: 40,
-  },
-  footerIcon: {
-    fontSize: 24,
+  flatListContent: {
+    flexGrow: 1,
+    paddingTop: 10,
+    paddingBottom: 20,
   },
 });

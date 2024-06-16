@@ -2,49 +2,13 @@ import React, { useState, useRef, useEffect } from "react";
 import { View, Text, Image, TextInput, TouchableOpacity, FlatList, StyleSheet, ImageBackground, Animated } from "react-native";
 import { Iconify } from "react-native-iconify";
 import { useNavigation } from "@react-navigation/native";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-
-const cats = [
-  {
-      id: "1",
-      name: "Samantha",
-      breed: "British Short Hair",
-      location: "Bogor, Jawa Barat",
-      image: require("../assets/Kucing.jpg"),
-      gender: "Female",
-      age: "2 years",
-      weight: "3.5 kg",
-      description: "Samantha is a lovely British Short Hair cat looking for a home. Samantha is a friendly British Short Hair cat with a friendly face."
-  },
-  {
-      id: "2",
-      name: "Kelly",
-      breed: "Munchkin",
-      location: "Semarang, Jawa Tengah",
-      image: require("../assets/Kucing2.jpg"),
-      gender: "Female",
-      age: "1.5 years",
-      weight: "2.8 kg",
-      description: "Kelly is an adorable Munchkin cat who loves to play and cuddle. She is very affectionate and is looking for a loving home."
-  },
-  {
-      id: "3",
-      name: "Hanson",
-      breed: "Bengal",
-      location: "Bandung, Jawa Barat",
-      image: require("../assets/Kucing3.jpg"),
-      gender: "Male",
-      age: "3 years",
-      weight: "4 kg",
-      description: "Hanson is a playful and energetic cat who enjoys exploring and having fun. He would be a great companion for an active family."
-  },
-
-];
-
-
+import { getAuth} from "firebase/auth";
+import { doc, setDoc, getDocs,deleteDoc, getDoc, collection } from "firebase/firestore";
+import Footer from "../components/footer.js";
+import cats from "../assets/data/cats";
+import { db } from "../firebase"; // Assuming you have firebase.js setup correctly
 
 export default function HomeScreen() {
-  
   const HeartOutlineIcon = () => <Iconify icon="fe:heart-o" size={25} color="#777" style={styles.heartIcon} />;
 
   // Komponen untuk ikon hati diisi
@@ -53,27 +17,85 @@ export default function HomeScreen() {
   const [likeStatus, setLikeStatus] = useState({});
 
   const [username, setUsername] = useState("");
-  const auth = getAuth();
+  const authInstance = getAuth();
+
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
+    const fetchUserFavorites = async () => {
+      try {
+        const user = authInstance.currentUser;
+        if (!user) throw new Error("User not authenticated");
+  
+        const userFavoritesRef = collection(db, "users", user.uid, "favorites");
+        const snapshot = await getDocs(userFavoritesRef);
+  
+        let updatedStatus = {};
+        snapshot.forEach((doc) => {
+          updatedStatus[doc.id] = true; // Assuming all documents in favorites are liked
+        });
+  
+        setLikeStatus(updatedStatus);
+  
+        // Set username directly based on user object
         setUsername(user.displayName || "User");
-      } else {
-        // User is signed out
-        setUsername("");
+  
+      } catch (error) {
+        console.error("Error fetching user favorites:", error);
       }
-    });
-
-    // Cleanup subscription on unmount
-    return unsubscribe;
+    };
+  
+    fetchUserFavorites();
+  
   }, []);
+  
 
-  const toggleLike = (id) => {
-    setLikeStatus((prevStatus) => ({
-      ...prevStatus,
-      [id]: !prevStatus[id],
-    }));
+  const toggleLike = async (id) => {
+    try {
+      const user = authInstance.currentUser;
+      if (!user) throw new Error("User not authenticated");
+
+      const userFavoritesRef = collection(db, "users", user.uid, "favorites");
+      const petRef = doc(userFavoritesRef, id);
+      const petSnapshot = await getDoc(petRef);
+
+      if (petSnapshot.exists()) {
+        // Pet already liked, remove from favorites
+        await deleteDoc(petRef);
+        updateLikedStatus(id, false); // Update like status in HomeScreen
+      } else {
+        // Pet not liked, add to favorites
+        await setDoc(
+          petRef,
+          cats.find((pet) => pet.id === id)
+        );
+        updateLikedStatus(id, true); // Update like status in HomeScreen
+      }
+    } catch (error) {
+      console.error("Error toggling like:", error);
+    }
+  };
+
+  // Update liked status function
+  const updateLikedStatus = async (id, liked) => {
+    try {
+      const user = authInstance.currentUser;
+      if (!user) throw new Error("User not authenticated");
+
+      const userFavoritesRef = doc(collection(db, "users", user.uid, "favorites"), id);
+
+      if (liked) {
+        await setDoc(userFavoritesRef, cats.find((pet) => pet.id === id));
+      } else {
+        await deleteDoc(userFavoritesRef);
+      }
+
+      setLikeStatus((prevStatus) => ({
+        ...prevStatus,
+        [id]: liked,
+      }));
+    } catch (error) {
+      console.error("Error updating liked status:", error);
+    }
   };
 
   const navigation = useNavigation();
@@ -99,13 +121,14 @@ export default function HomeScreen() {
   }, [currentPage]);
 
   const navigateToPetDetail = (pet) => {
-    navigation.navigate("Detail", { pet });
+    navigation.navigate('Detail', { pet, updateLikedStatus: updateLikedStatus });
+
+    
   };
   const navigateToPetList = (pet) => {
-    navigation.navigate("PetList", { pet });
+    navigation.navigate("PetList", { pet,updateLikedStatus: updateLikedStatus });
+    
   };
-
-  
 
   return (
     <View style={styles.container}>
@@ -132,7 +155,7 @@ export default function HomeScreen() {
         <View style={styles.searchIconContainer}>
           <Iconify icon="feather:search" size={30} color="#ccc" style={styles.searchIcon} />
         </View>
-          <TextInput placeholder="Search your cat..." style={styles.searchInput} onPress={() => navigateToPetList()}/>
+        <TextInput placeholder="Search your cat..." style={styles.searchInput} onPress={() => navigateToPetList()} />
         <TouchableOpacity onPress={() => navigation.navigate("Filter")}>
           <View style={styles.filterButton}>
             <Iconify icon="mdi:slider" size={25} color="#fff" style={styles.sliderIcon} />
@@ -149,7 +172,7 @@ export default function HomeScreen() {
         </View>
         <FlatList
           horizontal
-          data={cats}
+          data={cats.slice(0, 3)} // Hanya mengambil 3 data pertama
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => navigateToPetDetail(item)}>
               <View style={styles.adoptCard}>
@@ -185,23 +208,23 @@ export default function HomeScreen() {
         />
 
         <View style={styles.pageIndicatorContainer}>
-          {cats.map((_, index) => (
-            <Animated.View key={index} style={[styles.pageIndicatorDot, currentPage === index && styles.pageIndicatorDotActive, { width: animatedValues[index] }]} />
+          {cats.slice(0, 3).map((_, index) => (
+            <Animated.View
+              key={index}
+              style={[
+                styles.pageIndicatorDot,
+                currentPage === index && styles.pageIndicatorDotActive,
+                {
+                  width: animatedValues[index],
+                  marginLeft: index === 0 ? 0 : 5, // Atur margin kiri untuk dot pertama agar tidak bergeser
+                },
+              ]}
+            />
           ))}
         </View>
       </View>
 
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.footerButton}>
-          <Iconify icon="feather:home" size={30} color="#777" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.footerButton} onPress={() => navigateToPetList()}>
-          <Image source={require("../assets/splash.png")} style={styles.footerImage} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.footerButton} onPress={() => navigation.navigate("Favourite")}>
-          <Iconify icon="feather:heart" size={30} color="#777" />
-        </TouchableOpacity>
-      </View>
+      <Footer updateLikedStatus={updateLikedStatus} />
     </View>
   );
 }
@@ -396,29 +419,5 @@ const styles = StyleSheet.create({
   },
   pageIndicatorDotActive: {
     backgroundColor: "#004AAD",
-  },
-
-  footer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 15,
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    margin: 15,
-    marginBottom: 20,
-    elevation: 4,
-  },
-  footerButton: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  footerImage: {
-    width: 70,
-    height: 40,
-  },
-  footerIcon: {
-    fontSize: 24,
   },
 });

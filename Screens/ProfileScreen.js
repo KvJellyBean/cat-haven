@@ -95,7 +95,9 @@ const ProfilePage = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.menuItem}
-            onPress={() => navigation.navigate("Favourite")}
+            onPress={() =>
+              navigation.navigate("Favourite", { updateLikedStatus: "" })
+            }
           >
             <Iconify
               icon="iconamoon:heart"

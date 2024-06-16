@@ -6,33 +6,83 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
-  Dimensions,
   TextInput,
 } from "react-native";
 import { Iconify } from "react-native-iconify";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import catsData from "../assets/data/cats.js";
+import {
+  collection,
+  doc,
+  setDoc,
+  getDocs,
+  deleteDoc,
+} from "firebase/firestore";
+import { db, auth } from "../firebase";
+import catsData from "../assets/data/cats";
 
 const numColumns = 2;
 const itemsPerPage = 6;
 
+const HeartOutlineIcon = () => (
+  <Iconify icon="fe:heart-o" size={25} color="#777" style={styles.heartIcon} />
+);
+const HeartFilledIcon = () => <Iconify icon="fe:heart" size={25} color="red" />;
+
 export default function PetList() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { pet } = route.params;
+  const { updateLikedStatus } = route.params || {};
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredCats, setFilteredCats] = useState(catsData);
+  const [favoritePets, setFavoritePets] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setFilteredCats(
-      catsData.filter(
-        (cat) =>
-          cat.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          cat.breed.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          cat.location.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    );
+    const fetchFavorites = async () => {
+      try {
+        const user = auth.currentUser;
+        if (!user) return;
+
+        const userFavoritesRef = collection(db, "users", user.uid, "favorites");
+        const snapshot = await getDocs(userFavoritesRef);
+
+        if (!snapshot.empty) {
+          const favorites = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setFavoritePets(favorites);
+        } else {
+          setFavoritePets([]);
+        }
+
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching favorites:", error);
+      }
+    };
+
+    fetchFavorites();
+  }, []);
+
+  useEffect(() => {
+    const filterCats = () => {
+      if (searchQuery === "") {
+        setFilteredCats(catsData);
+      } else {
+        const filtered = catsData.filter(
+          (cat) =>
+            cat.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            cat.breed.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            cat.location.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setFilteredCats(filtered);
+        setCurrentPage(1);
+      }
+    };
+
+    filterCats();
   }, [searchQuery]);
 
   const totalPages = Math.ceil(filteredCats.length / itemsPerPage);
@@ -73,6 +123,56 @@ export default function PetList() {
     return filteredCats.slice(startIndex, endIndex);
   };
 
+  const toggleLike = async (petId) => {
+    try {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const userFavoritesRef = doc(db, "users", user.uid, "favorites", petId);
+
+      const isAlreadyFavorite = favoritePets.some((pet) => pet.id === petId);
+
+      if (!isAlreadyFavorite) {
+        const pet = filteredCats.find((item) => item.id === petId);
+        if (!pet) {
+          console.error("Pet not found in filteredCats array");
+          return;
+        }
+
+        const data = {
+          name: pet.name || "",
+          breed: pet.breed || "",
+          location: pet.location || "",
+          gender: pet.gender || "",
+          age: pet.age || "",
+          weight: pet.weight || "",
+          description: pet.description || "",
+          adoptionFee: pet.adoptionFee || 0,
+          image: pet.image || "",
+        };
+
+        await setDoc(userFavoritesRef, data);
+        setFavoritePets([...favoritePets, { id: petId, ...pet }]);
+      } else {
+        await deleteDoc(userFavoritesRef);
+        const updatedFavorites = favoritePets.filter((pet) => pet.id !== petId);
+        setFavoritePets(updatedFavorites);
+      }
+
+      updateLikedStatus(petId, !isAlreadyFavorite);
+    } catch (error) {
+      console.error("Error toggling like:", error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
@@ -101,7 +201,7 @@ export default function PetList() {
           value={searchQuery}
           onChangeText={(text) => setSearchQuery(text)}
         />
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Filter")}>
           <View style={styles.filterButton}>
             <Iconify
               icon="mdi:slider"
@@ -116,21 +216,27 @@ export default function PetList() {
       <FlatList
         data={renderCardsForPage()}
         renderItem={({ item }) => (
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("Detail", {
+                pet: item,
+                updateLikedStatus: toggleLike,
+              })
+            }
+          >
             <View style={styles.adoptCard}>
               <Image source={item.image} style={styles.catImage} />
               <View style={styles.likeContainer}>
                 <View style={styles.likeButtonBackground}>
-                  <TouchableOpacity style={styles.likeButton}>
-                    <Iconify
-                      icon="feather:heart"
-                      size={24}
-                      color="#777"
-                      style={[
-                        styles.heartIcon,
-                        item.liked ? styles.heartIconActive : null,
-                      ]}
-                    />
+                  <TouchableOpacity
+                    style={styles.likeButton}
+                    onPress={() => toggleLike(item.id)}
+                  >
+                    {favoritePets.some((pet) => pet.id === item.id) ? (
+                      <HeartFilledIcon />
+                    ) : (
+                      <HeartOutlineIcon />
+                    )}
                   </TouchableOpacity>
                 </View>
               </View>
@@ -177,6 +283,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 55,
     zIndex: 1,
+  },
+  searchIcon: {
+    color: "#777",
   },
   searchInput: {
     flex: 1,
@@ -253,10 +362,7 @@ const styles = StyleSheet.create({
   likeButtonBackground: {
     backgroundColor: "white",
     borderRadius: 10,
-    padding: 5,
-  },
-  heartIconActive: {
-    color: "#666",
+    padding: 3,
   },
   paginationContainer: {
     flexDirection: "row",
@@ -268,6 +374,7 @@ const styles = StyleSheet.create({
     height: 24,
     margin: 2,
     borderRadius: 12,
+    backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -279,12 +386,12 @@ const styles = StyleSheet.create({
   },
   pageNumberText: {
     fontSize: 13,
-    color: "#fff",
+    color: "#004AAD",
+  },
+  pageNumberContainerActive: {
+    backgroundColor: "#004AAD",
   },
   pageNumberTextActive: {
     color: "#fff",
-  },
-  pageNumberTextInactive: {
-    color: "#000",
   },
 });
