@@ -1,9 +1,11 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal, Pressable } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Modal, Pressable, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { collection, doc, setDoc, getDoc } from "firebase/firestore"; // Import necessary Firestore functions
+import { db, auth } from "../firebase";
 
-const AdoptForm = ({ modalVisible, setModalVisible }) => {
+const AdoptForm = ({ petId, modalVisible, setModalVisible }) => {
   const navigation = useNavigation();
 
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -20,6 +22,29 @@ const AdoptForm = ({ modalVisible, setModalVisible }) => {
   });
 
   const [errors, setErrors] = useState({});
+  const [existingForm, setExistingForm] = useState(false);
+
+  useEffect(() => {
+    checkExistingForm(); 
+  }, []);
+
+  const checkExistingForm = async () => { 
+    try {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const userFormRef = doc(db, "users", user.uid, "form", petId);
+      const docSnap = await getDoc(userFormRef);
+
+      if (docSnap.exists()) {
+        setExistingForm(true);
+      } else {
+        setExistingForm(false);
+      }
+    } catch (error) {
+      console.error("Error checking existing form:", error);
+    }
+  }
 
   const handleInputChange = (key, value) => {
 
@@ -36,7 +61,7 @@ const AdoptForm = ({ modalVisible, setModalVisible }) => {
     return emailRegex.test(email);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const requiredFields = [
       { key: 'firstName', label: 'First name' },
       { key: 'lastName', label: 'Last name' },
@@ -47,32 +72,37 @@ const AdoptForm = ({ modalVisible, setModalVisible }) => {
       { key: 'phoneNumber', label: 'Phone number' }
     ];
     const newErrors = {};
-
+  
     requiredFields.forEach(field => {
       if (!formData[field.key]) {
         newErrors[field.key] = `${field.label} is required`;
       }
     });
-
+  
     if (formData.email && !validateEmail(formData.email)) {
       newErrors.email = 'Invalid email address';
     }
-
+  
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
     } else {
-      console.log("Form data:");
-      console.log("First Name:", formData.firstName);
-      console.log("Last Name:", formData.lastName);
-      console.log("Date of Birth:", formData.DOB);
-      console.log("Type of Pet:", formData.typeofpet);
-      console.log("Email:", formData.email);
-      console.log("Address:", formData.address);
-      console.log("Phone Number:", formData.phoneNumber);
-      console.log("Have Children:", formData.haveChildren);
-
-      // Submit form atau navigasi ke layar lain
-      navigation.navigate('CartPageScreen');
+      try {
+        const user = auth.currentUser;
+        if (!user) return;
+  
+        // Reference to the user's form document for the specific pet
+        const userFormRef = doc(db, "users", user.uid, "form", petId);
+        await setDoc(userFormRef, {
+          ...formData,
+          petId,
+          userId: user.uid,
+        });
+  
+        console.log("Form data submitted successfully");
+        navigation.navigate('CartPageScreen');
+      } catch (error) {
+        console.error("Error submitting form:", error);
+      }
     }
   };
 
@@ -91,6 +121,17 @@ const AdoptForm = ({ modalVisible, setModalVisible }) => {
       month: '2-digit',
       day: '2-digit',
     }).replace(/(\d+)\/(\d+)\/(\d+)/, '$2/$1/$3'); // Convert to MM/DD/YYYY
+  };
+
+  const showAlert = () => {
+    Alert.alert(
+      "Form Already Submitted",
+      "You have already submitted the adoption form for this pet.",
+      [
+        { text: "OK", onPress: () => console.log("OK Pressed") }
+      ],
+      { cancelable: false }
+    );
   };
 
   return (
@@ -165,8 +206,8 @@ const AdoptForm = ({ modalVisible, setModalVisible }) => {
             onChangeText={(text) => handleInputChange("haveChildren", text)}
           />
 
-          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-            <Text style={styles.buttonText}>Submit</Text>
+          <TouchableOpacity style={styles.submitButton} onPress={existingForm ? showAlert : handleSubmit}>
+            <Text style={styles.buttonText}>{existingForm ? "Already Submitted" : "Submit"}</Text>
           </TouchableOpacity>
         </ScrollView>
         {showDatePicker && (

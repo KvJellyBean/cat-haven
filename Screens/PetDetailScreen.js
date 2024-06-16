@@ -143,19 +143,15 @@ const PetDetailScreen = ({ route, navigation }) => {
             Adoption Fee: Rp {pet.adoptionFee}
           </Text>
         </View>
-
         <TouchableOpacity style={styles.adoptButton} onPress={toggleModal}>
           <Text style={styles.adoptButtonText}>Adopt Pet</Text>
         </TouchableOpacity>
 
         <Form
+          petId={pet.id}
           modalVisible={isModalVisible}
           setModalVisible={setIsModalVisible}
-        />
-
-        <Form
-          modalVisible={isModalVisible}
-          setModalVisible={setIsModalVisible}
+          navigation={navigation}
         />
       </View>
     </ScrollView>
