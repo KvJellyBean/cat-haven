@@ -1,15 +1,31 @@
 import React, { useState } from "react";
-import { View, Image, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Image,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { Iconify } from "react-native-iconify";
-import Form from "./Form"
+import Form from "./Form";
 
 const PetDetailScreen = ({ route, navigation }) => {
   const { pet } = route.params;
 
-  const HeartOutlineIcon = () => <Iconify icon="fe:heart-o" size={25} color="#777" style={styles.heartIcon} />;
+  const HeartOutlineIcon = () => (
+    <Iconify
+      icon="fe:heart-o"
+      size={25}
+      color="#777"
+      style={styles.heartIcon}
+    />
+  );
 
   // Komponen untuk ikon hati diisi
-  const HeartFilledIcon = () => <Iconify icon="fe:heart" size={25} color="red" />;
+  const HeartFilledIcon = () => (
+    <Iconify icon="fe:heart" size={25} color="red" />
+  );
 
   const [isLiked, setIsLiked] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -25,8 +41,15 @@ const PetDetailScreen = ({ route, navigation }) => {
   return (
     <ScrollView style={styles.container}>
       <Image source={pet.image} style={styles.image} />
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Iconify icon="material-symbols-light:arrow-back-ios" size={30} color="#1e1e1e" />
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={styles.backButton}
+      >
+        <Iconify
+          icon="material-symbols-light:arrow-back-ios"
+          size={30}
+          color="#1e1e1e"
+        />
       </TouchableOpacity>
 
       <View style={styles.detailsContainer}>
@@ -61,8 +84,10 @@ const PetDetailScreen = ({ route, navigation }) => {
           <Text style={styles.adoptButtonText}>Adopt Pet</Text>
         </TouchableOpacity>
 
-
-        <Form modalVisible={isModalVisible} setModalVisible={setIsModalVisible} />
+        <Form
+          modalVisible={isModalVisible}
+          setModalVisible={setIsModalVisible}
+        />
       </View>
     </ScrollView>
   );
@@ -76,7 +101,7 @@ const styles = StyleSheet.create({
   backButton: {
     position: "absolute",
     top: 60,
-    left: 35,
+    left: 30,
   },
   image: {
     width: "100%",
@@ -89,9 +114,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 40,
     marginTop: -60,
   },
-  heartIcon: {
-    
-  },
+  heartIcon: {},
   titleContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
