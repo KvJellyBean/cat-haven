@@ -15,10 +15,9 @@ import { SelectList } from "react-native-dropdown-select-list";
 
 export default function LoginScreen() {
   const navigation = useNavigation();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState("");
+  const [status, setStatus] = useState("");
+  const [DoB, setDoB] = useState("");
   const [location, setLocation] = useState("");
   const locations = [
     { key: "1", value: "Indonesia" },
@@ -36,42 +35,6 @@ export default function LoginScreen() {
     { key: "13", value: "Malaysia" },
     { key: "14", value: "Singapura" },
   ];
-
-  const handleLogin = async () => {
-    const auth = getAuth();
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!emailRegex.test(email)) {
-      setError("Please enter a valid email address");
-      setTimeout(() => setError(""), 6000);
-      return;
-    }
-
-    if (!password) {
-      setError("Please enter a password");
-      setTimeout(() => setError(""), 6000);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigation.navigate("Home");
-    } catch (error) {
-      if (
-        error.code === "auth/user-not-found" ||
-        error.code === "auth/wrong-password"
-      ) {
-        setError("Email or password are incorrect");
-      } else {
-        setError("An unexpected error occurred. Please try again.");
-      }
-      setTimeout(() => setError(""), 6000);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -99,8 +62,8 @@ export default function LoginScreen() {
         style={styles.input}
         placeholder="Hillary Clinton"
         placeholderTextColor="#626262"
-        value={email}
-        onChangeText={(text) => setEmail(text)}
+        value={name}
+        onChangeText={(text) => setName(text)}
       />
 
       <Text style={styles.label}>Status</Text>
@@ -108,8 +71,8 @@ export default function LoginScreen() {
         style={styles.input}
         placeholder="I love all animals"
         placeholderTextColor="#626262"
-        value={password}
-        onChangeText={(text) => setPassword(text)}
+        value={status}
+        onChangeText={(text) => setStatus(text)}
       />
 
       <Text style={styles.label}>Date of Birth</Text>
@@ -117,8 +80,8 @@ export default function LoginScreen() {
         style={styles.input}
         placeholder="23/05/1995"
         placeholderTextColor="#626262"
-        value={password}
-        onChangeText={(text) => setPassword(text)}
+        value={DoB}
+        onChangeText={(text) => setDoB(text)}
       />
 
       <Text style={styles.location}>Location</Text>
@@ -129,9 +92,7 @@ export default function LoginScreen() {
         placeholder="Select a location"
       />
 
-      {error ? <Text style={styles.error}>{error}</Text> : null}
-
-      <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
+      <TouchableOpacity style={styles.loginButton}>
         <Text style={styles.loginButtonText}>Save Changes</Text>
       </TouchableOpacity>
     </ScrollView>

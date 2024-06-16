@@ -1,4 +1,5 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {
   StyleSheet,
   View,
@@ -12,8 +13,27 @@ import { Iconify } from "react-native-iconify";
 import Faq from "./Faq";
 
 const ProfilePage = () => {
+  
   const navigation = useNavigation();
   const [isFaqVisible, setIsFaqVisible] = React.useState(false);
+
+  const [username, setUsername] = useState("");
+  const auth = getAuth();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUsername(user.displayName || "User");
+      } else {
+        // User is signed out
+        setUsername("");
+      }
+    });
+
+    // Cleanup subscription on unmount
+    return unsubscribe;
+  }, []);
+
 
   return (
     <View style={styles.profilePage}>
@@ -30,7 +50,7 @@ const ProfilePage = () => {
           source={require("../assets/banner.png")}
         />
         <View style={styles.userDetails}>
-          <Text style={styles.userName}>Your Full Name</Text>
+          <Text style={styles.userName}>{username}</Text>
           <Text style={styles.userBio}>I love all animal</Text>
         </View>
       </View>
