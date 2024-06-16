@@ -1,13 +1,22 @@
 import React, { useState } from "react";
-import { View, Text, Image, StyleSheet, Button, Modal, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Modal,
+  TouchableOpacity,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { paymentMethods } from "../data";
 import AddPaymentModal from "./AddPayment";
 
 const PaymentModal = ({ isVisible, onHide }) => {
-  const [isAddPaymentModalVisible, setIsAddPaymentModalVisible] = useState(false);
-  const [selectedMethod, setSelectedMethod] = useState(null); // Menyimpan metode pembayaran yang dipilih
-  const navigation = useNavigation();
+  const [isAddPaymentModalVisible, setIsAddPaymentModalVisible] =
+    useState(false);
+  const [selectedMethod, setSelectedMethod] = useState(null);
   const [isMethodSelected, setIsMethodSelected] = useState(false);
+  const navigation = useNavigation();
 
   const toggleModal = () => {
     onHide();
@@ -20,60 +29,70 @@ const PaymentModal = ({ isVisible, onHide }) => {
 
   const handleSelectMethod = (method) => {
     setSelectedMethod(method);
-    setIsMethodSelected(true); // Metode dipilih, aktifkan tombol "Continue"
+    setIsMethodSelected(true);
   };
 
   return (
     <View>
-      <Modal animationType="slide" transparent={true} visible={isVisible} onRequestClose={toggleModal}>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={isVisible}
+        onRequestClose={toggleModal}
+      >
         {!isAddPaymentModalVisible && (
           <View style={styles.overlay}>
             <View style={styles.overlayContent}>
               <Text style={styles.overlayTitle}>Payment Method</Text>
               <View style={styles.paymentMethod}>
+                {paymentMethods.map((method) => (
+                  <TouchableOpacity
+                    key={method.key}
+                    style={[
+                      styles.method,
+                      selectedMethod === method.method && styles.activeMethod,
+                    ]}
+                    onPress={() => handleSelectMethod(method.method)}
+                  >
+                    <Image source={method.logo} style={styles.methodImage} />
+                    <View style={styles.methodDetails}>
+                      <Text style={styles.methodName}>{method.method}</Text>
+                      <Text style={styles.methodInfo}>{method.paymentId}</Text>
+                    </View>
+                  </TouchableOpacity>
+                ))}
                 <TouchableOpacity
-                  style={[styles.method, selectedMethod === "Apple" && styles.activeMethod]} // Menambahkan gaya aktif jika metode dipilih
-                  onPress={() => handleSelectMethod("Apple")}
+                  style={styles.addMethodButton}
+                  onPress={showAddPaymentModal}
                 >
-                  <Image source={require("../assets/applepay.png")} style={styles.methodImage} />
-                  <View style={styles.methodDetails}>
-                    <Text style={styles.methodName}>Apple ID</Text>
-                    <Text style={styles.methodInfo}>****4567</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.method, selectedMethod === "MasterCard" && styles.activeMethod]} onPress={() => handleSelectMethod("MasterCard")}>
-                  <Image source={require("../assets/mastercard.png")} style={styles.methodImage1} />
-                  <View style={styles.methodDetails}>
-                    <Text style={styles.methodName}>Master Card</Text>
-                    <Text style={styles.methodInfo}>****6356</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.method, selectedMethod === "Visa" && styles.activeMethod]} onPress={() => handleSelectMethod("Visa")}>
-                  <Image source={require("../assets/visa.png")} style={styles.methodImage2} />
-                  <View style={styles.methodDetails}>
-                    <Text style={styles.methodName}>Visa</Text>
-                    <Text style={styles.methodInfo}>****5645</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.addMethodButton} onPress={showAddPaymentModal}>
-                  <Text style={styles.addMethodButtonText}>+ Add Payment Method</Text>
+                  <Text style={styles.addMethodButtonText}>
+                    + Add Payment Method
+                  </Text>
                 </TouchableOpacity>
               </View>
               <View style={styles.overlayButtons}>
-                <Button
-                  title="Continue"
-                  onPress={isMethodSelected ? onHide : null} 
-                  color="#004AAD"
-                  disabled={!isMethodSelected} 
-                />
-
-                <Button title="Cancel" onPress={onHide} color="#e23c3c" />
+                <TouchableOpacity
+                  style={[styles.button, styles.continueButton]}
+                  onPress={isMethodSelected ? onHide : null}
+                  disabled={!isMethodSelected}
+                >
+                  <Text style={styles.buttonText}>Continue</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.button, styles.cancelButton]}
+                  onPress={onHide}
+                >
+                  <Text style={styles.buttonText}>Cancel</Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
         )}
       </Modal>
-      <AddPaymentModal isVisible={isAddPaymentModalVisible} onHide={() => setIsAddPaymentModalVisible(false)} />
+      <AddPaymentModal
+        isVisible={isAddPaymentModalVisible}
+        onHide={() => setIsAddPaymentModalVisible(false)}
+      />
     </View>
   );
 };
@@ -89,7 +108,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 20,
     borderRadius: 10,
-    width: "80%",
+    width: "85%",
+    height: "80%",
+    justifyContent: "space-between",
   },
   overlayTitle: {
     textAlign: "center",
@@ -99,30 +120,25 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   paymentMethod: {
+    flex: 1,
     marginBottom: 20,
   },
   method: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 10,
+    padding: 10,
   },
   activeMethod: {
-    backgroundColor: "#F0F0F0", // Warna latar belakang untuk metode yang dipilih
+    backgroundColor: "#F0F0F0",
   },
   methodImage: {
     width: 80,
     height: 56,
     marginRight: 25,
   },
-  methodImage1: {
-    width: 80,
-    height: 56,
-    marginRight: 25,
-  },
-  methodImage2: {
-    width: 80,
-    height: 56,
-    marginRight: 25,
+  methodDetails: {
+    flex: 1,
   },
   methodName: {
     fontSize: 20,
@@ -135,12 +151,34 @@ const styles = StyleSheet.create({
   overlayButtons: {
     flexDirection: "row",
     justifyContent: "space-evenly",
+    gap: 10,
+    position: "absolute",
+    alignSelf: "center",
+    bottom: 40,
+  },
+  button: {
+    width: 140,
+    padding: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  continueButton: {
+    backgroundColor: "#004AAD",
+  },
+  cancelButton: {
+    backgroundColor: "#e23c3c",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   addMethodButton: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
     marginBottom: 10,
+    marginTop: 20,
+    marginHorizontal: 15,
   },
   addMethodButtonText: {
     fontSize: 16,

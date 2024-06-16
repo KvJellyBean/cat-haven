@@ -1,25 +1,38 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, Modal } from 'react-native';
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Modal,
+  KeyboardAvoidingView,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
+
 const AddPayment = ({ isVisible, onSubmit, onHide }) => {
-  const [nameOnCard, setNameOnCard] = useState('');
-  const [cardNumber, setCardNumber] = useState('');
-  const [expiryDate, setExpiryDate] = useState('');
-  const [cvv, setCvv] = useState('');
-  const [postalCode, setPostalCode] = useState('');
+  const [nameOnCard, setNameOnCard] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiryDate, setExpiryDate] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [postalCode, setPostalCode] = useState("");
 
   const navigation = useNavigation();
 
   const submitForm = () => {
-   
     onSubmit();
   };
 
   return (
-    <Modal animationType="slide" transparent={true} visible={isVisible} onRequestClose={onHide}>
-      <View style={styles.overlay}>
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={isVisible}
+      onRequestClose={onHide}
+    >
+      <KeyboardAvoidingView style={styles.overlay} behavior="padding">
         <View style={styles.overlayContent}>
-          <Text style={styles.overlayTitle}>Payment Form</Text>
+          <Text style={styles.overlayTitle}>Add Payment Form</Text>
           <TextInput
             style={styles.input}
             placeholder="Enter Name on Card"
@@ -60,7 +73,10 @@ const AddPayment = ({ isVisible, onSubmit, onHide }) => {
             keyboardType="numeric"
           />
           <View style={styles.buttonGroup}>
-            <TouchableOpacity style={styles.continueButton} onPress={() => navigation.navigate("PaymentSuccess")}>
+            <TouchableOpacity
+              style={styles.continueButton}
+              onPress={() => navigation.navigate("PaymentSuccess")}
+            >
               <Text style={styles.buttonText}>Continue</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.cancelButton} onPress={onHide}>
@@ -68,7 +84,7 @@ const AddPayment = ({ isVisible, onSubmit, onHide }) => {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
@@ -76,35 +92,36 @@ const AddPayment = ({ isVisible, onSubmit, onHide }) => {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   overlayContent: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 20,
     borderRadius: 10,
-    width: 350,
-    alignItems: 'center',
+    width: "85%",
+    alignItems: "center",
   },
   overlayTitle: {
-    color: '#004AAD',
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
+    color: "#004AAD",
+    fontSize: 30,
+    fontWeight: "bold",
+    marginBottom: 40,
+    marginTop: 20,
   },
   input: {
-    width: '100%',
+    width: "100%",
     padding: 10,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 5,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   expiryCvv: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
   },
   expiry: {
     flex: 1,
@@ -115,28 +132,29 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   buttonGroup: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
     marginTop: 10,
+    marginBottom: 30,
   },
   continueButton: {
-    backgroundColor: '#004AAD',
+    backgroundColor: "#004AAD",
     padding: 10,
-    borderRadius: 5,
     flex: 1,
     marginRight: 5,
   },
   cancelButton: {
-    backgroundColor: 'red',
+    backgroundColor: "red",
     padding: 10,
-    borderRadius: 5,
     flex: 1,
     marginLeft: 5,
   },
   buttonText: {
-    color: 'white',
-    textAlign: 'center',
+    color: "white",
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 16,
   },
 });
 
