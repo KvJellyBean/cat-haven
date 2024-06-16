@@ -13,14 +13,34 @@ const Footer = ({ updateLikedStatus }) => {
 
   return (
     <View style={styles.footer}>
-      <TouchableOpacity style={styles.footerButton} onPress={() => handlePress("Home")}>
-        <Iconify icon="feather:home" size={30} color={route.name === "Home" ? "#004AAD" : "#777"} />
+      <TouchableOpacity
+        style={styles.footerButton}
+        onPress={() => handlePress("Home")}
+      >
+        <Iconify
+          icon="feather:home"
+          size={30}
+          color={route.name === "Home" ? "#004AAD" : "#777"}
+        />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.footerButton} onPress={() => handlePress("PetList")}>
-        <Image source={require("../assets/splash.png")} style={styles.footerImage} />
+      <TouchableOpacity
+        style={styles.footerButton}
+        onPress={() => handlePress("PetList")}
+      >
+        <Image
+          source={require("../assets/splash.png")}
+          style={styles.footerImage}
+        />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.footerButton} onPress={() => handlePress("Favourite")}>
-        <Iconify icon="feather:heart" size={30} color={route.name === "Favourite" ? "#004AAD" : "#777"} />
+      <TouchableOpacity
+        style={styles.footerButton}
+        onPress={() => handlePress("Favourite")}
+      >
+        <Iconify
+          icon="feather:heart"
+          size={30}
+          color={route.name === "Favourite" ? "#004AAD" : "#777"}
+        />
       </TouchableOpacity>
     </View>
   );
@@ -30,13 +50,15 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: "row",
     justifyContent: "space-between",
+    position: "absolute",
     alignItems: "center",
     paddingVertical: 15,
     backgroundColor: "#fff",
     borderRadius: 10,
     margin: 15,
-    marginBottom: 20,
     elevation: 4,
+    bottom: 30,
+    alignSelf: "center",
   },
   footerButton: {
     flex: 1,
@@ -46,6 +68,9 @@ const styles = StyleSheet.create({
   footerImage: {
     width: 70,
     height: 40,
+  },
+  footerIcon: {
+    fontSize: 24,
   },
 });
 
