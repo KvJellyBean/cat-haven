@@ -108,18 +108,18 @@ export const paymentMethods = [
     key: "1",
     method: "Apple ID",
     paymentId: "****4492",
-    logo: "https://via.placeholder.com/100",
+    logo: require("./assets/applepay.png"),
   },
   {
     key: "2",
     method: "Credit Card",
     paymentId: "****6356",
-    logo: "https://via.placeholder.com/100",
+    logo: require("./assets/mastercard.png"),
   },
   {
     key: "3",
     method: "Visa",
     paymentId: "****5645",
-    logo: "https://via.placeholder.com/100",
+    logo: require("./assets/visa.png"),
   },
 ];
