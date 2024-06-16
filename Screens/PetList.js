@@ -161,7 +161,7 @@ export default function PetList() {
 
       updateLikedStatus(petId, !isAlreadyFavorite);
     } catch (error) {
-      console.error("Error toggling like:", error);
+      
     }
   };
 
