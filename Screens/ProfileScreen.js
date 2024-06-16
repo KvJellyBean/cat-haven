@@ -133,7 +133,7 @@ const ProfilePage = () => {
 
           <TouchableOpacity
             style={styles.menuItem}
-            onPress={() => navigation.navigate("PaymentMethod")}
+            onPress={() => navigation.navigate("ProfilePaymentMethod")}
           >
             <Iconify
               icon="fluent:payment-24-regular"
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
   },
   back: {
     position: "absolute",
-    top: 60,
+    top: 70,
     left: 50,
   },
   icon: {
@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
   },
   profileTitle: {
     position: "absolute",
-    top: 50,
+    top: 60,
     left: 80,
     right: 0,
     fontSize: 25,

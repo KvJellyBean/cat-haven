@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "center",
+    // justifyContent: "center",
     padding: 30,
     position: "relative",
   },
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
-    top: -20,
+    marginTop: 50,
     marginBottom: 20,
   },
   backButton: {

@@ -8,7 +8,6 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Alert,
-  Image,
 } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -20,6 +19,7 @@ export default function LoginScreen() {
   const route = useRoute();
   const { TitleText } = route.params;
   const [email, setEmail] = useState("");
+
   const handleResetPassword = async () => {
     if (!email.trim()) {
       Alert.alert("Error", "Please enter your email.");
@@ -47,7 +47,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }}>
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.innerContainer}>
           <View style={styles.headerContainer}>
@@ -79,7 +79,8 @@ export default function LoginScreen() {
           >
             <Text style={styles.resetpassButtonText}>Reset Password</Text>
           </TouchableOpacity>
-
+        </View>
+        <View style={styles.footer}>
           <Text style={styles.footerHeader}>Developed by</Text>
           <Text style={styles.footerTitle}>DEVIVE GUYS</Text>
         </View>
@@ -92,9 +93,8 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
     padding: 30,
+    justifyContent: "space-between",
   },
   innerContainer: {
     alignItems: "center",
@@ -107,6 +107,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 20,
+    marginTop: 50,
   },
   backButton: {
     position: "absolute",
@@ -139,19 +140,23 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 330,
+    marginTop: 20,
   },
   resetpassButtonText: {
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
   },
+  footer: {
+    alignItems: "center",
+    marginTop: 20,
+    bottom: 40,
+  },
   footerHeader: {
     fontSize: 18,
     color: "#494949",
     textAlign: "center",
-    fontWeight: "bold",
-    marginTop: 20,
+    fontWeight: "600",
   },
   footerTitle: {
     fontSize: 18,
