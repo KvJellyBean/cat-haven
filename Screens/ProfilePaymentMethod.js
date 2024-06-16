@@ -29,7 +29,7 @@ export default function ProfilePaymentMethod() {
       <View style={styles.paymentMethodsSection}>
         {paymentMethods.map((method) => (
           <View key={method.key} style={styles.paymentMethod}>
-            <Image source={{ uri: method.logo }} style={styles.paymentLogo} />
+            <Image source={method.logo} style={styles.paymentLogo} />
             <View style={styles.paymentInfo}>
               <Text style={styles.paymentMethodText}>{method.method}</Text>
               <Text style={styles.paymentIdText}>{method.paymentId}</Text>
@@ -42,12 +42,10 @@ export default function ProfilePaymentMethod() {
         ))}
       </View>
 
-      {/* Add payment method */}
       <TouchableOpacity
         style={styles.addPaymentMethod}
         onPress={() => navigation.navigate("AddPayment")}
       >
-        {/* Ionicons plus */}
         <Ionicons name="add" size={18} color="#004AAD" />
         <View style={styles.paymentInfo}>
           <Text style={{ color: "#004AAD", fontWeight: "500", fontSize: 16 }}>
@@ -100,6 +98,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     marginRight: 25,
+    resizeMode: "contain",
   },
   paymentInfo: {
     flex: 1,
