@@ -34,17 +34,13 @@ export default function ProfilePaymentMethod() {
               <Text style={styles.paymentMethodText}>{method.method}</Text>
               <Text style={styles.paymentIdText}>{method.paymentId}</Text>
             </View>
-            <Image
-              source={require("../assets/back.png")}
-              style={styles.arrowIcon}
-            />
           </View>
         ))}
       </View>
 
       <TouchableOpacity
         style={styles.addPaymentMethod}
-        onPress={() => navigation.navigate("AddPayment")}
+        onPress={() => navigation.navigate("ProfileAddPaymentMethod")}
       >
         <Ionicons name="add" size={18} color="#004AAD" />
         <View style={styles.paymentInfo}>
@@ -111,13 +107,6 @@ const styles = StyleSheet.create({
   paymentIdText: {
     fontSize: 16,
     color: "#004AAD",
-  },
-  arrowIcon: {
-    width: 15,
-    height: 15,
-    right: 10,
-    tintColor: "black",
-    transform: [{ rotate: "180deg" }],
   },
   addPaymentMethod: {
     flexDirection: "row",
