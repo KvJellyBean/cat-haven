@@ -1,20 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
-  Text,
   Image,
+  Text,
   StyleSheet,
-  TouchableOpacity,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
-import PaymentMethod from "./PaymentMethod";
 import { Ionicons } from "@expo/vector-icons";
+import { collection, doc, setDoc, deleteDoc, getDoc } from "firebase/firestore";
+import { db, auth } from "../firebase";
 
-const CartPageScreen = ({ navigation }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const toggleModal = () => {
-    setIsModalVisible(!isModalVisible);
-  };
+const CartPageScreen = ({ navigation, route}) => {
+  const [cartData, setCartData] = useState(null); // State untuk menyimpan data dari Firestore
+
+  const { petId } = route.params;
+
+  useEffect(() => {
+    const fetchCartData = async () => {
+      try {
+        const user = auth.currentUser;
+        if (!user) return;
+
+        const userCartRef = doc(db, "users", user.uid, "cart", petId); // Sesuaikan dengan struktur dokumen Anda
+        const cartDoc = await getDoc(userCartRef);
+
+        if (cartDoc.exists()) {
+          setCartData(cartDoc.data()); // Set data ke dalam state cartData
+        } else {
+          console.log("No such document!");
+        }
+      } catch (error) {
+        console.error("Error fetching cart data:", error);
+      }
+    };
+
+    fetchCartData();
+  }, []); // Empty dependency array untuk menjalankan useEffect hanya sekali saat komponen dimount
 
   return (
     <View style={styles.container}>
@@ -29,45 +51,39 @@ const CartPageScreen = ({ navigation }) => {
       </View>
 
       <ScrollView style={styles.scrollView}>
-        <View style={styles.item}>
-          <Image
-            source={require("../assets/Kucing.jpg")}
-            style={styles.animalImage}
-          />
-          <View style={styles.details}>
-            <Text style={styles.animalName}>Snowflake</Text>
-            <Text style={styles.animalType}>Domestic Cat</Text>
-            <Text style={styles.price}>Rp. 1.500.000</Text>
+        {cartData ? (
+          <View style={styles.item}>
+            <Image source={{ uri: cartData.image }} style={styles.animalImage} />
+            <View style={styles.details}>
+              <Text style={styles.animalName}>{cartData.name}</Text>
+              <Text style={styles.animalType}>{cartData.breed}</Text>
+              <Text style={styles.price}>Rp. {cartData.adoptionFee}</Text>
+            </View>
           </View>
-        </View>
-        <View style={styles.item}>
-          <Image
-            source={require("../assets/food.png")}
-            style={styles.animalImage}
-          />
-          <View style={styles.details}>
-            <Text style={styles.animalName}>Cat Supply</Text>
-            <Text style={styles.animalType}>Free Cat Supply</Text>
-            <Text style={styles.price}>Free</Text>
-          </View>
-        </View>
+        ) : (
+          <Text>Loading...</Text>
+        )}
       </ScrollView>
 
-      <View style={styles.adoptionFeesHeader}>
-        <Text style={styles.adoptionFeePrice}>Adoption Fees:</Text>
-        <Text style={styles.adoptionFeePrice}>Rp. 1.500.000</Text>
-      </View>
-      <View style={styles.adoptionFees}>
-        <View style={styles.totalPriceSection}>
-          <Text style={styles.totalPriceAmount}>Total:</Text>
-          <Text style={styles.totalPriceAmount}>Rp. 1.500.000</Text>
-        </View>
-        <TouchableOpacity style={styles.adoptButton} onPress={toggleModal}>
-          <Text style={styles.adoptButtonText}>Adopt</Text>
-        </TouchableOpacity>
-      </View>
+      {cartData && (
+        <>
+          <View style={styles.adoptionFeesHeader}>
+            <Text style={styles.adoptionFeePrice}>Adoption Fees:</Text>
+            <Text style={styles.adoptionFeePrice}>Rp. {cartData.adoptionFee}</Text>
+          </View>
+          <View style={styles.adoptionFees}>
+            <View style={styles.totalPriceSection}>
+              <Text style={styles.totalPriceAmount}>Total:</Text>
+              <Text style={styles.totalPriceAmount}>Rp. {cartData.adoptionFee}</Text>
+            </View>
+            <TouchableOpacity style={styles.adoptButton} onPress={toggleModal}>
+              <Text style={styles.adoptButtonText}>Adopt</Text>
+            </TouchableOpacity>
+          </View>
 
-      <PaymentMethod isVisible={isModalVisible} onHide={toggleModal} />
+          <PaymentMethod isVisible={isModalVisible} onHide={toggleModal} />
+        </>
+      )}
     </View>
   );
 };

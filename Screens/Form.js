@@ -5,7 +5,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { collection, doc, setDoc, getDoc } from "firebase/firestore"; // Import necessary Firestore functions
 import { db, auth } from "../firebase";
 
-const AdoptForm = ({ petId, modalVisible, setModalVisible }) => {
+const AdoptForm = ({ petId, pet, modalVisible, setModalVisible }) => {
   const navigation = useNavigation();
 
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -89,7 +89,7 @@ const AdoptForm = ({ petId, modalVisible, setModalVisible }) => {
       try {
         const user = auth.currentUser;
         if (!user) return;
-  
+    
         // Reference to the user's form document for the specific pet
         const userFormRef = doc(db, "users", user.uid, "form", petId);
         await setDoc(userFormRef, {
@@ -97,14 +97,24 @@ const AdoptForm = ({ petId, modalVisible, setModalVisible }) => {
           petId,
           userId: user.uid,
         });
-  
+    
+        // Reference to the user's cart document for the specific pet
+        const userCartRef = doc(db, "users", user.uid, "cart", petId);
+        await setDoc(userCartRef, {
+          name: pet.name,
+          breed: pet.breed,
+          adoptionFee: pet.adoptionFee,
+          image: pet.image,
+        });
+    
         console.log("Form data submitted successfully");
-        navigation.navigate('CartPageScreen');
+        navigation.navigate('CartPageScreen', { petId: petId });
       } catch (error) {
         console.error("Error submitting form:", error);
       }
     }
   };
+  
 
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || formData.DOB;

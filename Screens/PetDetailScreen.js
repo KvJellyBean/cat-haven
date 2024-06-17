@@ -149,6 +149,7 @@ const PetDetailScreen = ({ route, navigation }) => {
 
         <Form
           petId={pet.id}
+          pet={ pet }
           modalVisible={isModalVisible}
           setModalVisible={setIsModalVisible}
           navigation={navigation}
