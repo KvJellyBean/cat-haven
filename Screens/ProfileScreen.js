@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, signOut } from "firebase/auth";
 import {
   StyleSheet,
   View,
@@ -12,28 +12,26 @@ import { useNavigation } from "@react-navigation/native";
 import { Iconify } from "react-native-iconify";
 import Faq from "./Faq";
 
-const ProfilePage = () => {
-  
+const ProfilePage = ({ route }) => {
   const navigation = useNavigation();
-  const [isFaqVisible, setIsFaqVisible] = React.useState(false);
+  const [isFaqVisible, setIsFaqVisible] = useState(false);
+  const { user, setUser } = route.params;
+  const [profileData, setProfileData] = useState(user);
 
-  const [username, setUsername] = useState("");
-  const auth = getAuth();
+  const updateProfileData = (updatedData) => {
+    setUser(updatedData);
+    setProfileData(updatedData);
+  };
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUsername(user.displayName || "User");
-      } else {
-        // User is signed out
-        setUsername("");
-      }
-    });
-
-    // Cleanup subscription on unmount
-    return unsubscribe;
-  }, []);
-
+  const handleLogout = async () => {
+    const auth = getAuth();
+    try {
+      await signOut(auth);
+      navigation.navigate("Landing");
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
+  };
 
   return (
     <View style={styles.profilePage}>
@@ -45,13 +43,10 @@ const ProfilePage = () => {
 
       <View style={styles.userProfile}>
         <View style={styles.userProfileBackground} />
-        <Image
-          style={styles.profileImage}
-          source={require("../assets/banner.png")}
-        />
+        <Image style={styles.profileImage} source={profileData.image} />
         <View style={styles.userDetails}>
-          <Text style={styles.userName}>{username}</Text>
-          <Text style={styles.userBio}>I love all animal</Text>
+          <Text style={styles.userName}>{profileData.username}</Text>
+          <Text style={styles.userBio}>{profileData.status}</Text>
         </View>
       </View>
 
@@ -61,7 +56,12 @@ const ProfilePage = () => {
         <View style={styles.menuCard}>
           <TouchableOpacity
             style={styles.menuItem}
-            onPress={() => navigation.navigate("PersonalInformationPage")}
+            onPress={() =>
+              navigation.navigate("PersonalInformationPage", {
+                user: profileData,
+                setUser: updateProfileData,
+              })
+            }
           >
             <Iconify
               icon="iconamoon:profile"
@@ -172,7 +172,7 @@ const ProfilePage = () => {
         </View>
 
         <View style={styles.menuCard}>
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
             <Iconify
               icon="tabler-logout"
               size={25}
