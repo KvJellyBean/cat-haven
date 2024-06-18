@@ -9,41 +9,43 @@ import {
   ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { Ionicons } from "@expo/vector-icons";
-import { SelectList } from "react-native-dropdown-select-list";
+import { getAuth, updateProfile } from "firebase/auth";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 
-export default function LoginScreen() {
+export default function EditProfile({ route }) {
   const navigation = useNavigation();
-  const [name, setName] = useState("");
-  const [status, setStatus] = useState("");
-  const [DoB, setDoB] = useState("");
-  const [location, setLocation] = useState("");
-  const locations = [
-    { key: "1", value: "Indonesia" },
-    { key: "2", value: "USA" },
-    { key: "3", value: "UK" },
-    { key: "4", value: "Turkei" },
-    { key: "5", value: "China" },
-    { key: "6", value: "Taiwan" },
-    { key: "7", value: "Japan" },
-    { key: "8", value: "Korea" },
-    { key: "9", value: "Philipnes" },
-    { key: "10", value: "Albania" },
-    { key: "11", value: "Papua Newgiune" },
-    { key: "12", value: "Australia" },
-    { key: "13", value: "Malaysia" },
-    { key: "14", value: "Singapura" },
-  ];
+  const { user, setUser } = route.params;
+  const [theUser, setTheUser] = useState(user);
+  const auth = getAuth();
+  const firestore = getFirestore(); // Instance Firestore
+
+  const handleSaveChanges = async () => {
+    try {
+      // Update display name in Firebase Auth
+      await updateProfile(auth.currentUser, {
+        displayName: theUser.username,
+      });
+
+      // Set user data in Firestore
+      const userRef = doc(firestore, "users", auth.currentUser.uid);
+      await setDoc(userRef, {
+        username: theUser.username,
+        status: theUser.status,
+        location: theUser.location,
+        dateOfBirth: theUser.dateOfBirth,
+        image: theUser.image,
+      });
+      setUser(theUser);
+      navigation.pop(); // Navigate back after saving
+    } catch (error) {
+      console.error("Error updating profile: ", error);
+    }
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <View
-        style={
-          // Place on top of the header screen
-          styles.header
-        }
-      >
+      <View style={styles.header}>
         <TouchableOpacity
           onPress={() => navigation.pop()}
           style={styles.backButton}
@@ -53,46 +55,47 @@ export default function LoginScreen() {
         <Text style={styles.title}>Edit Profile</Text>
       </View>
       <Image
-        source={{ uri: "https://via.placeholder.com/100" }} // Replace with actual image URL
+        source={theUser.image} // Replace with actual image URL
         style={styles.profileImage}
       />
 
       <Text style={styles.label}>Name</Text>
       <TextInput
         style={styles.input}
-        placeholder="Hillary Clinton"
+        placeholder="Enter your name"
         placeholderTextColor="#626262"
-        value={name}
-        onChangeText={(text) => setName(text)}
+        value={theUser.username}
+        onChangeText={(text) => setTheUser({ ...theUser, username: text })}
       />
 
       <Text style={styles.label}>Status</Text>
       <TextInput
         style={styles.input}
-        placeholder="I love all animals"
+        placeholder="Enter your profile status (e.g. I love cats!)"
         placeholderTextColor="#626262"
-        value={status}
-        onChangeText={(text) => setStatus(text)}
+        value={theUser.status}
+        onChangeText={(text) => setTheUser({ ...theUser, status: text })}
       />
 
       <Text style={styles.label}>Date of Birth</Text>
       <TextInput
         style={styles.input}
-        placeholder="23/05/1995"
+        placeholder="Enter your date of birth (e.g. 01/01/2000)"
         placeholderTextColor="#626262"
-        value={DoB}
-        onChangeText={(text) => setDoB(text)}
+        value={theUser.dateOfBirth}
+        onChangeText={(text) => setTheUser({ ...theUser, dateOfBirth: text })}
       />
 
-      <Text style={styles.location}>Location</Text>
-      <SelectList
-        setSelected={setLocation}
-        data={locations}
-        boxStyles={styles.dropdown}
-        placeholder="Select a location"
+      <Text style={styles.label}>Location</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Enter your location (e.g. Jakarta, Indonesia)"
+        placeholderTextColor="#626262"
+        value={theUser.location}
+        onChangeText={(text) => setTheUser({ ...theUser, location: text })}
       />
 
-      <TouchableOpacity style={styles.loginButton}>
+      <TouchableOpacity style={styles.loginButton} onPress={handleSaveChanges}>
         <Text style={styles.loginButtonText}>Save Changes</Text>
       </TouchableOpacity>
     </ScrollView>
