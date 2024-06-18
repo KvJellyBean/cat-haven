@@ -10,13 +10,18 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { paymentMethods } from "../data";
 import AddPaymentModal from "./AddPayment";
+import PaymentSuccessModal from "./SuccessModal";
+import PaymentFailedModal from "./FailedModal";
 
 const PaymentModal = ({ isVisible, onHide }) => {
   const [isAddPaymentModalVisible, setIsAddPaymentModalVisible] =
     useState(false);
   const [selectedMethod, setSelectedMethod] = useState(null);
   const [isMethodSelected, setIsMethodSelected] = useState(false);
-  const navigation = useNavigation();
+  const [isPaymentSuccessModalVisible, setIsPaymentSuccessModalVisible] =
+    useState(false);
+  const [isPaymentFailedModalVisible, setIsPaymentFailedModalVisible] =
+    useState(false);
 
   const toggleModal = () => {
     onHide();
@@ -30,6 +35,15 @@ const PaymentModal = ({ isVisible, onHide }) => {
   const handleSelectMethod = (method) => {
     setSelectedMethod(method);
     setIsMethodSelected(true);
+  };
+
+  const handleContinue = () => {
+    setIsPaymentSuccessModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    onHide();
+    setIsPaymentFailedModalVisible(true);
   };
 
   return (
@@ -73,14 +87,14 @@ const PaymentModal = ({ isVisible, onHide }) => {
               <View style={styles.overlayButtons}>
                 <TouchableOpacity
                   style={[styles.button, styles.continueButton]}
-                  onPress={isMethodSelected ? onHide : null}
+                  onPress={isMethodSelected ? handleContinue : null}
                   disabled={!isMethodSelected}
                 >
                   <Text style={styles.buttonText}>Continue</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.button, styles.cancelButton]}
-                  onPress={onHide}
+                  onPress={handleCancel}
                 >
                   <Text style={styles.buttonText}>Cancel</Text>
                 </TouchableOpacity>
@@ -92,6 +106,11 @@ const PaymentModal = ({ isVisible, onHide }) => {
       <AddPaymentModal
         isVisible={isAddPaymentModalVisible}
         onHide={() => setIsAddPaymentModalVisible(false)}
+      />
+      <PaymentSuccessModal isVisible={isPaymentSuccessModalVisible} />
+      <PaymentFailedModal
+        isVisible={isPaymentFailedModalVisible}
+        onHide={() => setIsPaymentFailedModalVisible(false)}
       />
     </View>
   );

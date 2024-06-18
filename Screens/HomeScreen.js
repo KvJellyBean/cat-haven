@@ -1,53 +1,77 @@
-import React, { useState, useRef, useEffect } from "react";
-import { View, Text, Image, TextInput, TouchableOpacity, FlatList, StyleSheet, ImageBackground, Animated } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  View,
+  Text,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+  StyleSheet,
+  ImageBackground,
+  Animated,
+} from "react-native";
 import { Iconify } from "react-native-iconify";
 import { useNavigation } from "@react-navigation/native";
-import { getAuth} from "firebase/auth";
-import { doc, setDoc, getDocs,deleteDoc, getDoc, collection } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import {
+  doc,
+  setDoc,
+  getDocs,
+  deleteDoc,
+  getDoc,
+  collection,
+} from "firebase/firestore";
 import Footer from "../components/footer.js";
 import cats from "../assets/data/cats";
 import { db } from "../firebase"; // Assuming you have firebase.js setup correctly
 
 export default function HomeScreen() {
-  const HeartOutlineIcon = () => <Iconify icon="fe:heart-o" size={25} color="#777" style={styles.heartIcon} />;
+  const [user, setUser] = useState({
+    username: "",
+    status: "",
+    location: "",
+    dateOfBirth: "",
+    likeStatus: {},
+  });
 
-  // Komponen untuk ikon hati diisi
-  const HeartFilledIcon = () => <Iconify icon="fe:heart" size={25} color="red" />;
-
-  const [likeStatus, setLikeStatus] = useState({});
-
-  const [username, setUsername] = useState("");
   const authInstance = getAuth();
-
+  const navigation = useNavigation();
+  const [currentPage, setCurrentPage] = useState(0);
+  const flatListRef = useRef();
+  const animatedValues = useRef(cats.map(() => new Animated.Value(10))).current;
 
   useEffect(() => {
-    const fetchUserFavorites = async () => {
+    const fetchUserData = async () => {
       try {
         const user = authInstance.currentUser;
         if (!user) throw new Error("User not authenticated");
-  
+
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        const userData = userDoc.exists() ? userDoc.data() : {};
+
         const userFavoritesRef = collection(db, "users", user.uid, "favorites");
         const snapshot = await getDocs(userFavoritesRef);
-  
+
         let updatedStatus = {};
         snapshot.forEach((doc) => {
-          updatedStatus[doc.id] = true; // Assuming all documents in favorites are liked
+          updatedStatus[doc.id] = true;
         });
-  
-        setLikeStatus(updatedStatus);
-  
-        // Set username directly based on user object
-        setUsername(user.displayName || "User");
-  
+
+        setUser({
+          username: user.displayName || "User",
+          status: userData.status || "I love all animals.",
+          location: userData.location || "",
+          dateOfBirth: userData.dateOfBirth || "",
+          image: userData.image || require("../assets/banner.png"),
+          likeStatus: updatedStatus,
+        });
       } catch (error) {
-        console.error("Error fetching user favorites:", error);
+        console.error("Error fetching user data:", error);
       }
     };
-  
-    fetchUserFavorites();
-  
+
+    fetchUserData();
   }, []);
-  
 
   const toggleLike = async (id) => {
     try {
@@ -59,50 +83,29 @@ export default function HomeScreen() {
       const petSnapshot = await getDoc(petRef);
 
       if (petSnapshot.exists()) {
-        // Pet already liked, remove from favorites
         await deleteDoc(petRef);
-        updateLikedStatus(id, false); // Update like status in HomeScreen
+        updateLikedStatus(id, false);
       } else {
-        // Pet not liked, add to favorites
         await setDoc(
           petRef,
           cats.find((pet) => pet.id === id)
         );
-        updateLikedStatus(id, true); // Update like status in HomeScreen
+        updateLikedStatus(id, true);
       }
     } catch (error) {
       console.error("Error toggling like:", error);
     }
   };
 
-  // Update liked status function
-  const updateLikedStatus = async (id, liked) => {
-    try {
-      const user = authInstance.currentUser;
-      if (!user) throw new Error("User not authenticated");
-
-      const userFavoritesRef = doc(collection(db, "users", user.uid, "favorites"), id);
-
-      if (liked) {
-        await setDoc(userFavoritesRef, cats.find((pet) => pet.id === id));
-      } else {
-        await deleteDoc(userFavoritesRef);
-      }
-
-      setLikeStatus((prevStatus) => ({
-        ...prevStatus,
+  const updateLikedStatus = (id, liked) => {
+    setUser((prevState) => ({
+      ...prevState,
+      likeStatus: {
+        ...prevState.likeStatus,
         [id]: liked,
-      }));
-    } catch (error) {
-      console.error("Error updating liked status:", error);
-    }
+      },
+    }));
   };
-
-  const navigation = useNavigation();
-
-  const [currentPage, setCurrentPage] = useState(0);
-  const flatListRef = useRef();
-  const animatedValues = useRef(cats.map(() => new Animated.Value(10))).current;
 
   const handleScroll = (event) => {
     const scrollPosition = event.nativeEvent.contentOffset.x;
@@ -121,30 +124,44 @@ export default function HomeScreen() {
   }, [currentPage]);
 
   const navigateToPetDetail = (pet) => {
-    navigation.navigate('Detail', { pet, updateLikedStatus: updateLikedStatus });
-
-    
+    navigation.navigate("Detail", {
+      pet,
+      updateLikedStatus: updateLikedStatus,
+    });
   };
-  const navigateToPetList = (pet) => {
-    navigation.navigate("PetList", { pet,updateLikedStatus: updateLikedStatus });
-    
+
+  const navigateToPetList = () => {
+    navigation.navigate("PetList", {
+      updateLikedStatus: updateLikedStatus,
+    });
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.welcomeText}>Welcome, {username} </Text>
-        <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
-          <Image source={require("../assets/splash.png")} style={styles.profileImage} />
+        <Text style={styles.welcomeText}>Welcome, {user.username}</Text>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("Profile", { user: user, setUser: setUser })
+          }
+        >
+          <Image source={user.image} style={styles.profileImage} />
         </TouchableOpacity>
       </View>
 
       <View style={styles.adoptBanner}>
-        <ImageBackground source={require("../assets/banner.png")} style={styles.bannerBackground} resizeMode="cover">
+        <ImageBackground
+          source={require("../assets/banner.png")}
+          style={styles.bannerBackground}
+          resizeMode="cover"
+        >
           <View style={styles.adoptButtonContainer}>
             <Text style={styles.adoptNowText}>Adopt Now!</Text>
             <Text style={styles.adoptNowText}>Free Cat Supply!</Text>
-            <TouchableOpacity style={styles.adoptNowButton} onPress={() => navigateToPetList()}>
+            <TouchableOpacity
+              style={styles.adoptNowButton}
+              onPress={navigateToPetList}
+            >
               <Text style={styles.adoptNowButtonText}>Adopt Now!</Text>
             </TouchableOpacity>
           </View>
@@ -153,12 +170,26 @@ export default function HomeScreen() {
 
       <View style={styles.searchContainer}>
         <View style={styles.searchIconContainer}>
-          <Iconify icon="feather:search" size={30} color="#ccc" style={styles.searchIcon} />
+          <Iconify
+            icon="feather:search"
+            size={30}
+            color="#ccc"
+            style={styles.searchIcon}
+          />
         </View>
-        <TextInput placeholder="Search your cat..." style={styles.searchInput} onPress={() => navigateToPetList()} />
+        <TextInput
+          placeholder="Search your cat..."
+          style={styles.searchInput}
+          onPress={() => navigateToPetList()}
+        />
         <TouchableOpacity onPress={() => navigation.navigate("Filter")}>
           <View style={styles.filterButton}>
-            <Iconify icon="mdi:slider" size={25} color="#fff" style={styles.sliderIcon} />
+            <Iconify
+              icon="mdi:slider"
+              size={25}
+              color="#fff"
+              style={styles.sliderIcon}
+            />
           </View>
         </TouchableOpacity>
       </View>
@@ -166,21 +197,33 @@ export default function HomeScreen() {
       <View style={styles.adoptContainer}>
         <View style={styles.adoptHeader}>
           <Text style={styles.adoptTitle}>Adopt a Cat</Text>
-          <TouchableOpacity onPress={() => navigateToPetList()}>
+          <TouchableOpacity onPress={navigateToPetList}>
             <Text style={styles.adoptSeeAll}>See All</Text>
           </TouchableOpacity>
         </View>
         <FlatList
           horizontal
-          data={cats.slice(0, 3)} // Hanya mengambil 3 data pertama
+          data={cats.slice(0, 3)}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => navigateToPetDetail(item)}>
               <View style={styles.adoptCard}>
                 <Image source={item.image} style={styles.catImage} />
                 <View style={styles.likeContainer}>
                   <View style={styles.likeButtonBackground}>
-                    <TouchableOpacity style={styles.likeButton} onPress={() => toggleLike(item.id)}>
-                      {likeStatus[item.id] ? <HeartFilledIcon /> : <HeartOutlineIcon />}
+                    <TouchableOpacity
+                      style={styles.likeButton}
+                      onPress={() => toggleLike(item.id)}
+                    >
+                      {user.likeStatus[item.id] ? (
+                        <Iconify icon="fe:heart" size={25} color="red" />
+                      ) : (
+                        <Iconify
+                          icon="fe:heart-o"
+                          size={25}
+                          color="#777"
+                          style={styles.heartIcon}
+                        />
+                      )}
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -197,7 +240,7 @@ export default function HomeScreen() {
               </View>
             </TouchableOpacity>
           )}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={{ paddingLeft: 3 }}
           showsHorizontalScrollIndicator={false}
           snapToInterval={190}
@@ -216,15 +259,14 @@ export default function HomeScreen() {
                 currentPage === index && styles.pageIndicatorDotActive,
                 {
                   width: animatedValues[index],
-                  marginLeft: index === 0 ? 0 : 5, // Atur margin kiri untuk dot pertama agar tidak bergeser
+                  marginLeft: index === 0 ? 0 : 5,
                 },
               ]}
             />
           ))}
         </View>
       </View>
-
-      <Footer updateLikedStatus={updateLikedStatus} />
+      <Footer />
     </View>
   );
 }

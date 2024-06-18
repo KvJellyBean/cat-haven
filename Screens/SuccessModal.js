@@ -1,17 +1,37 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, Modal, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Modal,
+  TouchableOpacity,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-const PaymentSuccessModal = ({ isVisible}) => {
-    const navigation = useNavigation();
+const PaymentSuccessModal = ({ isVisible }) => {
+  const navigation = useNavigation();
   return (
-    <Modal animationType="slide" transparent={true} visible={isVisible} >
+    <Modal animationType="fade" transparent={true} visible={isVisible}>
       <View style={styles.overlay}>
         <View style={styles.container}>
-          <Image source={require("../assets/success.png")} style={styles.image} />
-          <Text style={styles.message}>Payment Successful!</Text>
-          <TouchableOpacity style={styles.closeButton} onPress={() => navigation.navigate("Home")}>
-            <Text style={styles.closeButtonText}>Close</Text>
+          <View style={styles.innerContainer}>
+            <Image
+              source={require("../assets/success.png")}
+              style={styles.image}
+            />
+            <Text style={styles.message}>Transaction Success</Text>
+          </View>
+
+          <Text style={styles.thanksText}>
+            Your new fur-ever friend sends purrs and smiles. Thanks for
+            adopting!
+          </Text>
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => navigation.navigate("Home")}
+          >
+            <Text style={styles.closeButtonText}>Confirm</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -29,8 +49,23 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#ffffff",
     borderRadius: 10,
-    padding: 20,
+    // padding: 20,
     alignItems: "center",
+    overflow: "hidden",
+  },
+  innerContainer: {
+    alignItems: "center",
+    backgroundColor: "#CFDAFF",
+    width: 310,
+    padding: 20,
+  },
+  thanksText: {
+    fontSize: 14,
+    color: "#000",
+    textAlign: "center",
+    marginTop: 20,
+    marginBottom: 30,
+    width: 250,
   },
   image: {
     width: 200,
@@ -41,18 +76,20 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     color: "#004AAD",
-    marginBottom: 20,
   },
   closeButton: {
     backgroundColor: "#004AAD",
     paddingVertical: 10,
     paddingHorizontal: 20,
+    width: 200,
     borderRadius: 5,
+    marginBottom: 20,
   },
   closeButtonText: {
     fontSize: 18,
     fontWeight: "bold",
     color: "#ffffff",
+    textAlign: "center",
   },
 });
 
