@@ -11,12 +11,15 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { Iconify } from "react-native-iconify";
 import Faq from "./Faq";
+import { collection, getDocs } from "firebase/firestore";
+import { db, auth } from "../firebase";
 
 const ProfilePage = ({ route }) => {
   const navigation = useNavigation();
   const [isFaqVisible, setIsFaqVisible] = useState(false);
   const { user, setUser } = route.params;
   const [profileData, setProfileData] = useState(user);
+  const [cartItems, setCartItems] = useState([]);
 
   const updateProfileData = (updatedData) => {
     setUser(updatedData);
@@ -32,6 +35,29 @@ const ProfilePage = ({ route }) => {
       console.error("Error signing out: ", error);
     }
   };
+
+  // Ambil data cart
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        const user = auth.currentUser;
+        if (!user) return;
+
+        const querySnapshot = await getDocs(
+          collection(db, "users", user.uid, "cart")
+        );
+        const items = [];
+        querySnapshot.forEach((doc) => {
+          items.push(doc.data());
+        });
+        setCartItems(items);
+      } catch (error) {
+        console.error("Error fetching cart items:", error);
+      }
+    };
+
+    fetchCartItems();
+  }, []);
 
   return (
     <View style={styles.profilePage}>
@@ -99,7 +125,9 @@ const ProfilePage = ({ route }) => {
         <View style={styles.menuCard}>
           <TouchableOpacity
             style={styles.menuItem}
-            onPress={() => navigation.navigate("CartPageScreen")}
+            onPress={() =>
+              navigation.navigate("CartPageScreen", { pet: cartItems })
+            }
           >
             <Iconify
               icon="lucide:shopping-cart"
