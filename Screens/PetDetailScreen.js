@@ -6,14 +6,19 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { Iconify } from "react-native-iconify";
-import Form from "./Form";
-import { collection, doc, setDoc, deleteDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, deleteDoc, getDoc } from "firebase/firestore";
 import { db, auth } from "../firebase";
+import AdoptForm from "./Form";
 
 const PetDetailScreen = ({ route, navigation }) => {
-  const { pet, updateLikedStatus } = route.params;
+  const { pet: initialPet, updateLikedStatus } = route.params;
+  const [pet, setPet] = useState(initialPet);
+  const [isLiked, setIsLiked] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   const HeartOutlineIcon = () => (
     <Iconify
@@ -23,40 +28,38 @@ const PetDetailScreen = ({ route, navigation }) => {
       style={styles.heartIcon}
     />
   );
+
   const HeartFilledIcon = () => (
     <Iconify icon="fe:heart" size={25} color="red" />
   );
 
-  const [isLiked, setIsLiked] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  useEffect(() => {
+    fetchLikedStatus();
+    checkFormStatus();
+  }, [pet.id]);
 
   useEffect(() => {
-    const fetchLikedStatus = async () => {
-      try {
-        const user = auth.currentUser;
-        if (!user) return;
+    const unsubscribe = navigation.addListener("focus", () => {
+      // Fetch updated form status when returning to this screen
+      checkFormStatus();
+    });
 
-        const userFavoritesRef = doc(
-          db,
-          "users",
-          user.uid,
-          "favorites",
-          pet.id
-        );
-        const petDoc = await getDoc(userFavoritesRef);
+    return unsubscribe;
+  }, [navigation]);
 
-        if (petDoc.exists()) {
-          setIsLiked(true);
-        } else {
-          setIsLiked(false);
-        }
-      } catch (error) {
-        console.error("Error fetching liked status:", error);
-      }
-    };
+  const fetchLikedStatus = async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) return;
 
-    fetchLikedStatus();
-  }, []);
+      const userFavoritesRef = doc(db, "users", user.uid, "favorites", pet.id);
+      const petDoc = await getDoc(userFavoritesRef);
+
+      setIsLiked(petDoc.exists());
+    } catch (error) {
+      console.error("Error fetching liked status:", error);
+    }
+  };
 
   const toggleLike = async () => {
     try {
@@ -66,34 +69,40 @@ const PetDetailScreen = ({ route, navigation }) => {
       const userFavoritesRef = doc(db, "users", user.uid, "favorites", pet.id);
 
       if (!isLiked) {
-        // Add pet to favorites
         await setDoc(userFavoritesRef, {
-          name: pet.name,
-          breed: pet.breed,
-          location: pet.location,
-          gender: pet.gender,
-          age: pet.age,
-          weight: pet.weight,
-          description: pet.description,
-          adoptionFee: pet.adoptionFee,
-          image: pet.image,
+          ...pet,
         });
-        setIsLiked(true);
       } else {
-        // Remove pet from favorites
         await deleteDoc(userFavoritesRef);
-        setIsLiked(false);
       }
 
-      // Update liked status in parent component (HomeScreen or similar)
-      updateLikedStatus(pet.id, !isLiked); // Invert isLiked to reflect the updated status
+      setIsLiked(!isLiked);
+      updateLikedStatus(pet.id, !isLiked);
     } catch (error) {
       console.error("Error toggling like:", error);
     }
   };
 
-  const toggleModal = () => {
-    setIsModalVisible(!isModalVisible);
+  const checkFormStatus = async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const userFormRef = doc(db, "users", user.uid, "form", pet.id);
+      const docSnap = await getDoc(userFormRef);
+
+      setFormSubmitted(docSnap.exists());
+    } catch (error) {
+      console.error("Error checking form status:", error);
+    }
+  };
+
+  const handleAdoptButtonPress = () => {
+    if (formSubmitted) {
+      navigation.navigate("CartPageScreen", { pet });
+    } else {
+      setIsModalVisible(true);
+    }
   };
 
   return (
@@ -140,18 +149,25 @@ const PetDetailScreen = ({ route, navigation }) => {
 
         <View style={styles.adoptionFeeContainer}>
           <Text style={styles.adoptionFeeText}>
-            Adoption Fee: Rp {pet.adoptionFee}
+            Adoption Fee: IDR. {pet.adoptionFee.toLocaleString("id-ID")}
           </Text>
         </View>
-        <TouchableOpacity style={styles.adoptButton} onPress={toggleModal}>
-          <Text style={styles.adoptButtonText}>Adopt Pet</Text>
+        <TouchableOpacity
+          style={styles.adoptButton}
+          onPress={handleAdoptButtonPress}
+        >
+          <Text style={styles.adoptButtonText}>
+            {formSubmitted ? "Check Your Cart" : "Adopt Pet"}
+          </Text>
         </TouchableOpacity>
 
-        <Form
+        <AdoptForm
           petId={pet.id}
-          modalVisible={isModalVisible}
-          setModalVisible={setIsModalVisible}
-          navigation={navigation}
+          pet={pet}
+          isVisible={isModalVisible}
+          onHide={() => setIsModalVisible(false)}
+          onFormSubmit={checkFormStatus}
+          formStatus={formSubmitted}
         />
       </View>
     </ScrollView>
@@ -212,6 +228,7 @@ const styles = StyleSheet.create({
   infoBox: {
     flex: 1,
     alignItems: "center",
+    justifyContent: "center",
     padding: 10,
     borderWidth: 1,
     borderColor: "#ddd",
@@ -222,12 +239,12 @@ const styles = StyleSheet.create({
     fontSize: 22,
     color: "#004AAD",
     fontWeight: "bold",
+    textAlign: "center",
   },
   infoTitle: {
     fontSize: 16,
     color: "#004AAD",
   },
-
   aboutTitle: {
     fontSize: 25,
     color: "#49494A",
@@ -250,7 +267,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
-
   adoptionFeeContainer: {
     alignItems: "center",
     marginVertical: 10,
