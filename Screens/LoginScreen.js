@@ -8,7 +8,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
 } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
@@ -20,30 +20,37 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     const auth = getAuth();
-
+  
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
+  
     if (!emailRegex.test(email)) {
       setError("Please enter a valid email address");
       setTimeout(() => setError(""), 6000);
       return;
     }
-
+  
     if (!password) {
       setError("Please enter a password");
       setTimeout(() => setError(""), 6000);
       return;
     }
-
+  
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigation.navigate("Home");
-    } catch (error) {
-      if (error.code === "auth/invalid-credential") {
-        setError("Email or password are incorrect");
-      } else {
-        setError("");
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      if (user) {
+        await AsyncStorage.setItem("isLoggedIn", "true");
+        const token = await user.getIdToken();
+        await AsyncStorage.setItem("userToken", token);
+        await AsyncStorage.setItem("userData", JSON.stringify(user));
+        await AsyncStorage.setItem("userEmail", email); // Simpan email
+        await AsyncStorage.setItem("userPassword", password); // Simpan password
+        await AsyncStorage.getItem("isLoggedIn");
+        navigation.navigate("Home");
       }
+    } catch (error) {
+      console.error("Login error:", error);
+      setError("Email or password are incorrect");
     }
   };
 
