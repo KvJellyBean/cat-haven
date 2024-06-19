@@ -143,6 +143,22 @@ const ProfilePage = ({ route }) => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.menuItem}
+            onPress={() => navigation.navigate("HistoryScreen")}
+          >
+            <Iconify
+              icon="material-symbols:receipt-long-outline"
+              size={25}
+              color="#004AAD"
+              style={styles.menuIcon}
+            />
+            <Text style={styles.menuText}>My History</Text>
+            <Image
+              style={[styles.icon, styles.reverseIcon]}
+              source={require("../assets/back.png")}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.menuItem}
             onPress={() =>
               navigation.navigate("Favourite", { updateLikedStatus: "" })
             }
