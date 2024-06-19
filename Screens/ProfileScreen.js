@@ -13,6 +13,7 @@ import { Iconify } from "react-native-iconify";
 import Faq from "./Faq";
 import { collection, getDocs } from "firebase/firestore";
 import { db, auth } from "../firebase";
+import defaultProfileImage from "../assets/Kucing.jpg";
 
 const ProfilePage = ({ route }) => {
   const navigation = useNavigation();
@@ -24,6 +25,15 @@ const ProfilePage = ({ route }) => {
   const updateProfileData = (updatedData) => {
     setUser(updatedData);
     setProfileData(updatedData);
+  };
+
+  const getProfileImageSource = () => {
+    const { image } = profileData;
+    if (image && typeof image === 'string') {
+      return { uri: image };
+    } else {
+      return defaultProfileImage; // Use default image if user's image is not available
+    }
   };
 
   const handleLogout = async () => {
@@ -69,7 +79,7 @@ const ProfilePage = ({ route }) => {
 
       <View style={styles.userProfile}>
         <View style={styles.userProfileBackground} />
-        <Image style={styles.profileImage} source={profileData.image} />
+        <Image style={styles.profileImage} source={getProfileImageSource()} />
         <View style={styles.userDetails}>
           <Text style={styles.userName}>{profileData.username}</Text>
           <Text style={styles.userBio}>{profileData.status}</Text>
