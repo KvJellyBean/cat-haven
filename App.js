@@ -46,8 +46,7 @@ function App() {
   
         if (userToken && userData && email && password) {
           try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
+            await signInWithEmailAndPassword(auth, email, password);
             setInitialRoute("Home");
           } catch (reAuthError) {
             setInitialRoute("Onboarding");
@@ -74,9 +73,7 @@ function App() {
         }
       } catch (error) {
         setInitialRoute("Onboarding");
-      } finally {
-        setIsSplashScreen(false);
-      }
+      };
     };
   
     // Set default value to "false" if no value is stored

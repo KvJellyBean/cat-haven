@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Iconify } from "react-native-iconify";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Faq from "./Faq";
 import { collection, getDocs } from "firebase/firestore";
 import { db, auth } from "../firebase";
@@ -29,7 +30,12 @@ const ProfilePage = ({ route }) => {
   const handleLogout = async () => {
     const auth = getAuth();
     try {
-      await signOut(auth);
+      await auth.signOut();
+      await AsyncStorage.removeItem("isLoggedIn");
+      await AsyncStorage.removeItem("userToken");
+      await AsyncStorage.removeItem("userData");
+      await AsyncStorage.removeItem("userEmail");
+      await AsyncStorage.removeItem("userPassword");
       navigation.navigate("Landing");
     } catch (error) {
       console.error("Error signing out: ", error);
