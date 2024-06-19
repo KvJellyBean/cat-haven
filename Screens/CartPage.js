@@ -141,6 +141,41 @@ const CartPageScreen = ({ route }) => {
     }
   };
 
+  const handlePaymentFailed = async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const currentDate = new Date().toISOString();
+
+      for (const item of cartItems) {
+        await deleteDoc(doc(db, `users/${user.uid}/cart/${item.id}`));
+
+        const historyRef = collection(db, `users/${user.uid}/history`);
+        await addDoc(historyRef, {
+          ...item,
+          date: currentDate,
+          status: "Cancelled",
+        });
+
+        // Hapus form jika ada
+        const formRef = doc(db, `users/${user.uid}/form/${item.id}`);
+        const formSnap = await getDoc(formRef);
+        if (formSnap.exists()) {
+          await deleteDoc(formRef);
+          console.log(`Form for pet ${item.id} deleted successfully`);
+        } else {
+          console.log(`No form found for pet ${item.id}`);
+        }
+      }
+
+      // Kosongkan state local (cartItems)
+      setCartItems([]);
+    } catch (error) {
+      console.error("Error cancelling payment:", error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -234,6 +269,7 @@ const CartPageScreen = ({ route }) => {
         isVisible={isModalVisible}
         onHide={toggleModal}
         onPaymentSuccess={handlePaymentSuccess}
+        onPaymentFailed={handlePaymentFailed}
       />
     </View>
   );
@@ -256,7 +292,7 @@ const styles = StyleSheet.create({
   headerText: {
     color: "#004AAD",
     textAlign: "center",
-    fontSize: 34,
+    fontSize: 30,
     fontWeight: "bold",
   },
   backButton: {
