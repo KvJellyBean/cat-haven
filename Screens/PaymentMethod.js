@@ -13,7 +13,12 @@ import AddPaymentModal from "./AddPayment";
 import PaymentSuccessModal from "./SuccessModal";
 import PaymentFailedModal from "./FailedModal";
 
-const PaymentModal = ({ isVisible, onHide }) => {
+const PaymentModal = ({
+  isVisible,
+  onHide,
+  onPaymentSuccess,
+  onPaymentFailed,
+}) => {
   const [isAddPaymentModalVisible, setIsAddPaymentModalVisible] =
     useState(false);
   const [selectedMethod, setSelectedMethod] = useState(null);
@@ -39,11 +44,13 @@ const PaymentModal = ({ isVisible, onHide }) => {
 
   const handleContinue = () => {
     setIsPaymentSuccessModalVisible(true);
+    onPaymentSuccess();
   };
 
   const handleCancel = () => {
-    onHide();
     setIsPaymentFailedModalVisible(true);
+    onPaymentFailed();
+    onHide();
   };
 
   return (

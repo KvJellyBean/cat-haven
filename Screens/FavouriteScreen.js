@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     marginTop: 35,
   },
   welcomeText: {
-    fontSize: 25,
+    fontSize: 30,
     fontWeight: "bold",
     color: "#004AAD",
     padding: 10,

@@ -14,6 +14,8 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { useNavigation } from "@react-navigation/native";
+import catsData from "../assets/data/cats";
+import { SelectList } from "react-native-dropdown-select-list";
 
 const AdoptForm = ({
   petId,
@@ -60,7 +62,10 @@ const AdoptForm = ({
   const handleInputChange = (key, value) => {
     if (key === "phoneNumber") {
       value = value.replace(/[^0-9]/g, "");
+    } else if (key === "typeofpet") {
+      value = value;
     }
+
     setFormData({ ...formData, [key]: value });
     setErrors({ ...errors, [key]: "" });
   };
@@ -141,13 +146,23 @@ const AdoptForm = ({
       .replace(/(\d+)\/(\d+)\/(\d+)/, "$2/$1/$3");
   };
 
-  const showAlert = () => {
-    Alert.alert(
-      "Form Already Submitted",
-      "You have already submitted the adoption form for this pet.",
-      [{ text: "OK" }],
-      { cancelable: false }
-    );
+  const breedOptions = catsData.map((cat) => cat.breed);
+  breedOptions.sort((a, b) => a.localeCompare(b));
+
+  const closeModal = () => {
+    setFormData({
+      firstName: "",
+      lastName: "",
+      DOB: null,
+      typeofpet: "",
+      email: "",
+      address: "",
+      phoneNumber: "",
+      haveChildren: "",
+    });
+    setErrors({});
+    setShowDatePicker(false);
+    onHide();
   };
 
   return (
@@ -158,9 +173,9 @@ const AdoptForm = ({
       onRequestClose={onHide}
     >
       <View style={styles.modalView}>
-        <Pressable style={styles.closeButton} onPress={onHide}>
-          <Text style={styles.closeText}>×</Text>
-        </Pressable>
+        <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+          <Text style={styles.closeButtonText}>&#10006;</Text>
+        </TouchableOpacity>
         <Text style={styles.formTitle}>Adoption Form</Text>
         <ScrollView style={styles.form}>
           {errors.firstName && (
@@ -168,7 +183,7 @@ const AdoptForm = ({
           )}
           <TextInput
             style={[styles.input, errors.firstName && styles.errorInput]}
-            placeholder="First Name"
+            placeholder="Enter your first name"
             onChangeText={(text) => handleInputChange("firstName", text)}
           />
           {errors.lastName && (
@@ -176,7 +191,7 @@ const AdoptForm = ({
           )}
           <TextInput
             style={[styles.input, errors.lastName && styles.errorInput]}
-            placeholder="Last Name"
+            placeholder="Enter your last name"
             onChangeText={(text) => handleInputChange("lastName", text)}
           />
           {errors.DOB && <Text style={styles.errorText}>{errors.DOB}</Text>}
@@ -198,15 +213,20 @@ const AdoptForm = ({
           {errors.typeofpet && (
             <Text style={styles.errorText}>{errors.typeofpet}</Text>
           )}
-          <TextInput
+          <SelectList
+            data={breedOptions}
+            placeholder="Select type of cat"
             style={[styles.input, errors.typeofpet && styles.errorInput]}
-            placeholder="Type of Pet"
-            onChangeText={(text) => handleInputChange("typeofpet", text)}
+            setSelected={(selected) => handleInputChange("typeofpet", selected)}
+            search={false}
+            boxStyles={[styles.input, errors.typeofpet && styles.errorInput]}
+            dropdownStyles={styles.selectlist}
+            maxHeight={100}
           />
           {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
           <TextInput
             style={[styles.input, errors.email && styles.errorInput]}
-            placeholder="Email"
+            placeholder="Enter your email address"
             keyboardType="email-address"
             onChangeText={(text) => handleInputChange("email", text)}
           />
@@ -215,7 +235,7 @@ const AdoptForm = ({
           )}
           <TextInput
             style={[styles.input, errors.address && styles.errorInput]}
-            placeholder="Address"
+            placeholder="Enter your address"
             onChangeText={(text) => handleInputChange("address", text)}
           />
           {errors.phoneNumber && (
@@ -223,7 +243,7 @@ const AdoptForm = ({
           )}
           <TextInput
             style={[styles.input, errors.phoneNumber && styles.errorInput]}
-            placeholder="Phone Number"
+            placeholder="Enter your phone number"
             keyboardType="number-pad"
             onChangeText={(text) =>
               handleInputChange("phoneNumber", text.replace(/[^0-9]/g, ""))
@@ -239,7 +259,17 @@ const AdoptForm = ({
               styles.submitButton,
               formStatus ? styles.disabledButton : null,
             ]}
-            onPress={formStatus ? showAlert : handleSubmit}
+            onPress={() => {
+              if (formStatus) {
+                Alert.alert(
+                  "Form Submitted",
+                  "Your form has been submitted. You can only submit one form per pet.",
+                  [{ text: "OK", onPress: onHide }]
+                );
+              } else {
+                handleSubmit();
+              }
+            }}
             disabled={formStatus}
           >
             <Text style={styles.buttonText}>Submit</Text>
@@ -279,11 +309,20 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     position: "absolute",
-    top: 10,
-    right: 10,
+    top: -20,
+    right: 0,
+    backgroundColor: "#E50B0B",
+    borderRadius: 999,
+    width: 45,
+    height: 45,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  closeText: {
-    fontSize: 24,
+  closeButtonText: {
+    color: "#fff",
+    fontSize: 22,
+    top: -2,
+    fontWeight: "bold",
   },
   formTitle: {
     fontSize: 35,
@@ -291,14 +330,25 @@ const styles = StyleSheet.create({
     color: "#004AAD",
     fontWeight: "bold",
   },
+  selectlist: {
+    width: "100%",
+    marginBottom: 10,
+    marginTop: 10,
+  },
   form: {
     width: "100%",
   },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 5,
+    borderRadius: 12,
     padding: 10,
+    paddingHorizontal: 25,
+    marginBottom: 10,
+  },
+  selectlist: {
+    borderWidth: 1,
+    marginTop: -10,
     marginBottom: 10,
   },
   dateText: {
