@@ -17,6 +17,8 @@ import {
   doc,
   deleteDoc,
   getDoc,
+  setDoc,
+  addDoc,
 } from "firebase/firestore";
 import { db, auth } from "../firebase";
 
@@ -86,6 +88,45 @@ const CartPageScreen = ({ route }) => {
       setCartItems(updatedCartItems);
     } catch (error) {
       console.error("Error removing item:", error);
+    }
+  };
+
+  const handlePaymentSuccess = async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      // Mendapatkan tanggal sekarang
+      const currentDate = new Date().toISOString();
+
+      // Iterasi semua item dalam cart
+      for (const item of cartItems) {
+        // Hapus dari cart
+        await deleteDoc(doc(db, `users/${user.uid}/cart/${item.id}`));
+
+        // Salin ke history dengan menambahkan date dan status
+        const historyRef = collection(db, `users/${user.uid}/history`);
+        await addDoc(historyRef, {
+          ...item,
+          date: currentDate,
+          status: "Completed", // Misalkan statusnya langsung Completed setelah pembayaran sukses
+        });
+
+        // Hapus form jika ada
+        const formRef = doc(db, `users/${user.uid}/form/${item.id}`);
+        const formSnap = await getDoc(formRef);
+        if (formSnap.exists()) {
+          await deleteDoc(formRef);
+          console.log(`Form for pet ${item.id} deleted successfully`);
+        } else {
+          console.log(`No form found for pet ${item.id}`);
+        }
+      }
+
+      // Kosongkan state local (cartItems)
+      setCartItems([]);
+    } catch (error) {
+      console.error("Error processing payment:", error);
     }
   };
 
@@ -189,7 +230,11 @@ const CartPageScreen = ({ route }) => {
         </>
       )}
 
-      <PaymentMethod isVisible={isModalVisible} onHide={toggleModal} />
+      <PaymentMethod
+        isVisible={isModalVisible}
+        onHide={toggleModal}
+        onPaymentSuccess={handlePaymentSuccess}
+      />
     </View>
   );
 };
