@@ -24,6 +24,7 @@ import {
 import Footer from "../components/footer.js";
 import cats from "../assets/data/cats";
 import { db } from "../firebase"; // Assuming you have firebase.js setup correctly
+import defaultProfileImage from "../assets/Kucing.jpg";
 
 export default function HomeScreen() {
   const [user, setUser] = useState({
@@ -72,6 +73,16 @@ export default function HomeScreen() {
 
     fetchUserData();
   }, []);
+
+  const getProfileImageSource = () => {
+    const { image } = user;
+    if (image && typeof image === 'string') {
+      return { uri: image };
+    } else {
+      return defaultProfileImage; // Use default image if user's image is not available
+    }
+  };
+
 
   const toggleLike = async (id) => {
     try {
@@ -145,7 +156,7 @@ export default function HomeScreen() {
             navigation.navigate("Profile", { user: user, setUser: setUser })
           }
         >
-          <Image source={user.image} style={styles.profileImage} />
+          <Image source={getProfileImageSource()} style={styles.profileImage} />
         </TouchableOpacity>
       </View>
 
