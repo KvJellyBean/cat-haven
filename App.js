@@ -24,6 +24,7 @@ import emailVerification from "./Screens/emailVerif";
 import PaymentSuccess from "./Screens/SuccessModal";
 import ProfilePaymentMethod from "./Screens/ProfilePaymentMethod";
 import ProfileAddPaymentMethod from "./Screens/ProfileAddPayment";
+import HistoryScreen from "./Screens/HistoryScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -79,6 +80,7 @@ function App() {
             name="ProfileAddPaymentMethod"
             component={ProfileAddPaymentMethod}
           />
+          <Stack.Screen name="HistoryScreen" component={HistoryScreen} />
         </Stack.Navigator>
       )}
     </NavigationContainer>
