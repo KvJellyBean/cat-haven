@@ -1,7 +1,29 @@
-import React from "react";
-import { View, ImageBackground, Image, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useEffect }  from "react";
+import { View, ImageBackground, Image, Text, StyleSheet, TouchableOpacity, BackHandler, Alert} from "react-native";
 
 const LandingScreen = ({ navigation }) => {
+
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert("Hold on!", "Are you sure you want to exit the app?", [
+        {
+          text: "Cancel",
+          onPress: () => null,
+          style: "cancel",
+        },
+        { text: "OK", onPress: () => BackHandler.exitApp() },
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
   return (
     <ImageBackground source={require("../assets/landing-bg.png")} style={styles.background}>
       <View style={styles.container}>

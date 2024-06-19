@@ -9,6 +9,8 @@ import {
   StyleSheet,
   ImageBackground,
   Animated,
+  BackHandler,
+  Alert
 } from "react-native";
 import { Iconify } from "react-native-iconify";
 import { useNavigation } from "@react-navigation/native";
@@ -71,6 +73,27 @@ export default function HomeScreen() {
     };
 
     fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert("Hold on!", "Are you sure you want to exit the app?", [
+        {
+          text: "Cancel",
+          onPress: () => null,
+          style: "cancel",
+        },
+        { text: "OK", onPress: () => BackHandler.exitApp() },
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
   }, []);
 
   const toggleLike = async (id) => {
