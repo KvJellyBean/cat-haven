@@ -1,28 +1,31 @@
 import React, { useEffect }  from "react";
 import { View, ImageBackground, Image, Text, StyleSheet, TouchableOpacity, BackHandler, Alert} from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 
 const LandingScreen = ({ navigation }) => {
 
-  useEffect(() => {
-    const backAction = () => {
-      Alert.alert("Hold on!", "Are you sure you want to exit the app?", [
-        {
-          text: "Cancel",
-          onPress: () => null,
-          style: "cancel",
-        },
-        { text: "OK", onPress: () => BackHandler.exitApp() },
-      ]);
-      return true;
-    };
+  useFocusEffect(
+    React.useCallback(() => {
+      const backAction = () => {
+        Alert.alert("Hold on!", "Are you sure you want to exit the app?", [
+          {
+            text: "Cancel",
+            onPress: () => null,
+            style: "cancel",
+          },
+          { text: "OK", onPress: () => BackHandler.exitApp() },
+        ]);
+        return true;
+      };
 
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        backAction
+      );
 
-    return () => backHandler.remove();
-  }, []);
+      return () => backHandler.remove();
+    }, [])
+  );
 
   return (
     <ImageBackground source={require("../assets/landing-bg.png")} style={styles.background}>
