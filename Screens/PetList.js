@@ -19,9 +19,9 @@ import {
 } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import catsData from "../assets/data/cats";
-import { location as locations} from "../data.js";
-import { breed as breeds } from "../data.js"; 
-import { weightCategory as weightCategories } from "../data.js"; 
+import { location as locations } from "../data.js";
+import { breed as breeds } from "../data.js";
+import { weightCategory as weightCategories } from "../data.js";
 
 const numColumns = 2;
 const itemsPerPage = 6;
@@ -76,35 +76,54 @@ export default function PetList() {
     let filtered = catsData;
 
     if (filters) {
-      const { breed: breedKey, gender, location: locationKey, age, weightCategory: weightKey } = filters;
+      const {
+        breed: breedKey,
+        gender,
+        location: locationKey,
+        age,
+        weightCategory: weightKey,
+      } = filters;
 
       if (breedKey && breedKey !== "") {
         // Find the actual breed value from breeds array based on the breed key
-        const breedObject = breeds.find(item => item.key === breedKey);
+        const breedObject = breeds.find((item) => item.key === breedKey);
         if (breedObject) {
           const breedValue = breedObject.value;
-          filtered = filtered.filter(cat => cat.breed.toLowerCase().includes(breedValue.toLowerCase()));
+          filtered = filtered.filter((cat) =>
+            cat.breed.toLowerCase().includes(breedValue.toLowerCase())
+          );
         }
       }
       if (gender && gender !== "") {
         // Change 'gender' to 'sex' since 'gender' is not a property in catsData
-        filtered = filtered.filter(cat => cat.gender.toLowerCase() === gender.toLowerCase());
+        filtered = filtered.filter(
+          (cat) => cat.gender.toLowerCase() === gender.toLowerCase()
+        );
       }
       if (locationKey && locationKey !== "") {
         // Find the actual location value from locations array
-        const location = locations.find(loc => loc.key === locationKey)?.value || "";
-        filtered = filtered.filter(cat => cat.location.toLowerCase().includes(location.toLowerCase()));
+        const location =
+          locations.find((loc) => loc.key === locationKey)?.value || "";
+        filtered = filtered.filter((cat) =>
+          cat.location.toLowerCase().includes(location.toLowerCase())
+        );
       }
       if (age && age !== "") {
-        filtered = filtered.filter(cat => cat.age.toLowerCase().includes(age.toLowerCase()));
+        filtered = filtered.filter((cat) =>
+          cat.age.toLowerCase().includes(age.toLowerCase())
+        );
       }
-  
+
       if (weightKey && weightKey !== "") {
         // Change 'weight' to 'weightCategory' since 'weight' is not a property in catsData
-        const weightCategoryObject = weightCategories.find(item => item.key === weightKey);
+        const weightCategoryObject = weightCategories.find(
+          (item) => item.key === weightKey
+        );
         if (weightCategoryObject) {
           const weightValue = weightCategoryObject.value;
-          filtered = filtered.filter(cat => cat.weightCategory.toLowerCase().includes(weightValue.toLowerCase()));
+          filtered = filtered.filter((cat) =>
+            cat.weightCategory.toLowerCase().includes(weightValue.toLowerCase())
+          );
         }
       }
     }
@@ -116,7 +135,7 @@ export default function PetList() {
         (cat) =>
           cat.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           cat.breed.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          cat.location.toLowerCase().includes(searchQuery.toLowerCase()) 
+          cat.location.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -126,8 +145,9 @@ export default function PetList() {
   }, [filters, searchQuery]);
 
   // Ensure filteredCats is defined before accessing its length
-  const totalPages = filteredCats ? Math.ceil(filteredCats.length / itemsPerPage) : 0;
-
+  const totalPages = filteredCats
+    ? Math.ceil(filteredCats.length / itemsPerPage)
+    : 0;
 
   const renderPagination = () => {
     const pages = [];
@@ -185,7 +205,7 @@ export default function PetList() {
           name: pet.name || "",
           breed: pet.breed || "",
           location: pet.location || "",
-          gender: pet.gender|| "",
+          gender: pet.gender || "",
           age: pet.age || "",
           weight: pet.weight || "",
           description: pet.description || "",
@@ -220,7 +240,7 @@ export default function PetList() {
     <View style={styles.container}>
       <View style={styles.searchContainer}>
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate("Home")}
           style={styles.backButton}
         >
           <Iconify
