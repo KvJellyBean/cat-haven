@@ -19,6 +19,9 @@ import {
 } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import catsData from "../assets/data/cats";
+import { location as locations} from "../data.js";
+import { breed as breeds } from "../data.js"; 
+import { weightCategory as weightCategories } from "../data.js"; 
 
 const numColumns = 2;
 const itemsPerPage = 6;
@@ -31,6 +34,7 @@ const HeartFilledIcon = () => <Iconify icon="fe:heart" size={25} color="red" />;
 export default function PetList() {
   const navigation = useNavigation();
   const route = useRoute();
+  const { filters } = route.params || {};
   const { updateLikedStatus } = route.params || {};
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -67,25 +71,63 @@ export default function PetList() {
   }, []);
 
   useEffect(() => {
-    const filterCats = () => {
-      if (searchQuery === "") {
-        setFilteredCats(catsData);
-      } else {
-        const filtered = catsData.filter(
-          (cat) =>
-            cat.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            cat.breed.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            cat.location.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-        setFilteredCats(filtered);
-        setCurrentPage(1);
+    console.log("Applying filters:", filters);
+
+    let filtered = catsData;
+
+    if (filters) {
+      const { breed: breedKey, gender, location: locationKey, age, weightCategory: weightKey } = filters;
+
+      if (breedKey && breedKey !== "") {
+        // Find the actual breed value from breeds array based on the breed key
+        const breedObject = breeds.find(item => item.key === breedKey);
+        if (breedObject) {
+          const breedValue = breedObject.value;
+          filtered = filtered.filter(cat => cat.breed.toLowerCase().includes(breedValue.toLowerCase()));
+        }
       }
-    };
+      if (gender && gender !== "") {
+        // Change 'gender' to 'sex' since 'gender' is not a property in catsData
+        filtered = filtered.filter(cat => cat.gender.toLowerCase() === gender.toLowerCase());
+      }
+      if (locationKey && locationKey !== "") {
+        // Find the actual location value from locations array
+        const location = locations.find(loc => loc.key === locationKey)?.value || "";
+        filtered = filtered.filter(cat => cat.location.toLowerCase().includes(location.toLowerCase()));
+      }
+      if (age && age !== "") {
+        filtered = filtered.filter(cat => cat.age.toLowerCase().includes(age.toLowerCase()));
+      }
+  
+      if (weightKey && weightKey !== "") {
+        // Change 'weight' to 'weightCategory' since 'weight' is not a property in catsData
+        const weightCategoryObject = weightCategories.find(item => item.key === weightKey);
+        if (weightCategoryObject) {
+          const weightValue = weightCategoryObject.value;
+          filtered = filtered.filter(cat => cat.weightCategory.toLowerCase().includes(weightValue.toLowerCase()));
+        }
+      }
+    }
 
-    filterCats();
-  }, [searchQuery]);
+    console.log("Filtered cats:", filtered);
 
-  const totalPages = Math.ceil(filteredCats.length / itemsPerPage);
+    if (searchQuery) {
+      filtered = filtered.filter(
+        (cat) =>
+          cat.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          cat.breed.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          cat.location.toLowerCase().includes(searchQuery.toLowerCase()) 
+      );
+    }
+
+    console.log("Filtered cats after search:", filtered);
+
+    setFilteredCats(filtered);
+  }, [filters, searchQuery]);
+
+  // Ensure filteredCats is defined before accessing its length
+  const totalPages = filteredCats ? Math.ceil(filteredCats.length / itemsPerPage) : 0;
+
 
   const renderPagination = () => {
     const pages = [];
@@ -143,12 +185,13 @@ export default function PetList() {
           name: pet.name || "",
           breed: pet.breed || "",
           location: pet.location || "",
-          gender: pet.gender || "",
+          gender: pet.gender|| "",
           age: pet.age || "",
           weight: pet.weight || "",
           description: pet.description || "",
           adoptionFee: pet.adoptionFee || 0,
           image: pet.image || "",
+          weightCategory: pet.weightCategory || "",
         };
 
         await setDoc(userFavoritesRef, data);
@@ -161,7 +204,7 @@ export default function PetList() {
 
       updateLikedStatus(petId, !isAlreadyFavorite);
     } catch (error) {
-      
+      console.error("Error toggling like:", error);
     }
   };
 
@@ -261,7 +304,6 @@ export default function PetList() {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
