@@ -1,4 +1,4 @@
-![SeaBrew Logo](assets/icon.png)
+![SeaBrew Logo](assets/readme.png)
 
 # 🐈‍⬛ Cat Haven
 Cat haven is a mobile application for people who love animals, especially cats. Cat haven offers convenience for people who want to do the adoption process without going through a long process. Cat Haven provides a number of features that are certainly easy to use for everyone.
